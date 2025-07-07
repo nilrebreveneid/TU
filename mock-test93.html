@@ -1,0 +1,799 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mock Test 12 – 50 Questions</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #f8ffae, #43c6ac);
+      margin: 0;
+      padding: 2rem;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    .quiz-container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #1e88e5;
+    }
+
+    .question {
+      margin-bottom: 1.5rem;
+      animation: fadeIn 0.5s;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 1rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .question p {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .options button {
+      display: block;
+      margin: 0.5rem 0;
+      padding: 0.75rem 1rem;
+      width: 100%;
+      background: #e3f2fd;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1rem;
+    }
+
+    .options button:hover {
+      background: #bbdefb;
+      transform: translateX(5px);
+    }
+
+    .correct {
+      background-color: #c8e6c9 !important;
+      animation: pulse 0.5s;
+    }
+
+    .wrong {
+      background-color: #ffcdd2 !important;
+      animation: shake 0.3s;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #eee;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 100%;
+      background: #42a5f5;
+      transition: width 0.3s;
+    }
+
+    #timer {
+      text-align: right;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      color: #d81b60;
+    }
+
+    #score, #results {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-top: 2rem;
+      font-weight: bold;
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .results-table th, .results-table td {
+      border: 1px solid #ddd;
+      padding: 0.5rem;
+      text-align: left;
+    }
+
+    .results-table th {
+      background: #f5f5f5;
+    }
+
+    .results-table .correct {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .results-table .wrong {
+      background-color: #ffebee;
+      color: #c62828;
+    }
+
+    .results-table .skipped {
+      background-color: #fff3e0;
+      color: #ef6c00;
+    }
+
+    .results-table .notattempted {
+      background-color: #f5f5f5;
+      color: #616161;
+    }
+
+    .skip-button {
+      background: #fff3cd;
+      margin-top: 1rem;
+      padding: 0.75rem;
+      width: 100%;
+      border: 1px solid #ffca28;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .skip-button:hover {
+      background: #ffecb3;
+    }
+
+    .next-button {
+      background: #42a5f5;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 1rem;
+      display: block;
+      width: 100%;
+      text-align: center;
+    }
+
+    .next-button:hover {
+      background: #1e88e5;
+    }
+
+    .next-button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .explanation {
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      background: #f5f5f5;
+      border-left: 4px solid #1e88e5;
+      font-size: 0.9rem;
+      color: #444;
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .quiz-container {
+        padding: 1rem;
+      }
+      .options button {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+      }
+      .explanation {
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Mock Test 12 – 50 Questions</h1>
+    <div id="timer">Time: 00:00</div>
+    <div class="progress-bar">
+      <div class="progress" id="progress"></div>
+    </div>
+    <div id="quiz"></div>
+    <div id="score"></div>
+    <div id="results" class="hidden">
+      <h2>Quiz Results</h2>
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Question</th>
+            <th>Your Answer</th>
+            <th>Correct Answer</th>
+            <th>Status</th>
+            <th>Explanation</th>
+          </tr>
+        </thead>
+        <tbody id="results-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/beep-01a.mp3"></audio>
+  <audio id="wrong-sound" src="https://www.soundjay.com/buttons/beep-02.mp3"></audio>
+
+  <script>
+    const questions = [
+      // Applied Mechanics (13 MCQs)
+      { 
+        q: "The ratio of limiting friction to normal reaction is called:", 
+        options: ["Coefficient of friction", "Angle of friction", "Frictional force", "Normal force"], 
+        answer: 0,
+        explanation: "The coefficient of friction (μ) is the ratio of limiting frictional force to the normal reaction force, defining the frictional properties between surfaces."
+      },
+      { 
+        q: "The principle of transmissibility of forces states that:", 
+        options: ["Force can be moved along its line of action", "Force can be moved perpendicularly", "Force cannot be moved", "Force changes magnitude"], 
+        answer: 0,
+        explanation: "The principle of transmissibility states that a force’s effect remains the same if moved along its line of action, provided the point of application doesn’t affect the system."
+      },
+      { 
+        q: "The unit of angular acceleration is:", 
+        options: ["rad/s²", "m/s²", "rad/s", "deg/s"], 
+        answer: 0,
+        explanation: "Angular acceleration, the rate of change of angular velocity, is measured in radians per second squared (rad/s²)."
+      },
+      { 
+        q: "The centroid of a semicircle lies at:", 
+        options: ["4r/(3π) from the diameter", "r/2 from the diameter", "2r/π from the diameter", "r from the diameter"], 
+        answer: 0,
+        explanation: "The centroid of a semicircle is located at 4r/(3π) from the diameter, derived from the geometric distribution of its area."
+      },
+      { 
+        q: "The work done by a constant force is:", 
+        options: ["Force times displacement in the direction of force", "Force divided by displacement", "Force times velocity", "Force divided by time"], 
+        answer: 0,
+        explanation: "Work done by a constant force is W = F·d·cosθ, where d is displacement in the force’s direction."
+      },
+      { 
+        q: "The angular momentum of a body is:", 
+        options: ["Moment of inertia times angular velocity", "Mass times linear velocity", "Force times distance", "Energy times time"], 
+        answer: 0,
+        explanation: "Angular momentum is L = I·ω, where I is the moment of inertia and ω is angular velocity."
+      },
+      { 
+        q: "The condition for equilibrium of a body under coplanar forces is:", 
+        options: ["Sum of forces and moments is zero", "Sum of forces is non-zero", "Sum of moments is non-zero", "Forces are parallel"], 
+        answer: 0,
+        explanation: "For equilibrium under coplanar forces, the sum of all forces and moments about any point must be zero."
+      },
+      { 
+        q: "The bulk modulus of a material measures:", 
+        options: ["Resistance to volume change", "Resistance to shear", "Resistance to bending", "Resistance to twisting"], 
+        answer: 0,
+        explanation: "Bulk modulus measures a material’s resistance to uniform compression, indicating its stiffness under volume change."
+      },
+      { 
+        q: "The time of flight of a projectile depends on:", 
+        options: ["Initial vertical velocity", "Horizontal velocity", "Mass of the projectile", "Shape of the projectile"], 
+        answer: 0,
+        explanation: "Time of flight for a projectile is T = 2u·sinθ/g, depending on the initial vertical velocity component."
+      },
+      { 
+        q: "The moment of a force about a point is:", 
+        options: ["Force times perpendicular distance", "Force divided by distance", "Force times angle", "Force times area"], 
+        answer: 0,
+        explanation: "Moment (torque) is force times the perpendicular distance from the point of rotation, M = F·d."
+      },
+      { 
+        q: "The viscosity of a fluid is a measure of:", 
+        options: ["Resistance to flow", "Density of the fluid", "Compressibility of the fluid", "Surface tension"], 
+        answer: 0,
+        explanation: "Viscosity measures a fluid’s resistance to flow, indicating its internal friction."
+      },
+      { 
+        q: "The escape velocity from Earth’s surface is:", 
+        options: ["11.2 km/s", "7.8 km/s", "9.8 km/s", "15 km/s"], 
+        answer: 0,
+        explanation: "Escape velocity from Earth is 11.2 km/s, the speed needed to overcome gravitational pull."
+      },
+      { 
+        q: "The principle of virtual work is used to:", 
+        options: ["Analyze equilibrium of systems", "Calculate kinetic energy", "Determine frictional forces", "Measure angular velocity"], 
+        answer: 0,
+        explanation: "The principle of virtual work analyzes equilibrium by equating work done by forces to zero for virtual displacements."
+      },
+
+      // Thermodynamics (8 MCQs)
+      { 
+        q: "The Gibbs free energy of a system is defined as:", 
+        options: ["Enthalpy minus temperature times entropy", "Internal energy plus work", "Entropy plus pressure", "Heat minus work"], 
+        answer: 0,
+        explanation: "Gibbs free energy is G = H - T·S, where H is enthalpy, T is temperature, and S is entropy, used to predict spontaneity."
+      },
+      { 
+        q: "The isentropic process is characterized by:", 
+        options: ["Constant entropy", "Constant temperature", "Constant pressure", "Constant volume"], 
+        answer: 0,
+        explanation: "An isentropic process is reversible and adiabatic, maintaining constant entropy (S = constant)."
+      },
+      { 
+        q: "The Boyle’s law is applicable to:", 
+        options: ["Ideal gases at constant temperature", "Real gases at high pressure", "Liquids at constant volume", "Gases at constant pressure"], 
+        answer: 0,
+        explanation: "Boyle’s law (P·V = constant) applies to ideal gases at constant temperature, stating pressure is inversely proportional to volume."
+      },
+      { 
+        q: "The efficiency of a reversible heat engine is always:", 
+        options: ["Greater than an irreversible engine", "Equal to an irreversible engine", "Less than an irreversible engine", "Zero"], 
+        answer: 0,
+        explanation: "A reversible heat engine (e.g., Carnot engine) has higher efficiency than an irreversible one due to minimal losses."
+      },
+      { 
+        q: "The Charles’ law states that:", 
+        options: ["Volume is proportional to temperature at constant pressure", "Pressure is proportional to temperature", "Volume is inversely proportional to pressure", "Pressure is inversely proportional to volume"], 
+        answer: 0,
+        explanation: "Charles’ law (V/T = constant) states that the volume of an ideal gas is proportional to its absolute temperature at constant pressure."
+      },
+      { 
+        q: "The latent heat of vaporization is the heat required to:", 
+        options: ["Change liquid to gas at constant temperature", "Raise the temperature of a liquid", "Change solid to liquid", "Cool a gas"], 
+        answer: 0,
+        explanation: "Latent heat of vaporization is the heat needed to convert a liquid to a gas at its boiling point without changing temperature."
+      },
+      { 
+        q: "The critical point of a substance is where:", 
+        options: ["Liquid and gas phases are indistinguishable", "Solid and liquid phases merge", "Gas and solid phases merge", "All phases coexist"], 
+        answer: 0,
+        explanation: "The critical point is where liquid and gas phases become indistinguishable, with no phase boundary."
+      },
+      { 
+        q: "The first law of thermodynamics is a statement of:", 
+        options: ["Conservation of energy", "Conservation of entropy", "Conservation of momentum", "Conservation of mass"], 
+        answer: 0,
+        explanation: "The first law of thermodynamics states that energy is conserved, with ΔU = Q - W (internal energy change equals heat added minus work done)."
+      },
+
+      // Machine Drawing (7 MCQs)
+      { 
+        q: "The purpose of a tolerance in a drawing is to:", 
+        options: ["Specify allowable deviations", "Show hidden lines", "Indicate material type", "Show assembly sequence"], 
+        answer: 0,
+        explanation: "Tolerance specifies the allowable deviation in dimensions, ensuring parts fit and function correctly."
+      },
+      { 
+        q: "A chamfer in machine drawing refers to:", 
+        options: ["Beveled edge", "Rounded corner", "Threaded surface", "Flat surface"], 
+        answer: 0,
+        explanation: "A chamfer is a beveled edge, typically at 45°, used to remove sharp edges or aid assembly."
+      },
+      { 
+        q: "The scale 1:2 in a drawing means:", 
+        options: ["Drawing is half the size of the object", "Drawing is double the size", "Drawing is same size", "Drawing is one-fourth the size"], 
+        answer: 0,
+        explanation: "A scale of 1:2 means the drawing is half the size of the actual object (1 unit on drawing = 2 units on object)."
+      },
+      { 
+        q: "The purpose of an auxiliary view is to:", 
+        options: ["Show true shape of inclined surfaces", "Show hidden lines", "Indicate center lines", "Show sectional views"], 
+        answer: 0,
+        explanation: "An auxiliary view shows the true shape and size of inclined surfaces not aligned with standard views."
+      },
+      { 
+        q: "The symbol for a spot weld is:", 
+        options: ["Filled circle at junction", "Arrow with tail", "Triangle with dot", "Square with cross"], 
+        answer: 0,
+        explanation: "A spot weld is represented by a filled circle at the junction of parts, per welding symbol standards."
+      },
+      { 
+        q: "The purpose of a bill of materials is to:", 
+        options: ["List parts and quantities", "Show assembly sequence", "Indicate scale", "Show tolerances"], 
+        answer: 0,
+        explanation: "A bill of materials (BOM) lists all parts, quantities, and specifications required for an assembly."
+      },
+      { 
+        q: "The third angle projection places the top view:", 
+        options: ["Above the front view", "Below the front view", "Beside the front view", "Behind the side view"], 
+        answer: 0,
+        explanation: "In third angle projection, the top view is placed above the front view, per ANSI standards."
+      },
+
+      // Electro-Mechanical (3 MCQs)
+      { 
+        q: "The main function of a slip ring in an AC motor is to:", 
+        options: ["Transmit current to the rotor", "Convert AC to DC", "Increase motor speed", "Reduce electrical resistance"], 
+        answer: 0,
+        explanation: "Slip rings transmit electrical current to the rotor in AC motors, enabling continuous rotation."
+      },
+      { 
+        q: "The starting torque of an induction motor is maximum when:", 
+        options: ["Rotor resistance is high", "Rotor resistance is low", "Stator voltage is low", "Frequency is high"], 
+        answer: 0,
+        explanation: "High rotor resistance increases starting torque in induction motors by improving the power factor at startup."
+      },
+      { 
+        q: "The purpose of a circuit breaker is to:", 
+        options: ["Protect against overcurrent", "Increase voltage", "Convert AC to DC", "Reduce power consumption"], 
+        answer: 0,
+        explanation: "A circuit breaker protects circuits by interrupting current flow during overcurrent conditions."
+      },
+
+      // Industrial Boiler (5 MCQs)
+      { 
+        q: "The function of an air preheater in a boiler is to:", 
+        options: ["Heat incoming air", "Cool the flue gases", "Reduce steam pressure", "Increase water flow"], 
+        answer: 0,
+        explanation: "An air preheater heats incoming combustion air using flue gas heat, improving boiler efficiency."
+      },
+      { 
+        q: "The main purpose of a steam trap is to:", 
+        options: ["Remove condensate from steam lines", "Increase steam pressure", "Cool the steam", "Regulate fuel supply"], 
+        answer: 0,
+        explanation: "A steam trap removes condensate and non-condensable gases from steam lines, maintaining efficiency."
+      },
+      { 
+        q: "The type of boiler best suited for high-pressure applications is:", 
+        options: ["Water tube boiler", "Fire tube boiler", "Electric boiler", "Low-pressure boiler"], 
+        answer: 0,
+        explanation: "Water tube boilers are suited for high-pressure applications due to their robust design and high output."
+      },
+      { 
+        q: "The function of a feedwater heater in a boiler is to:", 
+        options: ["Preheat water before entering the boiler", "Cool the steam", "Increase fuel combustion", "Reduce air intake"], 
+        answer: 0,
+        explanation: "A feedwater heater preheats water using steam, improving boiler efficiency and reducing thermal shock."
+      },
+      { 
+        q: "The main purpose of a boiler drum is to:", 
+        options: ["Separate steam from water", "Store fuel", "Increase air flow", "Cool the flue gases"], 
+        answer: 0,
+        explanation: "The boiler drum separates steam from water, ensuring dry steam is supplied to the system."
+      },
+
+      // Heat Engines (5 MCQs)
+      { 
+        q: "The function of a spark plug in a petrol engine is to:", 
+        options: ["Ignite the air-fuel mixture", "Cool the combustion chamber", "Regulate fuel flow", "Increase air intake"], 
+        answer: 0,
+        explanation: "A spark plug ignites the air-fuel mixture in a petrol engine by producing a spark."
+      },
+      { 
+        q: "The main advantage of a four-stroke engine over a two-stroke is:", 
+        options: ["Higher fuel efficiency", "Higher power output", "Simpler design", "Lower cost"], 
+        answer: 0,
+        explanation: "Four-stroke engines are more fuel-efficient due to better combustion and exhaust processes."
+      },
+      { 
+        q: "The purpose of an exhaust manifold is to:", 
+        options: ["Collect exhaust gases", "Increase fuel efficiency", "Cool the engine", "Regulate air intake"], 
+        answer: 0,
+        explanation: "The exhaust manifold collects exhaust gases from cylinders and directs them to the exhaust system."
+      },
+      { 
+        q: "The function of a piston ring in an engine is to:", 
+        options: ["Seal the combustion chamber", "Increase fuel flow", "Cool the piston", "Regulate valve timing"], 
+        answer: 0,
+        explanation: "Piston rings seal the combustion chamber, preventing gas leakage and maintaining pressure."
+      },
+      { 
+        q: "The main purpose of a crankshaft in an engine is to:", 
+        options: ["Convert linear motion to rotary motion", "Ignite the fuel", "Cool the engine", "Regulate air intake"], 
+        answer: 0,
+        explanation: "The crankshaft converts the linear motion of pistons into rotary motion to drive the vehicle."
+      },
+
+      // Industrial Management (6 MCQs)
+      { 
+        q: "The purpose of a PERT chart is to:", 
+        options: ["Analyze project timelines", "Calculate production costs", "Train employees", "Develop marketing strategies"], 
+        answer: 0,
+        explanation: "A PERT chart analyzes project timelines by estimating task durations and dependencies."
+      },
+      { 
+        q: "The term ‘lean manufacturing’ refers to:", 
+        options: ["Minimizing waste in production", "Maximizing employee workload", "Increasing inventory levels", "Reducing product quality"], 
+        answer: 0,
+        explanation: "Lean manufacturing minimizes waste in production processes while maintaining quality."
+      },
+      { 
+        q: "The main function of a human resources department is to:", 
+        options: ["Manage employee relations", "Develop new products", "Increase sales", "Calculate depreciation"], 
+        answer: 0,
+        explanation: "The HR department manages employee relations, recruitment, training, and compliance."
+      },
+      { 
+        q: "The purpose of a balance sheet is to:", 
+        options: ["Show financial position", "Calculate production costs", "Analyze market trends", "Train employees"], 
+        answer: 0,
+        explanation: "A balance sheet shows a company’s financial position, detailing assets, liabilities, and equity."
+      },
+      { 
+        q: "The term ‘six sigma’ refers to:", 
+        options: ["Quality improvement methodology", "Employee training program", "Marketing strategy", "Financial planning"], 
+        answer: 0,
+        explanation: "Six Sigma is a methodology for improving quality by reducing process variability and defects."
+      },
+      { 
+        q: "The main objective of risk management is to:", 
+        options: ["Identify and mitigate risks", "Increase production costs", "Reduce employee turnover", "Develop new products"], 
+        answer: 0,
+        explanation: "Risk management identifies potential risks and implements strategies to mitigate them."
+      },
+
+      // Estimating and Costing (3 MCQs)
+      { 
+        q: "The term ‘fixed cost’ refers to:", 
+        options: ["Costs that remain constant regardless of production", "Costs that vary with production", "Costs of raw materials", "Costs of employee wages"], 
+        answer: 0,
+        explanation: "Fixed costs, like rent or salaries, remain constant regardless of production levels."
+      },
+      { 
+        q: "The purpose of a budget in project management is to:", 
+        options: ["Allocate financial resources", "Increase employee workload", "Develop new products", "Reduce market share"], 
+        answer: 0,
+        explanation: "A budget allocates financial resources to ensure a project stays within cost limits."
+      },
+      { 
+        q: "The term ‘opportunity cost’ refers to:", 
+        options: ["Cost of the next best alternative forgone", "Cost of raw materials", "Cost of employee training", "Cost of advertising"], 
+        answer: 0,
+        explanation: "Opportunity cost is the value of the next best alternative sacrificed when making a decision."
+      }
+    ];
+
+    let currentPage = 0;
+    let score = 0;
+    let skipped = [];
+    let userAnswers = Array(questions.length).fill(null);
+    let timerSeconds = 0;
+    let timerInterval;
+    const QUESTIONS_PER_PAGE = 5;
+    const ANSWER_DELAY = 1500;
+
+    const quizEl = document.getElementById("quiz");
+    const scoreEl = document.getElementById("score");
+    const resultsEl = document.getElementById("results");
+    const resultsBody = document.getElementById("results-body");
+    const progressEl = document.getElementById("progress");
+    const timerEl = document.getElementById("timer");
+    const correctSound = document.getElementById("correct-sound");
+    const wrongSound = document.getElementById("wrong-sound");
+
+    // Load progress from localStorage
+    function loadProgress() {
+      const saved = localStorage.getItem("quizProgress12");
+      if (saved) {
+        const { currentPage: savedPage, score: savedScore, skipped: savedSkipped, answers: savedAnswers, time: savedTime } = JSON.parse(saved);
+        currentPage = savedPage || 0;
+        score = savedScore || 0;
+        skipped = savedSkipped || [];
+        userAnswers = savedAnswers && savedAnswers.length === questions.length ? savedAnswers : Array(questions.length).fill(null);
+        timerSeconds = savedTime || 0;
+      }
+    }
+
+    // Save progress to localStorage
+    function saveProgress() {
+      localStorage.setItem("quizProgress12", JSON.stringify({
+        currentPage,
+        score,
+        skipped,
+        answers: userAnswers,
+        time: timerSeconds
+      }));
+    }
+
+    // Shuffle array
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Shuffle questions only once at initialization
+    const shuffledQuestions = shuffle([...questions]);
+
+    // Start timer
+    function startTimer() {
+      const minutes = Math.floor(timerSeconds / 60);
+      const seconds = timerSeconds % 60;
+      timerEl.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      
+      timerInterval = setInterval(() => {
+        timerSeconds++;
+        const minutes = Math.floor(timerSeconds / 60);
+        const seconds = timerSeconds % 60;
+        timerEl.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    // Update progress bar
+    function updateProgress() {
+      const answeredOrSkipped = userAnswers.filter(answer => answer !== null).length;
+      const percentage = (answeredOrSkipped / questions.length) * 100;
+      progressEl.style.width = `${percentage}%`;
+    }
+
+    // Escape special characters for JavaScript string
+    function escapeJsString(str) {
+      return str
+        .replace(/'/g, "\\'")
+        .replace(/\u2212/g, '-') // Mathematical minus to hyphen
+        .replace(/π/g, "π") // Pi symbol
+        .replace(/\u00B2/g, "²") // Superscript 2
+        .replace(/\u00B0/g, "°") // Degree symbol
+        .replace(/\u2019/g, "'") // Curly apostrophe to straight
+        .replace(/\u2022/g, "·"); // Middle dot
+    }
+
+    // Show questions for the current page
+    function showQuestions(page) {
+      const startIndex = page * QUESTIONS_PER_PAGE;
+      const endIndex = Math.min(startIndex + QUESTIONS_PER_PAGE, questions.length);
+      let html = '';
+      for (let i = startIndex; i < endIndex; i++) {
+        const q = shuffledQuestions[i];
+        const shuffledOptions = shuffle([...q.options].map((opt, j) => ({ text: opt, index: j })));
+        const options = shuffledOptions
+          .map(opt => `<button onclick="checkAnswer(this, ${i}, ${opt.index}, '${escapeJsString(opt.text)}')">${opt.text}</button>`)
+          .join('');
+        html += `
+          <div class="question" data-index="${i}">
+            <p>Q${i + 1}. ${q.q}</p>
+            <div class="options">${options}</div>
+            <div class="explanation">${q.explanation}</div>
+            <button class="skip-button" onclick="skipQuestion(${i})">Skip</button>
+          </div>
+        `;
+      }
+      if (endIndex < questions.length) {
+        html += `<button class="next-button" onclick="nextPage()" disabled>Next</button>`;
+      }
+      quizEl.innerHTML = html;
+      updateProgress();
+      saveProgress();
+      checkNextButton();
+    }
+
+    // Check answer
+    function checkAnswer(button, questionIndex, selected, selectedText) {
+      const q = shuffledQuestions[questionIndex];
+      const correct = q.answer;
+      const buttons = button.parentElement.querySelectorAll("button");
+      buttons.forEach((btn) => {
+        btn.disabled = true;
+        const originalIndex = q.options.indexOf(btn.innerText);
+        if (originalIndex === correct) btn.classList.add("correct");
+        if (btn === button && selected !== correct) btn.classList.add("wrong");
+      });
+
+      userAnswers[questionIndex] = selectedText;
+      if (selected === correct) {
+        score++;
+        correctSound.play().catch(() => console.log("Audio playback failed"));
+      } else {
+        wrongSound.play().catch(() => console.log("Audio playback failed"));
+      }
+
+      // Show explanation
+      const explanationEl = document.querySelector(`.question[data-index="${questionIndex}"] .explanation`);
+      if (explanationEl) {
+        explanationEl.style.display = 'block';
+      }
+
+      setTimeout(() => {
+        saveProgress();
+        updateProgress();
+        checkNextButton();
+      }, ANSWER_DELAY);
+    }
+
+    // Skip question
+    function skipQuestion(questionIndex) {
+      if (!skipped.includes(questionIndex)) {
+        skipped.push(questionIndex);
+        userAnswers[questionIndex] = "Skipped";
+      }
+      const buttons = document.querySelector(`.question[data-index="${questionIndex}"] .options`).querySelectorAll("button");
+      buttons.forEach(btn => btn.disabled = true);
+
+      // Show explanation
+      const explanationEl = document.querySelector(`.question[data-index="${questionIndex}"] .explanation`);
+      if (explanationEl) {
+        explanationEl.style.display = 'block';
+      }
+
+      saveProgress();
+      updateProgress();
+      checkNextButton();
+    }
+
+    // Check if all questions on the page are answered or skipped
+    function checkNextButton() {
+      const startIndex = currentPage * QUESTIONS_PER_PAGE;
+      const endIndex = Math.min(startIndex + QUESTIONS_PER_PAGE, questions.length);
+      let allAnswered = true;
+      for (let i = startIndex; i < endIndex; i++) {
+        if (userAnswers[i] === null) {
+          allAnswered = false;
+          break;
+        }
+      }
+      const nextButton = document.querySelector(".next-button");
+      if (nextButton) {
+        nextButton.disabled = !allAnswered;
+      }
+    }
+
+    // Move to next page
+    function nextPage() {
+      currentPage++;
+      if (currentPage * QUESTIONS_PER_PAGE < questions.length) {
+        showQuestions(currentPage);
+      } else {
+        endQuiz();
+      }
+    }
+
+    // End quiz and show results
+    function endQuiz() {
+      clearInterval(timerInterval);
+      quizEl.innerHTML = "";
+      scoreEl.innerHTML = `Your score: ${score} / ${questions.length} (${((score / questions.length) * 100).toFixed(2)}%)`;
+      resultsEl.classList.remove("hidden");
+
+      resultsBody.innerHTML = shuffledQuestions.map((q, i) => {
+        const userAnswer = userAnswers[i] === null ? "Not attempted" :
+                         userAnswers[i] === "Skipped" ? "Skipped" :
+                         userAnswers[i];
+        const correctAnswer = q.options[q.answer];
+        const status = userAnswers[i] === q.options[q.answer] ? "Correct" :
+                      userAnswers[i] === "Skipped" ? "Skipped" :
+                      userAnswers[i] === null ? "Not attempted" : "Wrong";
+        return `
+          <tr>
+            <td>${i + 1}. ${q.q}</td>
+            <td>${userAnswer}</td>
+            <td>${correctAnswer}</td>
+            <td class="${status.toLowerCase()}">${status}</td>
+            <td>${q.explanation}</td>
+          </tr>
+        `;
+      }).join('');
+
+      // Clear localStorage
+      localStorage.removeItem("quizProgress12");
+    }
+
+    // Initialize
+    loadProgress();
+    startTimer();
+    showQuestions(currentPage);
+  </script>
+</body>
+</html>
