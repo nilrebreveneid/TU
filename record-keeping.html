@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Logsewa Record Keeping Mock Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #e0e7ff, #c3dafe);
+            margin: 0;
+            padding: 2rem;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #1e3a8a;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e3a8a;
+            margin: 1rem 0;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .timer {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #d81b60;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress {
+            height: 100%;
+            background: #3b82f6;
+            transition: width 0.3s ease;
+        }
+
+        .question {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            animation: fadeIn 0.5s;
+            transition: transform 0.2s ease;
+        }
+
+        .question:hover {
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .question p {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+        }
+
+        .options button {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            color: #374151;
+        }
+
+        .options button:hover:not(:disabled) {
+            background: #f3f4f6;
+            border-color: #3b82f6;
+            transform: translateX(4px);
+        }
+
+        .options button.correct {
+            background: #bbf7d0;
+            border-color: #22c55e;
+            color: #166534;
+            animation: pulse 0.5s;
+        }
+
+        .options button.wrong {
+            background: #fecaca;
+            border-color: #ef4444;
+            color: #991b1b;
+            animation: shake 0.3s;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .options button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .explanation {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #eff6ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+            font-size: 0.95rem;
+        }
+
+        .skip-button {
+            background: #fff3cd;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            width: 100%;
+            border: 1px solid #ffca28;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .skip-button:hover {
+            background: #ffecb3;
+        }
+
+        .next-button {
+            background: #3b82f6;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            display: block;
+            width: 100%;
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+
+        .next-button:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        .next-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .score-container {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .score {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .results-table th, .results-table td {
+            border: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .results-table th {
+            background: #f8fafc;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        .results-table .correct {
+            color: #166534;
+            font-weight: bold;
+        }
+
+        .results-table .wrong {
+            color: #991b1b;
+            font-weight: bold;
+        }
+
+        .results-table .skipped, .results-table .not-attempted {
+            color: #d97706;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .restart-button {
+            background: #22c55e;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 1rem auto;
+            display: block;
+            width: 100%;
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+
+        .restart-button:hover {
+            background: #16a34a;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+            }
+
+            .quiz-container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .question p {
+                font-size: 1rem;
+            }
+
+            .options button, .skip-button, .next-button, .restart-button {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+
+            .results-table th, .results-table td {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Logsewa Record Keeping Mock Test</h1>
+        <div class="quiz-header">
+            <div class="timer" id="timer">Time: 00:00</div>
+            <div class="score" id="current-score">Score: 0/35</div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        <div id="quiz"></div>
+        <div class="score-container">
+            <div class="score" id="score"></div>
+            <div id="results" class="hidden">
+                <h2>Quiz Results</h2>
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>Your Answer</th>
+                            <th>Correct Answer</th>
+                            <th>Status</th>
+                            <th>Explanation</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body"></tbody>
+                </table>
+                <button class="restart-button" onclick="restartQuiz()">Restart Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="correct-sound" src="https://www.soundjay.com/buttons/beep-01a.mp3"></audio>
+    <audio id="wrong-sound" src="https://www.soundjay.com/buttons/beep-02.mp3"></audio>
+
+    <script>
+ const questions = [
+    // Previously Verified 10 Relevant MCQs
+    {
+        q: "What is the importance of record keeping in a workshop?",
+        options: ["To analyze equipment performance and costs", "To decorate the office", "To track employee salaries", "To monitor office supplies"],
+        answer: 0,
+        explanation: "Record keeping tracks equipment performance, maintenance costs, and operational efficiency, aiding decision-making."
+    },
+    {
+        q: "Who uses a vehicle maintenance job card to record maintenance?",
+        options: ["Mechanic only", "Mechanic and supervisor", "Driver only", "Office clerk"],
+        answer: 1,
+        explanation: "Both the mechanic and supervisor use the job card to document and verify maintenance tasks."
+    },
+    {
+        q: "What information does a job card typically contain?",
+        options: ["Job description only", "Job description, parts used, and labor details", "Vehicle purchase date", "Driver’s license details"],
+        answer: 1,
+        explanation: "A job card includes the job description, parts used, labor hours, and other maintenance details."
+    },
+    {
+        q: "Which document is used to track daily usage and issues of a vehicle?",
+        options: ["Logbook", "Bill book", "Service manual", "Warranty card"],
+        answer: 0,
+        explanation: "A logbook records daily vehicle usage, mileage, and issues for operational tracking."
+    },
+    {
+        q: "Who is responsible for signing the maintenance job card?",
+        options: ["Mechanic and supervisor", "Driver only", "Customer only", "Accountant"],
+        answer: 0,
+        explanation: "The mechanic and supervisor sign the job card to confirm completed maintenance."
+    },
+    {
+        q: "Which is the standard format for recording defects in a vehicle at a service station?",
+        options: ["Job card", "Maintenance manual", "Logbook", "Inventory list"],
+        answer: 0,
+        explanation: "A job card is the standard format for documenting vehicle defects and repairs."
+    },
+    {
+        q: "Record keeping helps in:",
+        options: ["Tracking maintenance costs and schedules", "Only employee attendance", "Monitoring fuel prices", "Managing office furniture"],
+        answer: 0,
+        explanation: "Record keeping tracks maintenance costs, schedules, and equipment performance, not just attendance."
+    },
+    {
+        q: "Machine को मर्मत, सञ्चालन, समायोजन आदि जान्न दिइने सूचना कुन म्यानुअलमा पाइन्छ? (Which manual provides information on machine maintenance, operation, and adjustment?)",
+        options: ["Workshop Manual", "Parts Manual", "Sales Brochure", "Warranty Card"],
+        answer: 0,
+        explanation: "वर्कशप म्यानुअलले मर्मत र सञ्चालनको विस्तृत जानकारी दिन्छ। (A workshop manual provides detailed maintenance and operation instructions.)"
+    },
+    {
+        q: "मेसिनको सञ्चालन र मर्मत गर्न कुन म्यानुअल चाहिन्छ? (Which manual is needed for machine operation and maintenance?)",
+        options: ["Workshop Manual", "Instruction Chart", "Parts Catalog", "User Guide"],
+        answer: 0,
+        explanation: "वर्कशप म्यानुअल मेसिनको सञ्चालन र मर्मतको लागि आवश्यक छ। (A workshop manual is essential for machine operation and maintenance.)"
+    },
+    {
+        q: "मेसिनको operation manual ले कुन प्रकारको जानकारी दिन्छ? (What type of information does an operation manual provide?)",
+        options: ["प्रयोग र मर्मतको तरिका (Usage and maintenance methods)", "केवल प्रयोगको तरिका (Only usage methods)", "केवल पार्ट्सको जानकारी (Only parts information)", "केवल लागतको जानकारी (Only cost information)"],
+        answer: 0,
+        explanation: "अपरेसन म्यानुअलले प्रयोग र मर्मतको प्रक्रिया समेट्छ। (An operation manual covers both usage and maintenance procedures.)"
+    },
+
+    // Additional 50 MCQs Inspired by Lok Sewa and Trusted Sources
+    {
+        q: "What is the primary purpose of maintaining a log sheet?",
+        options: ["To record employee attendance", "To track vehicle usage and maintenance", "To list spare parts", "To calculate depreciation"],
+        answer: 1,
+        explanation: "A log sheet tracks daily vehicle usage, mileage, and maintenance needs for operational efficiency."
+    },
+    {
+        q: "Which section of a job card records the labor hours?",
+        options: ["Parts list", "Work description", "Labor details", "Customer information"],
+        answer: 2,
+        explanation: "The labor details section records the hours spent on maintenance tasks."
+    },
+    {
+        q: "What is the benefit of using a parts catalogue in a workshop?",
+        options: ["Reduces maintenance time", "Identifies correct replacement parts", "Increases repair costs", "Limits tool usage"],
+        answer: 1,
+        explanation: "A parts catalogue ensures the right parts are selected, improving repair accuracy."
+    },
+    {
+        q: "Which method of depreciation spreads costs evenly over an asset's life?",
+        options: ["Straight-line method", "Declining balance method", "Sum-of-years' digits method", "Unit of production method"],
+        answer: 0,
+        explanation: "The straight-line method allocates depreciation evenly across the asset's useful life."
+    },
+    {
+        q: "What is the purpose of estimating maintenance costs?",
+        options: ["To set employee salaries", "To plan budget and resources", "To design new machines", "To track fuel consumption"],
+        answer: 1,
+        explanation: "Cost estimation helps in budgeting and allocating resources for maintenance."
+    },
+    {
+        q: "Which document is used to record the cost of spare parts used in repairs?",
+        options: ["Job card", "Logbook", "Invoice", "Workshop manual"],
+        answer: 2,
+        explanation: "An invoice documents the cost and details of spare parts used during repairs."
+    },
+    {
+        q: "What is a key advantage of record keeping in maintenance?",
+        options: ["Reduces training needs", "Improves troubleshooting efficiency", "Increases downtime", "Limits cost analysis"],
+        answer: 1,
+        explanation: "Records help identify patterns, improving the efficiency of diagnosing issues."
+    },
+    {
+        q: "Which type of depreciation accelerates cost allocation in early years?",
+        options: ["Straight-line method", "Declining balance method", "Unit of production method", "Sum-of-years' digits method"],
+        answer: 1,
+        explanation: "The declining balance method accelerates depreciation in the early years of an asset's life."
+    },
+    {
+        q: "What is included in a workshop manual for engine repair?",
+        options: ["Torque specifications", "Employee schedules", "Fuel prices", "Customer feedback"],
+        answer: 0,
+        explanation: "A workshop manual provides torque specifications and repair procedures for engines."
+    },
+    {
+        q: "Which estimation method uses historical data for cost prediction?",
+        options: ["Analogous estimation", "Parametric estimation", "Bottom-up estimation", "Top-down estimation"],
+        answer: 0,
+        explanation: "Analogous estimation relies on past project data to predict maintenance costs."
+    },
+    {
+        q: "What is the purpose of a maintenance log sheet in a fleet?",
+        options: ["To monitor driver behavior", "To record service history and issues", "To calculate fuel efficiency", "To design new vehicles"],
+        answer: 1,
+        explanation: "A log sheet records service history and issues for fleet management."
+    },
+    {
+        q: "Which section of a job card is signed by the supervisor?",
+        options: ["Parts used", "Approval section", "Labor hours", "Work description"],
+        answer: 1,
+        explanation: "The approval section is signed by the supervisor to verify the work."
+    },
+    {
+        q: "What is the role of a parts catalogue in costing?",
+        options: ["Determines part availability", "Calculates labor costs", "Estimates depreciation", "Sets pricing for services"],
+        answer: 0,
+        explanation: "A parts catalogue helps identify available parts, aiding in accurate costing."
+    },
+    {
+        q: "Which depreciation method is based on usage rather than time?",
+        options: ["Straight-line method", "Unit of production method", "Declining balance method", "Sum-of-years' digits method"],
+        answer: 1,
+        explanation: "The unit of production method calculates depreciation based on asset usage."
+    },
+    {
+        q: "What is a disadvantage of poor record keeping?",
+        options: ["Increased efficiency", "Unplanned maintenance costs", "Improved safety", "Lower downtime"],
+        answer: 1,
+        explanation: "Poor records lead to unexpected costs due to lack of maintenance planning."
+    },
+    {
+        q: "Which document provides step-by-step repair instructions?",
+        options: ["Job card", "Workshop manual", "Logbook", "Invoice"],
+        answer: 1,
+        explanation: "A workshop manual offers detailed step-by-step repair instructions."
+    },
+    {
+        q: "What is the purpose of costing in a workshop?",
+        options: ["To design new tools", "To determine service charges", "To track employee hours", "To monitor fuel levels"],
+        answer: 1,
+        explanation: "Costing helps set service charges based on labor, parts, and overheads."
+    },
+    {
+        q: "Which estimation technique breaks down tasks into detailed components?",
+        options: ["Top-down estimation", "Bottom-up estimation", "Analogous estimation", "Parametric estimation"],
+        answer: 1,
+        explanation: "Bottom-up estimation analyzes individual tasks for accurate cost prediction."
+    },
+    {
+        q: "What is recorded in the operation log sheet for a crane?",
+        options: ["Operator name and hours used", "Paint color", "Fuel type only", "Spare parts list"],
+        answer: 0,
+        explanation: "A log sheet records the operator’s name and hours of crane usage."
+    },
+    {
+        q: "Which manual helps in identifying replacement parts for a pump?",
+        options: ["Parts catalogue", "Workshop manual", "Logbook", "Job card"],
+        answer: 0,
+        explanation: "A parts catalogue lists replacement parts specific to equipment like pumps."
+    },
+    {
+        q: "What is the straight-line depreciation formula?",
+        options: ["(Cost - Salvage) / Useful life", "(Cost + Salvage) / Useful life", "Cost / Useful life", "Salvage / Useful life"],
+        answer: 0,
+        explanation: "Straight-line depreciation is calculated as (Initial Cost - Salvage Value) / Useful Life."
+    },
+    {
+        q: "Why is a job card essential in a service station?",
+        options: ["To decorate the station", "To document and track repairs", "To list customer complaints", "To monitor fuel sales"],
+        answer: 1,
+        explanation: "A job card tracks repairs, ensuring accountability and quality control."
+    },
+    {
+        q: "Which factor is considered in parametric estimation?",
+        options: ["Historical costs", "Employee mood", "Weather conditions", "Tool color"],
+        answer: 0,
+        explanation: "Parametric estimation uses historical cost data per unit for accuracy."
+    },
+    {
+        q: "What is the purpose of a log sheet in preventive maintenance?",
+        options: ["To schedule repairs", "To record usage patterns", "To calculate depreciation", "To set pricing"],
+        answer: 1,
+        explanation: "A log sheet tracks usage patterns to plan preventive maintenance."
+    },
+    {
+        q: "Which document is used to verify parts used in a repair?",
+        options: ["Job card", "Workshop manual", "Invoice", "Logbook"],
+        answer: 2,
+        explanation: "An invoice verifies the parts used and their costs during a repair."
+    },
+    {
+        q: "What is a benefit of using a workshop manual?",
+        options: ["Reduces training time", "Increases repair errors", "Limits part availability", "Raises costs"],
+        answer: 0,
+        explanation: "A workshop manual provides guidelines, reducing training time for mechanics."
+    },
+    {
+        q: "Which type of depreciation is commonly used for vehicles?",
+        options: ["Straight-line method", "Declining balance method", "Unit of production method", "Sum-of-years' digits method"],
+        answer: 1,
+        explanation: "The declining balance method is common for vehicles due to higher early depreciation."
+    },
+    {
+        q: "What is included in a cost estimation for a repair job?",
+        options: ["Labor, parts, and overhead", "Employee uniforms", "Fuel prices only", "Customer reviews"],
+        answer: 0,
+        explanation: "Cost estimation includes labor, parts, and overhead costs."
+    },
+    {
+        q: "Which log sheet entry is critical for fleet management?",
+        options: ["Mileage", "Paint color", "Seat material", "Tire brand"],
+        answer: 0,
+        explanation: "Mileage data in a log sheet is critical for fleet maintenance planning."
+    },
+    {
+        q: "What is the role of a parts catalogue in a workshop?",
+        options: ["To train employees", "To identify and order parts", "To calculate depreciation", "To set schedules"],
+        answer: 1,
+        explanation: "A parts catalogue helps identify and order the correct parts for repairs."
+    },
+    {
+        q: "Which method of costing allocates overhead based on labor hours?",
+        options: ["Activity-based costing", "Labor-hour rate method", "Unit costing", "Marginal costing"],
+        answer: 1,
+        explanation: "The labor-hour rate method allocates overhead based on labor hours worked."
+    },
+    {
+        q: "What is a disadvantage of the sum-of-years' digits depreciation?",
+        options: ["High initial cost", "Complex calculations", "Low salvage value", "No tax benefit"],
+        answer: 1,
+        explanation: "The sum-of-years' digits method involves complex calculations for depreciation."
+    },
+    {
+        q: "Which document is used to estimate repair time?",
+        options: ["Job card", "Workshop manual", "Logbook", "Parts catalogue"],
+        answer: 1,
+        explanation: "A workshop manual provides estimated repair times for various tasks."
+    },
+    {
+        q: "What is the purpose of pricing maintenance services?",
+        options: ["To reduce employee wages", "To cover costs and earn profit", "To limit part usage", "To track fuel"],
+        answer: 1,
+        explanation: "Pricing ensures costs are covered and a profit margin is achieved."
+    },
+    {
+        q: "Which log sheet detail helps in scheduling oil changes?",
+        options: ["Engine temperature", "Running hours", "Tire pressure", "Fuel level"],
+        answer: 1,
+        explanation: "Running hours in a log sheet determine the schedule for oil changes."
+    },
+    {
+        q: "What is a key feature of a good job card system?",
+        options: ["Manual entry only", "Clear and standardized format", "No supervisor approval", "Limited details"],
+        answer: 1,
+        explanation: "A standardized format ensures consistency and clarity in job cards."
+    },
+    {
+        q: "Which estimation method is best for large projects?",
+        options: ["Bottom-up estimation", "Top-down estimation", "Analogous estimation", "Parametric estimation"],
+        answer: 0,
+        explanation: "Bottom-up estimation is detailed and suitable for large, complex projects."
+    },
+    {
+        q: "What is recorded in a parts catalogue for a gearbox?",
+        options: ["Gear ratios", "Part numbers and diagrams", "Labor costs", "Depreciation rates"],
+        answer: 1,
+        explanation: "A parts catalogue lists part numbers and diagrams for gearbox components."
+    },
+    {
+        q: "Which costing method considers all production costs?",
+        options: ["Absorption costing", "Marginal costing", "Direct costing", "Variable costing"],
+        answer: 0,
+        explanation: "Absorption costing includes all production costs, including overhead."
+    },
+    {
+        q: "What is the impact of inaccurate record keeping on maintenance?",
+        options: ["Improved efficiency", "Increased downtime", "Lower costs", "Better safety"],
+        answer: 1,
+        explanation: "Inaccurate records lead to unplanned downtime due to poor planning."
+    },
+    {
+        q: "Which manual provides torque settings for bolts?",
+        options: ["Parts catalogue", "Workshop manual", "Logbook", "Job card"],
+        answer: 1,
+        explanation: "A workshop manual specifies torque settings for proper assembly."
+    },
+    {
+        q: "What is the unit of production method based on?",
+        options: ["Time", "Usage units", "Cost", "Salvage value"],
+        answer: 1,
+        explanation: "The unit of production method bases depreciation on the number of units produced."
+    },
+    {
+        q: "Which factor is excluded from job card costing?",
+        options: ["Labor hours", "Parts cost", "Office rent", "Supervisor signature"],
+        answer: 2,
+        explanation: "Office rent is an overhead not directly included in job card costing."
+    },
+    {
+        q: "What is the purpose of a maintenance schedule in a log sheet?",
+        options: ["To track fuel", "To plan preventive maintenance", "To list parts", "To calculate depreciation"],
+        answer: 1,
+        explanation: "A log sheet schedule plans preventive maintenance based on usage data."
+    },
+    {
+        q: "Which pricing method adds a profit margin to costs?",
+        options: ["Cost-plus pricing", "Penetration pricing", "Competitive pricing", "Value-based pricing"],
+        answer: 0,
+        explanation: "Cost-plus pricing adds a profit margin to the total cost of maintenance."
+    },
+    {
+        q: "What is a limitation of top-down estimation?",
+        options: ["High accuracy", "Lack of detail", "Excessive data", "Complex calculations"],
+        answer: 1,
+        explanation: "Top-down estimation lacks detail, making it less accurate for specific tasks."
+    },
+    {
+        q: "Which log sheet entry helps in warranty claims?",
+        options: ["Service dates", "Tire brand", "Fuel type", "Paint color"],
+        answer: 0,
+        explanation: "Service dates in a log sheet support warranty claims for covered repairs."
+    },
+    {
+        q: "What is the role of a workshop manual in training?",
+        options: ["Provides safety rules", "Offers repair procedures for learning", "Lists employee schedules", "Tracks costs"],
+        answer: 1,
+        explanation: "A workshop manual teaches repair procedures, aiding mechanic training."
+    }
+];
+        let currentPage = 0;
+        let score = 0;
+        let skipped = [];
+        let userAnswers = Array(questions.length).fill(null);
+        let timerSeconds = 0;
+        let timerInterval;
+        const QUESTIONS_PER_PAGE = 5;
+        const ANSWER_DELAY = 1000;
+
+        const quizEl = document.getElementById("quiz");
+        const scoreEl = document.getElementById("score");
+        const resultsEl = document.getElementById("results");
+        const resultsBody = document.getElementById("results-body");
+        const progressEl = document.getElementById("progress");
+        const timerEl = document.getElementById("timer");
+        const currentScoreEl = document.getElementById("current-score");
+        const correctSound = document.getElementById("correct-sound");
+        const wrongSound = document.getElementById("wrong-sound");
+
+        // Clear progress to start fresh
+        function clearProgress() {
+            localStorage.removeItem("quizProgressRecordKeeping");
+            currentPage = 0;
+            score = 0;
+            skipped = [];
+            userAnswers = Array(questions.length).fill(null);
+            timerSeconds = 0;
+        }
+
+        // Save progress to localStorage
+        function saveProgress() {
+            localStorage.setItem("quizProgressRecordKeeping", JSON.stringify({
+                currentPage,
+                score,
+                skipped,
+                answers: userAnswers,
+                time: timerSeconds
+            }));
+        }
+
+        // Update current score display
+        function updateCurrentScore() {
+            currentScoreEl.textContent = `Score: ${score}/${questions.length}`;
+        }
+
+        // Shuffle array
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Start timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timerSeconds++;
+                const minutes = Math.floor(timerSeconds / 60);
+                const seconds = timerSeconds % 60;
+                timerEl.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                saveProgress();
+            }, 1000);
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const answeredCount = userAnswers.filter(answer => answer !== null).length;
+            const percentage = (answeredCount / questions.length) * 100;
+            progressEl.style.width = `${percentage}%`;
+        }
+
+        // Show questions for the current page
+        function showQuestions(page) {
+            quizEl.innerHTML = '';
+            const startIndex = page * QUESTIONS_PER_PAGE;
+            const endIndex = Math.min(startIndex + QUESTIONS_PER_PAGE, questions.length);
+
+            for (let i = startIndex; i < endIndex; i++) {
+                const q = questions[i];
+                const shuffledOptions = shuffle([...q.options].map((opt, j) => ({ text: opt, index: j })));
+                const optionsHtml = shuffledOptions
+                    .map(opt => `<button onclick="checkAnswer(this, ${i}, ${opt.index}, '${opt.text.replace(/'/g, "\\'")}')">${opt.text}</button>`)
+                    .join('');
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+                questionDiv.dataset.index = i;
+                questionDiv.innerHTML = `
+                    <p>Q${i + 1}. ${q.q}</p>
+                    <div class="options">${optionsHtml}</div>
+                    <button class="skip-button" onclick="skipQuestion(${i})">Skip</button>
+                    <div class="explanation">${q.explanation}</div>
+                `;
+                quizEl.appendChild(questionDiv);
+            }
+
+            if (endIndex < questions.length || skipped.length > 0) {
+                const nextButton = document.createElement('button');
+                nextButton.classList.add('next-button');
+                nextButton.textContent = endIndex < questions.length ? 'Next' : 'Review Skipped Questions';
+                nextButton.onclick = nextPage;
+                nextButton.disabled = !areAllQuestionsAnsweredOnPage(startIndex, endIndex);
+                quizEl.appendChild(nextButton);
+            } else {
+                const submitButton = document.createElement('button');
+                submitButton.classList.add('next-button');
+                submitButton.textContent = 'Submit Quiz';
+                submitButton.onclick = endQuiz;
+                submitButton.disabled = !areAllQuestionsAnsweredOnPage(startIndex, endIndex);
+                quizEl.appendChild(submitButton);
+            }
+
+            updateProgress();
+            saveProgress();
+            restoreAnswers(startIndex, endIndex);
+        }
+
+        // Restore previous answers for the current page
+        function restoreAnswers(startIndex, endIndex) {
+            for (let i = startIndex; i < endIndex; i++) {
+                if (userAnswers[i] !== null && userAnswers[i] !== 'Skipped') {
+                    const questionDiv = document.querySelector(`.question[data-index="${i}"]`);
+                    const buttons = questionDiv.querySelectorAll('.options button');
+                    const q = questions[i];
+                    buttons.forEach(btn => {
+                        btn.disabled = true;
+                        if (btn.textContent === q.options[q.answer]) {
+                            btn.classList.add('correct');
+                        }
+                        if (btn.textContent === userAnswers[i] && userAnswers[i] !== q.options[q.answer]) {
+                            btn.classList.add('wrong');
+                        }
+                    });
+                    questionDiv.querySelector('.explanation').style.display = 'block';
+                    questionDiv.querySelector('.skip-button').disabled = true;
+                } else if (userAnswers[i] === 'Skipped') {
+                    const questionDiv = document.querySelector(`.question[data-index="${i}"]`);
+                    questionDiv.querySelectorAll('.options button').forEach(btn => btn.disabled = true);
+                    questionDiv.querySelector('.skip-button').disabled = true;
+                    questionDiv.querySelector('.explanation').style.display = 'block';
+                }
+            }
+        }
+
+        // Check if all questions on the current page are answered or skipped
+        function areAllQuestionsAnsweredOnPage(startIndex, endIndex) {
+            for (let i = startIndex; i < endIndex; i++) {
+                if (userAnswers[i] === null) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Check answer
+        function checkAnswer(button, questionIndex, selected, selectedText) {
+            const q = questions[questionIndex];
+            const correct = q.answer;
+            const buttons = button.parentElement.querySelectorAll("button");
+            const questionDiv = button.closest('.question');
+            const explanationDiv = questionDiv.querySelector('.explanation');
+
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                if (q.options.indexOf(btn.textContent) === correct) {
+                    btn.classList.add('correct');
+                }
+                if (btn === button && selected !== correct) {
+                    btn.classList.add('wrong');
+                }
+            });
+
+            questionDiv.querySelector('.skip-button').disabled = true;
+            explanationDiv.style.display = 'block';
+
+            userAnswers[questionIndex] = selectedText;
+            if (selected === correct) {
+                score++;
+                correctSound.play().catch(() => console.log("Audio playback failed"));
+            } else {
+                wrongSound.play().catch(() => console.log("Audio playback failed"));
+            }
+
+            updateCurrentScore();
+            saveProgress();
+            const nextButton = quizEl.querySelector('.next-button');
+            if (nextButton) {
+                nextButton.disabled = !areAllQuestionsAnsweredOnPage(
+                    currentPage * QUESTIONS_PER_PAGE,
+                    Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, questions.length)
+                );
+            }
+
+            setTimeout(() => {
+                if (areAllQuestionsAnsweredOnPage(
+                    currentPage * QUESTIONS_PER_PAGE,
+                    Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, questions.length)
+                )) {
+                    nextPage();
+                }
+            }, ANSWER_DELAY);
+        }
+
+        // Skip question
+        function skipQuestion(questionIndex) {
+            if (!skipped.includes(questions[questionIndex])) {
+                skipped.push(questions[questionIndex]);
+                userAnswers[questionIndex] = 'Skipped';
+                const questionDiv = document.querySelector(`.question[data-index="${questionIndex}"]`);
+                if (questionDiv) {
+                    questionDiv.querySelectorAll('.options button').forEach(btn => btn.disabled = true);
+                    questionDiv.querySelector('.skip-button').disabled = true;
+                    questionDiv.querySelector('.explanation').style.display = 'block';
+                }
+                saveProgress();
+                const nextButton = quizEl.querySelector('.next-button');
+                if (nextButton) {
+                    nextButton.disabled = !areAllQuestionsAnsweredOnPage(
+                        currentPage * QUESTIONS_PER_PAGE,
+                        Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, questions.length)
+                    );
+                }
+            }
+        }
+
+        // Move to next page
+        function nextPage() {
+            if (skipped.length > 0 && currentPage * QUESTIONS_PER_PAGE >= questions.length) {
+                showSkippedQuestions();
+            } else {
+                currentPage++;
+                if (currentPage * QUESTIONS_PER_PAGE < questions.length) {
+                    showQuestions(currentPage);
+                } else if (skipped.length === 0) {
+                    endQuiz();
+                } else {
+                    showSkippedQuestions();
+                }
+            }
+        }
+
+        // Show skipped questions
+        function showSkippedQuestions() {
+            questions.splice(0, questions.length, ...skipped);
+            skipped = [];
+            currentPage = 0;
+            showQuestions(currentPage);
+        }
+
+        // End quiz and show results
+        function endQuiz() {
+            clearInterval(timerInterval);
+            quizEl.innerHTML = '';
+            scoreEl.textContent = `Final Score: ${score} out of ${questions.length} (${((score / questions.length) * 100).toFixed(2)}%)`;
+            resultsEl.classList.remove('hidden');
+
+            resultsBody.innerHTML = questions.map((q, i) => {
+                const userAnswer = userAnswers[i] === null ? 'Not attempted' :
+                                  userAnswers[i] === 'Skipped' ? 'Skipped' :
+                                  userAnswers[i];
+                const correctAnswer = q.options[q.answer];
+                const status = userAnswers[i] === q.options[q.answer] ? 'Correct' :
+                              userAnswers[i] === 'Skipped' ? 'Skipped' :
+                              userAnswers[i] === null ? 'Not-attempted' : 'Wrong';
+                return `
+                    <tr>
+                        <td>${i + 1}. ${q.q}</td>
+                        <td>${userAnswer}</td>
+                        <td>${correctAnswer}</td>
+                        <td class="${status.toLowerCase().replace(' ', '-')}">${status}</td>
+                        <td class="explanation">${q.explanation}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            localStorage.removeItem('quizProgressRecordKeeping');
+        }
+
+        // Restart quiz
+        function restartQuiz() {
+            clearProgress();
+            resultsEl.classList.add('hidden');
+            scoreEl.textContent = '';
+            startTimer();
+            showQuestions(currentPage);
+            updateCurrentScore();
+        }
+
+        // Initialize quiz
+        function initialize() {
+            clearProgress();
+            startTimer();
+            showQuestions(currentPage);
+            updateCurrentScore();
+        }
+
+        // Start quiz on page load
+        initialize();
+    </script>
+</body>
+</html>
