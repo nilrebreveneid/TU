@@ -721,7 +721,37 @@
     "options": ["Entertainment leave", "Home leave", "Sick leave", "Maternity leave"],
     "answer": 0,
     "explanation": "Entertainment leave is not recognized under Nepal’s Civil Service Act. Home, sick, and maternity leaves are valid types."
-  }
+  },
+       { q: "What does the payback period method calculate?", options: ["Total profit", "Time to recover initial investment", "Future value", "Internal rate of return"], answer: 1, explanation: "The payback period measures the time to recover the initial investment." },
+  { q: "Which method ignores the time value of money?", options: ["NPV method", "Payback period method", "IRR method", "Future value analysis"], answer: 1, explanation: "The payback period method does not account for the time value of money." },
+  { q: "What is the formula for Net Present Value (NPV)?", options: ["Σ (Cash Inflow / (1 + r)^t) - Initial Investment", "Initial Investment / Annual Cash Inflow", "PV (1 + r)^n", "Total Benefits / Total Costs"], answer: 0, explanation: "NPV is the sum of discounted cash inflows minus the initial investment." },
+  { q: "Which factor is critical for accurate NPV calculation?", options: ["Interest rate", "Market demand", "Labor cost", "Material quality"], answer: 0, explanation: "The discount rate (interest rate) is essential for discounting cash flows." },
+  { q: "What does future value analysis help determine?", options: ["Present cost", "Future worth of an investment", "Break-even point", "Cost-benefit ratio"], answer: 1, explanation: "Future value analysis calculates the future worth using compound interest." },
+  { q: "What is the formula for future value (FV)?", options: ["PV / (1 + r)^n", "PV (1 + r)^n", "Initial Investment / r", "Σ Cash Inflow"], answer: 1, explanation: "FV = PV (1 + r)^n, where PV is present value, r is rate, and n is periods." },
+  { q: "What does IRR represent?", options: ["Total revenue", "Discount rate where NPV = 0", "Payback period", "Cost-benefit ratio"], answer: 1, explanation: "IRR is the rate where the net present value of cash flows equals zero." },
+  { q: "Which method is best for comparing projects with different lifespans?", options: ["Payback period", "NPV", "Future value", "IRR"], answer: 1, explanation: "NPV considers all cash flows and time value, suitable for different lifespans." },
+  { q: "What is a limitation of the IRR method?", options: ["Ignores initial investment", "Assumes reinvestment at IRR", "Requires no cash flows", "Simple calculation"], answer: 1, explanation: "IRR assumes reinvestment at its own rate, which may not be realistic." },
+  { q: "A project with NPV > 0 is considered:", options: ["Unprofitable", "Profitable", "Break-even", "Loss-making"], answer: 1, explanation: "A positive NPV indicates the project earns more than the discount rate." },
+  { q: "What is the cost-benefit ratio (CBR)?", options: ["Total Costs / Total Benefits", "Total Benefits / Total Costs", "Initial Investment / Cash Inflow", "NPV / IRR"], answer: 1, explanation: "CBR is the ratio of total benefits to total costs." },
+  { q: "A CBR of 1.5 indicates:", options: ["Loss of 50%", "Profit of 50%", "Break-even", "No benefit"], answer: 1, explanation: "CBR > 1 (e.g., 1.5) means benefits exceed costs by 50%." },
+  { q: "What is the purpose of breakeven analysis?", options: ["Maximize profit", "Determine no-profit-no-loss point", "Calculate NPV", "Assess future value"], answer: 1, explanation: "Breakeven analysis finds the point where revenue equals costs." },
+  { q: "The breakeven point depends on:", options: ["Fixed costs and variable costs", "Total benefits", "Discount rate", "IRR"], answer: 0, explanation: "Breakeven point = Fixed Costs / (Selling Price - Variable Cost)." },
+  { q: "Which decision involves comparing in-house vs. external production?", options: ["NPV decision", "Make or buy decision", "IRR decision", "Payback decision"], answer: 1, explanation: "Make or buy decision compares internal production costs vs. supplier costs." },
+  { q: "What factor influences a make or buy decision?", options: ["Employee morale", "Quality control", "Weather conditions", "Market trends"], answer: 1, explanation: "Quality control is a key factor in deciding to make or buy." },
+  { q: "If payback period is 3 years with a $30,000 investment and $10,000 annual inflow, what is the period?", options: ["2 years", "3 years", "4 years", "5 years"], answer: 1, explanation: "Payback = 30,000 / 10,000 = 3 years." },
+  { q: "A project with IRR of 12% and cost of capital of 10% is:", options: ["Unacceptable", "Acceptable", "Break-even", "Loss-making"], answer: 1, explanation: "IRR > cost of capital (12% > 10%) makes it acceptable." },
+  { q: "Which method is least affected by inflation?", options: ["Payback period", "NPV", "IRR", "Future value"], answer: 1, explanation: "NPV adjusts for inflation via the discount rate." },
+  { q: "What happens if CBR < 1?", options: ["Project is profitable", "Project is unprofitable", "Break-even achieved", "No impact"], answer: 1, explanation: "CBR < 1 indicates costs exceed benefits, making it unprofitable." },
+  { q: "Breakeven analysis assumes:", options: ["Variable costs increase", "Constant costs and prices", "Inflation rises", "Demand decreases"], answer: 1, explanation: "Breakeven assumes constant costs and selling prices." },
+  { q: "A make decision is favored if:", options: ["Supplier costs are lower", "In-house costs are lower", "Quality is irrelevant", "Delivery is delayed"], answer: 1, explanation: "Lower in-house costs favor a make decision." },
+  { q: "NPV is negative when:", options: ["Cash inflows exceed outflows", "Discount rate is too low", "Present value of outflows exceeds inflows", "IRR is high"], answer: 2, explanation: "Negative NPV occurs when outflows’ present value exceeds inflows." },
+  { q: "Future value increases with:", options: ["Lower interest rate", "Higher interest rate", "Shorter time period", "Lower principal"], answer: 1, explanation: "Higher interest rate increases future value exponentially." },
+  { q: "IRR is used to:", options: ["Calculate initial investment", "Compare with cost of capital", "Determine cash inflows", "Set discount rate"], answer: 1, explanation: "IRR is compared to the cost of capital for project acceptance." },
+  { q: "A project with a 2-year payback and 5-year life is:", options: ["Highly profitable", "Moderately acceptable", "Unacceptable", "Break-even"], answer: 1, explanation: "A short payback within a longer life is moderately acceptable." },
+  { q: "Cost-benefit ratio is used in:", options: ["Private projects", "Public projects", "Manufacturing only", "Short-term investments"], answer: 1, explanation: "CBR is widely used for public infrastructure projects." },
+  { q: "Breakeven point decreases if:", options: ["Fixed costs increase", "Variable costs decrease", "Selling price drops", "Demand rises"], answer: 1, explanation: "Lower variable costs reduce the breakeven point." },
+  { q: "A buy decision is preferred if:", options: ["In-house capacity is excess", "Supplier quality is poor", "External cost is lower", "Internal expertise is high"], answer: 2, explanation: "Lower external costs favor a buy decision." },
+  { q: "Which method requires cash flow discounting?", options: ["Payback period", "NPV", "Breakeven analysis", "Cost-benefit ratio"], answer: 1, explanation: "NPV requires discounting cash flows to present value." }
 ]
     let score = 0;
     let userAnswers = Array(questions.length).fill(null);
