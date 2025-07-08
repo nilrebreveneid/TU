@@ -1,0 +1,1014 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Logsewa Maintenance System Mock Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #e0e7ff, #c3dafe);
+            margin: 0;
+            padding: 2rem;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #1e3a8a;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e3a8a;
+            margin: 1rem 0;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .timer {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #d81b60;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress {
+            height: 100%;
+            background: #3b82f6;
+            transition: width 0.3s ease;
+        }
+
+        .question {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            animation: fadeIn 0.5s;
+            transition: transform 0.2s ease;
+        }
+
+        .question:hover {
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .question p {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+        }
+
+        .options button {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            color: #374151;
+        }
+
+        .options button:hover:not(:disabled) {
+            background: #f3f4f6;
+            border-color: #3b82f6;
+            transform: translateX(4px);
+        }
+
+        .options button.correct {
+            background: #bbf7d0;
+            border-color: #22c55e;
+            color: #166534;
+            animation: pulse 0.5s;
+        }
+
+        .options button.wrong {
+            background: #fecaca;
+            border-color: #ef4444;
+            color: #991b1b;
+            animation: shake 0.3s;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .options button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .explanation {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #eff6ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+            font-size: 0.95rem;
+        }
+
+        .skip-button {
+            background: #fff3cd;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            width: 100%;
+            border: 1px solid #ffca28;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .skip-button:hover {
+            background: #ffecb3;
+        }
+
+        .next-button {
+            background: #3b82f6;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            display: block;
+            width: 100%;
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+
+        .next-button:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        .next-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .score-container {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .score {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .results-table th, .results-table td {
+            border: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .results-table th {
+            background: #f8fafc;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        .results-table .correct {
+            color: #166534;
+            font-weight: bold;
+        }
+
+        .results-table .wrong {
+            color: #991b1b;
+            font-weight: bold;
+        }
+
+        .results-table .skipped, .results-table .not-attempted {
+            color: #d97706;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .restart-button {
+            background: #22c55e;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 1rem auto;
+            display: block;
+            width: 100%;
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+
+        .restart-button:hover {
+            background: #16a34a;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+            }
+
+            .quiz-container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .question p {
+                font-size: 1rem;
+            }
+
+            .options button, .skip-button, .next-button, .restart-button {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+
+            .results-table th, .results-table td {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Logsewa Maintenance System Mock Test</h1>
+        <div class="quiz-header">
+            <div class="timer" id="timer">Time: 00:00</div>
+            <div class="score" id="current-score">Score: 0/39</div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        <div id="quiz"></div>
+        <div class="score-container">
+            <div class="score" id="score"></div>
+            <div id="results" class="hidden">
+                <h2>Quiz Results</h2>
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>Your Answer</th>
+                            <th>Correct Answer</th>
+                            <th>Status</th>
+                            <th>Explanation</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body"></tbody>
+                </table>
+                <button class="restart-button" onclick="restartQuiz()">Restart Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="correct-sound" src="https://www.soundjay.com/buttons/beep-01a.mp3"></audio>
+    <audio id="wrong-sound" src="https://www.soundjay.com/buttons/beep-02.mp3"></audio>
+
+    <script>
+const questions = [
+    // Maintenance (Original 40 MCQs)
+    {
+        q: "Predictive maintenance involves:",
+        options: ["Performing maintenance based on fixed schedules", "Using data and sensors to predict equipment failures", "Repairing after breakdowns", "Cleaning equipment only"],
+        answer: 1,
+        explanation: "Predictive maintenance uses data from sensors to predict when equipment might fail, allowing timely interventions."
+    },
+    {
+        q: "Which of the following is NOT a personal safety device?",
+        options: ["Seat belt cover", "Safety goggles", "Gloves", "Helmet"],
+        answer: 0,
+        explanation: "A seat belt cover is an accessory, not a safety device; goggles, gloves, and helmets protect against hazards."
+    },
+    {
+        q: "If a V-belt of a radiator fan in a vehicle is broken, it needs to be replaced. This type of maintenance is:",
+        options: ["Preventive maintenance", "Corrective maintenance", "Predictive maintenance", "Condition-based maintenance"],
+        answer: 1,
+        explanation: "Corrective maintenance addresses failures after they occur, such as replacing a broken V-belt."
+    },
+    {
+        q: "With an increase in the cost of preventive maintenance, the cost of breakdown maintenance will:",
+        options: ["Decrease", "Increase", "Remain unchanged", "Double"],
+        answer: 0,
+        explanation: "Investing in preventive maintenance reduces unexpected breakdowns, lowering breakdown maintenance costs."
+    },
+    {
+        q: "Periodic Maintenance कहिले गर्ने भनेर कसरी थाहा पाउने? (How do you know when to perform periodic maintenance?)",
+        options: ["समय तालिका हेरेर (By checking the schedule)", "मर्मत भएपछि (After repairs)", "गाडी बिग्रँदा (When the vehicle breaks down)", "प्रत्येक दिन (Every day)"],
+        answer: 0,
+        explanation: "पिरियडिक मर्मत समय तालिका वा प्रयोगको आधारमा गरिन्छ। (Periodic maintenance is scheduled based on a time table or usage intervals.)"
+    },
+    {
+        q: "मर्मत कार्यको सल्लाह लिनको लागि आधार के हो? (What is the basis for maintenance decisions?)",
+        options: ["सेट गरिएको मापदण्ड अनुसार (Per established standards)", "मापदण्ड बिना (Without standards)", "कर्मचारीको अनुभव (Employee experience)", "ग्राहकको माग (Customer demand)"],
+        answer: 0,
+        explanation: "मर्मत निर्णयहरू स्थापित मापदण्डहरूमा आधारित हुन्छन्। (Maintenance decisions are based on established standards for consistency and reliability.)"
+    },
+    {
+        q: "Periodic maintenance is carried out based on:",
+        options: ["Time-based intervals", "Running hours", "Breakdowns", "Operator preference"],
+        answer: 1,
+        explanation: "Periodic maintenance is often scheduled based on equipment running hours to ensure timely upkeep."
+    },
+    {
+        q: "Maintenance helps to improve:",
+        options: ["Quality only", "Reliability, efficiency, and safety", "Aesthetics only", "Fuel consumption only"],
+        answer: 1,
+        explanation: "Maintenance enhances equipment reliability, operational efficiency, and workplace safety."
+    },
+    {
+        q: "Which is the standard format for recording defects in a vehicle at a service station?",
+        options: ["Job card", "Logbook", "Invoice", "Warranty card"],
+        answer: 0,
+        explanation: "A job card records specific defects and repairs for a vehicle during servicing."
+    },
+    {
+        q: "Regular servicing at pre-planned intervals is known as:",
+        options: ["Run-to-breakdown maintenance", "Preventive maintenance", "Corrective maintenance", "Predictive maintenance"],
+        answer: 1,
+        explanation: "Preventive maintenance involves regular, planned servicing to prevent failures."
+    },
+    {
+        q: "Cognitive maintenance of equipment refers to maintenance performed:",
+        options: ["Using AI to adapt to new conditions", "Before equipment breakdown", "Manually without data", "After failure"],
+        answer: 0,
+        explanation: "Cognitive maintenance uses AI and analytics to optimize maintenance under changing conditions."
+    },
+    {
+        q: "Continually monitoring performance for signs of needed maintenance is known as:",
+        options: ["Corrective maintenance", "Condition-based maintenance", "Preventive maintenance", "Breakdown maintenance"],
+        answer: 1,
+        explanation: "Condition-based maintenance monitors equipment health to schedule maintenance as needed."
+    },
+    {
+        q: "एयर फिल्टरको मर्मतका विभिन्न तरिकाहरू मध्ये एक हो? (Which is a method for air filter maintenance?)",
+        options: ["एयर प्रेशर मार्फत सफा गर्ने (Cleaning with air pressure)", "मेटल फिल्टर फेर्ने (Replacing metal filter)", "पानीले धुने (Washing with water)", "तेलमा डुबाउने (Soaking in oil)"],
+        answer: 0,
+        explanation: "एयर फिल्टरलाई कम्प्रेस्ड हावाले सफा गरिन्छ। (Air filters are often cleaned using compressed air to remove dust and debris.)"
+    },
+    {
+        q: "गाडीको इन्धन फिल्टर कति समयमा सफा गर्नुपर्छ? (How often should a vehicle’s fuel filter be cleaned?)",
+        options: ["प्रत्येक सात दिनमा (Every week)", "निर्माताको सिफारिस अनुसार (Per manufacturer’s recommendation)", "हरेक महिना (Every month)", "हरेक वर्ष (Every year)"],
+        answer: 1,
+        explanation: "इन्धन फिल्टर निर्माताको सिफारिस अनुसार (सामान्यतः १५,०००-३०,००० किमी) सफा गर्नुपर्छ। (Fuel filters should be cleaned or replaced per manufacturer guidelines, typically every 15,000-30,000 km.)"
+    },
+    {
+        q: "The main purpose of maintenance on a vehicle is:",
+        options: ["To enhance vehicle aesthetics", "To ensure reliable and safe operation", "To increase vehicle weight", "To reduce engine power"],
+        answer: 1,
+        explanation: "Maintenance keeps vehicles operational, safe, and efficient."
+    },
+    {
+        q: "The maintenance performed after equipment breakdown is called:",
+        options: ["Preventive maintenance", "Breakdown maintenance", "Predictive maintenance", "Condition-based maintenance"],
+        answer: 1,
+        explanation: "Breakdown maintenance occurs after equipment fails, addressing the issue reactively."
+    },
+    {
+        q: "Maintenance document with detailed repair procedures is:",
+        options: ["Workshop manual", "Spare parts manual", "Service invoice", "Logbook"],
+        answer: 0,
+        explanation: "A workshop manual provides detailed repair and maintenance procedures."
+    },
+    {
+        q: "Before getting under a vehicle for repair, ensure:",
+        options: ["Jack handle is down", "Vehicle is supported on safety stands", "Engine is running", "Tires are inflated"],
+        answer: 1,
+        explanation: "Safety stands are critical to prevent the vehicle from falling during repairs."
+    },
+    {
+        q: "Main purpose of a feeler gauge:",
+        options: ["Measuring tire pressure", "Checking gaps like valve clearance", "Measuring engine temperature", "Checking fuel level"],
+        answer: 1,
+        explanation: "Feeler gauges measure small gaps, such as valve clearances in engines."
+    },
+    {
+        q: "What type of maintenance is done at fixed intervals, regardless of condition?",
+        options: ["Preventive maintenance", "Corrective maintenance", "Condition-based maintenance", "Predictive maintenance"],
+        answer: 0,
+        explanation: "Preventive maintenance is scheduled at fixed intervals to prevent failures."
+    },
+    {
+        q: "Which maintenance is performed only after a failure has occurred?",
+        options: ["Breakdown maintenance", "Predictive maintenance", "Preventive maintenance", "Condition-based maintenance"],
+        answer: 0,
+        explanation: "Breakdown maintenance is reactive, performed after equipment failure."
+    },
+    {
+        q: "The main goal of preventive maintenance is to:",
+        options: ["Prevent unexpected breakdowns", "Increase downtime", "Reduce vehicle speed", "Enhance vehicle color"],
+        answer: 0,
+        explanation: "Preventive maintenance aims to avoid unexpected failures and extend equipment life."
+    },
+    {
+        q: "Which document records vehicle defects during service?",
+        options: ["Job card", "Invoice", "Logbook", "Warranty card"],
+        answer: 0,
+        explanation: "A job card documents defects and repairs during vehicle servicing."
+    },
+    {
+        q: "Which tool is used to check valve clearance in an engine?",
+        options: ["Feeler gauge", "Vernier caliper", "Micrometer", "Torque wrench"],
+        answer: 0,
+        explanation: "Feeler gauges are used to measure precise valve clearances in engines."
+    },
+    {
+        q: "Which type of maintenance uses sensors to monitor machine health?",
+        options: ["Condition-based maintenance", "Breakdown maintenance", "Preventive maintenance", "Corrective maintenance"],
+        answer: 0,
+        explanation: "Condition-based maintenance uses sensors to monitor equipment health for timely maintenance."
+    },
+    {
+        q: "Greasing moving parts in a machine is an example of:",
+        options: ["Preventive maintenance", "Corrective maintenance", "Predictive maintenance", "Emergency maintenance"],
+        answer: 0,
+        explanation: "Greasing is a preventive maintenance task to reduce wear and tear."
+    },
+    {
+        q: "Which is NOT a personal safety equipment?",
+        options: ["Screwdriver", "Safety helmet", "Gloves", "Safety boots"],
+        answer: 0,
+        explanation: "A screwdriver is a tool, not personal safety equipment."
+    },
+    {
+        q: "High vibration and noise from a machine often indicates:",
+        options: ["Lack of maintenance", "Proper lubrication", "New equipment", "Correct alignment"],
+        answer: 0,
+        explanation: "Excessive vibration and noise suggest maintenance issues like misalignment or lack of lubrication."
+    },
+    {
+        q: "A maintenance schedule based on equipment usage hours is called:",
+        options: ["Running hour-based maintenance", "Time-based maintenance", "Breakdown maintenance", "Predictive maintenance"],
+        answer: 0,
+        explanation: "Running hour-based maintenance is scheduled based on equipment usage hours."
+    },
+    {
+        q: "गाडीमा प्रयोग हुने हाइड्रोलिक ब्रेक प्रणाली सधैं प्रभावकारी रहन के गर्नुपर्छ? (What ensures the hydraulic brake system remains effective?)",
+        options: ["ब्रेक समयमा मात्र थिच्नु (Press brakes only on time)", "ब्रेक फ्लुइड समयमा परिवर्तन गर्नु (Change brake fluid on time)", "टायरको हावा जाँच्ने (Check tire pressure)", "इन्जिन तेल फेर्ने (Change engine oil)"],
+        answer: 1,
+        explanation: "ब्रेक फ्लुइड समयमा परिवर्तन गर्नाले हाइड्रोलिक ब्रेक प्रणाली प्रभावकारी रहन्छ। (Regularly changing brake fluid maintains hydraulic brake system effectiveness.)"
+    },
+    {
+        q: "सवारी सञ्चालन हुन थालेपछि सवारीको ताप मापन कसरी गरिन्छ? (How is vehicle temperature measured after operation starts?)",
+        options: ["हाइड्रोलिक पम्प प्रयोग गरेर (Using hydraulic pump)", "तापमापक (थर्मोमिटर) प्रयोग गरेर (Using thermometer)", "स्पीडोमिटरले (Using speedometer)", "फ्यूल गेजले (Using fuel gauge)"],
+        answer: 1,
+        explanation: "सवारीको ताप तापमापक वा तापमान सेन्सरले मापन गरिन्छ। (Vehicle temperature is measured using a thermometer or temperature sensor.)"
+    },
+    {
+        q: "इन्जिनको प्रदर्शन मापन गर्ने कुन यन्त्र हो? (Which device measures engine performance?)",
+        options: ["वाटर मिटर (Water meter)", "डायनामोमिटर (Dynamometer)", "भोल्टमिटर (Voltmeter)", "ट्याकोमिटर (Tachometer)"],
+        answer: 1,
+        explanation: "डायनामोमिटरले इन्जिनको शक्ति मापन गर्छ। (A dynamometer measures engine performance, such as power output.)"
+    },
+    {
+        q: "कुन गाडीको टायर सामान्य अवस्थामा सिधा घुम्ने तर ब्रेक लागेपछि भित्री टायर बढी घुम्छ? (Which vehicle tire rotates straight normally but more on the inside when braking?)",
+        options: ["अगाडिको टायर (Front tire)", "पछाडिको टायर (Rear tire)", "स्पेयर टायर (Spare tire)", "सबै टायर (All tires)"],
+        answer: 0,
+        explanation: "डिफरेन्सियल स्टेयरिङ भएको गाडीमा ब्रेकिङको समयमा अगाडिको भित्री टायर बढी घुम्छ। (Front tires in vehicles with differential steering rotate more on the inside during braking due to turning dynamics.)"
+    },
+    {
+        q: "कुन नियमले कणको घुमाउ प्रवृत्ति बताउँछ? (Which law describes a particle’s rotational tendency?)",
+        options: ["न्यूटनको दोस्रो नियम (Newton’s Second Law)", "टर्कको नियम (Law of Torque)", "न्यूटनको पहिलो नियम (Newton’s First Law)", "हूकको नियम (Hooke’s Law)"],
+        answer: 1,
+        explanation: "टर्कको नियमले घुमाउ बल (rotational force) को प्रवृत्ति बताउँछ। (The law of torque describes a particle’s tendency to rotate.)"
+    },
+    {
+        q: "टर्क (Torque) लाई कसरी नापिन्छ? (How is torque measured?)",
+        options: ["बल × दूरी (Force × Distance)", "बल ÷ समय (Force ÷ Time)", "दूरी ÷ समय (Distance ÷ Time)", "बल × समय (Force × Time)"],
+        answer: 0,
+        explanation: "टर्क बल र दूरीको गुणनफल हो (T = F × d)। (Torque is calculated as force multiplied by the distance from the pivot point.)"
+    },
+    {
+        q: "सामान्यतया सवारी साधनको लो-प्रेसर टायरमा सिफारिस गरिएको हावाको चाप कति हुन्छ? (What is the recommended air pressure for low-pressure vehicle tires?)",
+        options: ["30-35 psi", "100-120 psi", "50-60 psi", "15-20 psi"],
+        answer: 0,
+        explanation: "लो-प्रेसर टायरमा सामान्यतः ३०-३५ psi हावाको चाप सिफारिस गरिन्छ। (Low-pressure tires typically require 30-35 psi, per manufacturer recommendations.)"
+    },
+    {
+        q: "एक्सेलेरेटरले 2 मिनेटसम्म गाडी लोड गर्न नसकेमा इन्जिन स्टार्ट टिप्स के हो? (What should be done if the accelerator fails to start the engine after 2 minutes?)",
+        options: ["इन्जिन बन्द गरेर 5 मिनेट पर्खने (Stop and wait 5 minutes)", "12 मिनेटसम्म स्टार्टर चलाउने (Crank for 12 minutes)", "तुरुन्त ब्याट्री फेर्ने (Replace battery immediately)", "इन्धन ट्याङ्की भर्ने (Fill fuel tank)"],
+        answer: 0,
+        explanation: "इन्जिन स्टार्ट नभएमा ५ मिनेट पर्खेर स्टार्टरलाई क्षति हुनबाट बचाउनुपर्छ। (Stop cranking and wait 5 minutes to prevent starter motor damage.)"
+    },
+    {
+        q: "तत्कालको सुरु अवस्थामा ब्रेक राम्रो हुन्छ कुन अवस्थामा? (When do brakes perform best initially?)",
+        options: ["चिसो अवस्थामा (Cold condition)", "तातो अवस्थामा (Hot condition)", "आर्द्र अवस्थामा (Wet condition)", "सुख्खा अवस्थामा (Dry condition)"],
+        answer: 0,
+        explanation: "ब्रेक चिसो अवस्थामा सबैभन्दा राम्रो काम गर्छ, किनभने तातो अवस्थामा प्रभावकारिता कम हुन सक्छ। (Brakes perform best when cold, as overheating can reduce effectiveness.)"
+    },
+
+    // Additional 25 MCQs (Inspired by Lok Sewa Exam Patterns)
+    {
+        q: "Which maintenance type aims to extend equipment lifespan?",
+        options: ["Breakdown maintenance", "Preventive maintenance", "Corrective maintenance", "Predictive maintenance"],
+        answer: 1,
+        explanation: "Preventive maintenance, through regular servicing, extends equipment lifespan by preventing wear."
+    },
+    {
+        q: "What is a major disadvantage of breakdown maintenance?",
+        options: ["High initial cost", "Unplanned downtime", "Requires advanced tools", "Frequent scheduling"],
+        answer: 1,
+        explanation: "Breakdown maintenance leads to unplanned downtime, disrupting operations and increasing costs."
+    },
+    {
+        q: "Which tool is used to measure engine oil pressure?",
+        options: ["Pressure gauge", "Feeler gauge", "Torque wrench", "Micrometer"],
+        answer: 0,
+        explanation: "A pressure gauge measures engine oil pressure to ensure proper lubrication."
+    },
+    {
+        q: "What is the primary advantage of predictive maintenance?",
+        options: ["Low cost", "Reduced downtime", "No need for monitoring", "Immediate repairs"],
+        answer: 1,
+        explanation: "Predictive maintenance reduces downtime by addressing issues before they cause failures."
+    },
+    {
+        q: "Which maintenance system relies on historical data for scheduling?",
+        options: ["Condition-based maintenance", "Time-based maintenance", "Breakdown maintenance", "Corrective maintenance"],
+        answer: 1,
+        explanation: "Time-based maintenance uses historical data and fixed intervals for scheduling."
+    },
+    {
+        q: "What is a key benefit of regular maintenance in a factory?",
+        options: ["Increased energy consumption", "Improved machine efficiency", "Higher breakdown frequency", "Reduced worker morale"],
+        answer: 1,
+        explanation: "Regular maintenance enhances machine efficiency, reducing energy waste and improving output."
+    },
+    {
+        q: "Which maintenance type is most suitable for critical machinery?",
+        options: ["Breakdown maintenance", "Preventive maintenance", "Predictive maintenance", "Corrective maintenance"],
+        answer: 2,
+        explanation: "Predictive maintenance is ideal for critical machinery due to its proactive failure prediction."
+    },
+    {
+        q: "What is a disadvantage of preventive maintenance?",
+        options: ["Unnecessary repairs", "Low initial cost", "No downtime", "Immediate failure detection"],
+        answer: 0,
+        explanation: "Preventive maintenance may involve unnecessary repairs on equipment still in good condition."
+    },
+    {
+        q: "Which document is used to track maintenance history?",
+        options: ["Job card", "Maintenance logbook", "Invoice", "Warranty card"],
+        answer: 1,
+        explanation: "A maintenance logbook records the full history of repairs and servicing."
+    },
+    {
+        q: "What is the main purpose of condition-based maintenance?",
+        options: ["To repair after failure", "To monitor and maintain based on condition", "To schedule at fixed intervals", "To ignore minor issues"],
+        answer: 1,
+        explanation: "Condition-based maintenance adjusts maintenance based on real-time equipment condition data."
+    },
+    {
+        q: "कुन मर्मत प्रणालीले मेसिनको आयु बढाउँछ? (Which maintenance system extends machine life?)",
+        options: ["ब्रेकडाउन मर्मत (Breakdown maintenance)", "प्रिवेन्टिव मर्मत (Preventive maintenance)", "करेक्टिव मर्मत (Corrective maintenance)", "प्रेडिक्टिव मर्मत (Predictive maintenance)"],
+        answer: 1,
+        explanation: "प्रिवेन्टिव मर्मतले नियमित जाँच र मर्मतबाट मेसिनको आयु बढाउँछ। (Preventive maintenance extends machine life through regular checks and repairs.)"
+    },
+    {
+        q: "Which factor increases the need for maintenance?",
+        options: ["Proper lubrication", "High usage rates", "Regular cleaning", "Low operating temperature"],
+        answer: 1,
+        explanation: "High usage rates accelerate wear, increasing the need for frequent maintenance."
+    },
+    {
+        q: "What is a limitation of corrective maintenance?",
+        options: ["High planning effort", "Unexpected downtime", "Requires sensors", "Frequent scheduling"],
+        answer: 1,
+        explanation: "Corrective maintenance leads to unexpected downtime as it occurs after failures."
+    },
+    {
+        q: "Which maintenance approach minimizes repair costs?",
+        options: ["Breakdown maintenance", "Preventive maintenance", "Predictive maintenance", "Condition-based maintenance"],
+        answer: 1,
+        explanation: "Preventive maintenance reduces repair costs by preventing major breakdowns."
+    },
+    {
+        q: "What is the role of a torque wrench in maintenance?",
+        options: ["Measuring temperature", "Tightening bolts to specified torque", "Checking valve clearance", "Monitoring vibration"],
+        answer: 1,
+        explanation: "A torque wrench ensures bolts are tightened to the correct torque, preventing damage."
+    },
+    {
+        q: "Which maintenance type requires the least initial investment?",
+        options: ["Breakdown maintenance", "Predictive maintenance", "Preventive maintenance", "Condition-based maintenance"],
+        answer: 0,
+        explanation: "Breakdown maintenance has the lowest initial investment as it only acts after failure."
+    },
+    {
+        q: "What is a benefit of running hour-based maintenance?",
+        options: ["Unplanned repairs", "Optimized maintenance timing", "Higher downtime", "Increased costs"],
+        answer: 1,
+        explanation: "Running hour-based maintenance optimizes timing based on actual usage, improving efficiency."
+    },
+    {
+        q: "Which tool is used to detect engine oil leaks?",
+        options: ["Leak detector spray", "Feeler gauge", "Pressure gauge", "Torque wrench"],
+        answer: 0,
+        explanation: "Leak detector spray identifies oil leaks by reacting to escaping fluids."
+    },
+    {
+        q: "What is a disadvantage of predictive maintenance?",
+        options: ["High setup cost", "No failure prevention", "Unscheduled repairs", "Manual monitoring"],
+        answer: 0,
+        explanation: "Predictive maintenance requires significant investment in sensors and technology."
+    },
+    {
+        q: "Which maintenance system is best for remote locations with limited resources?",
+        options: ["Predictive maintenance", "Breakdown maintenance", "Preventive maintenance", "Condition-based maintenance"],
+        answer: 1,
+        explanation: "Breakdown maintenance is practical in remote areas with limited tools and expertise."
+    },
+    {
+        q: "What is the impact of neglected maintenance on production?",
+        options: ["Increased output", "Reduced efficiency", "Lower costs", "Improved safety"],
+        answer: 1,
+        explanation: "Neglected maintenance leads to equipment failures, reducing production efficiency."
+    },
+    {
+        q: "Which maintenance type requires real-time data analysis?",
+        options: ["Preventive maintenance", "Predictive maintenance", "Corrective maintenance", "Breakdown maintenance"],
+        answer: 1,
+        explanation: "Predictive maintenance relies on real-time data to forecast failures."
+    },
+    {
+        q: "What is a key advantage of condition-based maintenance?",
+        options: ["No need for monitoring", "Reduced unnecessary repairs", "High downtime", "Low initial cost"],
+        answer: 1,
+        explanation: "Condition-based maintenance minimizes unnecessary repairs by acting only when needed."
+    },
+    {
+        q: "कुन मर्मत प्रणालीले अप्रत्याशित बन्दाबन्दी कम गर्छ? (Which maintenance system reduces unexpected downtime?)",
+        options: ["ब्रेकडाउन मर्मत (Breakdown maintenance)", "प्रिवेन्टिव मर्मत (Preventive maintenance)", "प्रेडिक्टिव मर्मत (Predictive maintenance)", "करेक्टिव मर्मत (Corrective maintenance)"],
+        answer: 2,
+        explanation: "प्रेडिक्टिव मर्मतले समयमै समस्या पहिचान गरी बन्दाबन्दी कम गर्छ। (Predictive maintenance reduces downtime by identifying issues early.)"
+    }
+];
+
+        let currentPage = 0;
+        let score = 0;
+        let skipped = [];
+        let userAnswers = Array(questions.length).fill(null);
+        let timerSeconds = 0;
+        let timerInterval;
+        const QUESTIONS_PER_PAGE = 5;
+        const ANSWER_DELAY = 1000;
+
+        const quizEl = document.getElementById("quiz");
+        const scoreEl = document.getElementById("score");
+        const resultsEl = document.getElementById("results");
+        const resultsBody = document.getElementById("results-body");
+        const progressEl = document.getElementById("progress");
+        const timerEl = document.getElementById("timer");
+        const currentScoreEl = document.getElementById("current-score");
+        const correctSound = document.getElementById("correct-sound");
+        const wrongSound = document.getElementById("wrong-sound");
+
+        // Clear progress to start fresh
+        function clearProgress() {
+            localStorage.removeItem("quizProgressMaintenance");
+            currentPage = 0;
+            score = 0;
+            skipped = [];
+            userAnswers = Array(questions.length).fill(null);
+            timerSeconds = 0;
+        }
+
+        // Save progress to localStorage
+        function saveProgress() {
+            localStorage.setItem("quizProgressMaintenance", JSON.stringify({
+                currentPage,
+                score,
+                skipped,
+                answers: userAnswers,
+                time: timerSeconds
+            }));
+        }
+
+        // Update current score display
+        function updateCurrentScore() {
+            currentScoreEl.textContent = `Score: ${score}/${questions.length}`;
+        }
+
+        // Shuffle array
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Start timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timerSeconds++;
+                const minutes = Math.floor(timerSeconds / 60);
+                const seconds = timerSeconds % 60;
+                timerEl.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                saveProgress();
+            }, 1000);
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const answeredCount = userAnswers.filter(answer => answer !== null).length;
+            const percentage = (answeredCount / questions.length) * 100;
+            progressEl.style.width = `${percentage}%`;
+        }
+
+        // Show questions for the current page
+        function showQuestions(page) {
+            quizEl.innerHTML = '';
+            const startIndex = page * QUESTIONS_PER_PAGE;
+            const endIndex = Math.min(startIndex + QUESTIONS_PER_PAGE, questions.length);
+
+            for (let i = startIndex; i < endIndex; i++) {
+                const q = questions[i];
+                const shuffledOptions = shuffle([...q.options].map((opt, j) => ({ text: opt, index: j })));
+                const optionsHtml = shuffledOptions
+                    .map(opt => `<button onclick="checkAnswer(this, ${i}, ${opt.index}, '${opt.text.replace(/'/g, "\\'")}')">${opt.text}</button>`)
+                    .join('');
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+                questionDiv.dataset.index = i;
+                questionDiv.innerHTML = `
+                    <p>Q${i + 1}. ${q.q}</p>
+                    <div class="options">${optionsHtml}</div>
+                    <button class="skip-button" onclick="skipQuestion(${i})">Skip</button>
+                    <div class="explanation">${q.explanation}</div>
+                `;
+                quizEl.appendChild(questionDiv);
+            }
+
+            if (endIndex < questions.length || skipped.length > 0) {
+                const nextButton = document.createElement('button');
+                nextButton.classList.add('next-button');
+                nextButton.textContent = endIndex < questions.length ? 'Next' : 'Review Skipped Questions';
+                nextButton.onclick = nextPage;
+                nextButton.disabled = !areAllQuestionsAnsweredOnPage(startIndex, endIndex);
+                quizEl.appendChild(nextButton);
+            } else {
+                const submitButton = document.createElement('button');
+                submitButton.classList.add('next-button');
+                submitButton.textContent = 'Submit Quiz';
+                submitButton.onclick = endQuiz;
+                submitButton.disabled = !areAllQuestionsAnsweredOnPage(startIndex, endIndex);
+                quizEl.appendChild(submitButton);
+            }
+
+            updateProgress();
+            saveProgress();
+            restoreAnswers(startIndex, endIndex);
+        }
+
+        // Restore previous answers for the current page
+        function restoreAnswers(startIndex, endIndex) {
+            for (let i = startIndex; i < endIndex; i++) {
+                if (userAnswers[i] !== null && userAnswers[i] !== 'Skipped') {
+                    const questionDiv = document.querySelector(`.question[data-index="${i}"]`);
+                    const buttons = questionDiv.querySelectorAll('.options button');
+                    const q = questions[i];
+                    buttons.forEach(btn => {
+                        btn.disabled = true;
+                        if (btn.textContent === q.options[q.answer]) {
+                            btn.classList.add('correct');
+                        }
+                        if (btn.textContent === userAnswers[i] && userAnswers[i] !== q.options[q.answer]) {
+                            btn.classList.add('wrong');
+                        }
+                    });
+                    questionDiv.querySelector('.explanation').style.display = 'block';
+                    questionDiv.querySelector('.skip-button').disabled = true;
+                } else if (userAnswers[i] === 'Skipped') {
+                    const questionDiv = document.querySelector(`.question[data-index="${i}"]`);
+                    questionDiv.querySelectorAll('.options button').forEach(btn => btn.disabled = true);
+                    questionDiv.querySelector('.skip-button').disabled = true;
+                    questionDiv.querySelector('.explanation').style.display = 'block';
+                }
+            }
+        }
+
+        // Check if all questions on the current page are answered or skipped
+        function areAllQuestionsAnsweredOnPage(startIndex, endIndex) {
+            for (let i = startIndex; i < endIndex; i++) {
+                if (userAnswers[i] === null) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Check answer
+        function checkAnswer(button, questionIndex, selected, selectedText) {
+            const q = questions[questionIndex];
+            const correct = q.answer;
+            const buttons = button.parentElement.querySelectorAll("button");
+            const questionDiv = button.closest('.question');
+            const explanationDiv = questionDiv.querySelector('.explanation');
+
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                if (q.options.indexOf(btn.textContent) === correct) {
+                    btn.classList.add('correct');
+                }
+                if (btn === button && selected !== correct) {
+                    btn.classList.add('wrong');
+                }
+            });
+
+            questionDiv.querySelector('.skip-button').disabled = true;
+            explanationDiv.style.display = 'block';
+
+            userAnswers[questionIndex] = selectedText;
+            if (selected === correct) {
+                score++;
+                correctSound.play().catch(() => console.log("Audio playback failed"));
+            } else {
+                wrongSound.play().catch(() => console.log("Audio playback failed"));
+            }
+
+            updateCurrentScore();
+            saveProgress();
+            const nextButton = quizEl.querySelector('.next-button');
+            if (nextButton) {
+                nextButton.disabled = !areAllQuestionsAnsweredOnPage(
+                    currentPage * QUESTIONS_PER_PAGE,
+                    Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, questions.length)
+                );
+            }
+
+            setTimeout(() => {
+                if (areAllQuestionsAnsweredOnPage(
+                    currentPage * QUESTIONS_PER_PAGE,
+                    Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, questions.length)
+                )) {
+                    nextPage();
+                }
+            }, ANSWER_DELAY);
+        }
+
+        // Skip question
+        function skipQuestion(questionIndex) {
+            if (!skipped.includes(questions[questionIndex])) {
+                skipped.push(questions[questionIndex]);
+                userAnswers[questionIndex] = 'Skipped';
+                const questionDiv = document.querySelector(`.question[data-index="${questionIndex}"]`);
+                questionDiv.querySelectorAll('.options button').forEach(btn => btn.disabled = true);
+                questionDiv.querySelector('.skip-button').disabled = true;
+                questionDiv.querySelector('.explanation').style.display = 'block';
+                saveProgress();
+                const nextButton = quizEl.querySelector('.next-button');
+                if (nextButton) {
+                    nextButton.disabled = !areAllQuestionsAnsweredOnPage(
+                        currentPage * QUESTIONS_PER_PAGE,
+                        Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, questions.length)
+                    );
+                }
+            }
+        }
+
+        // Move to next page
+        function nextPage() {
+            if (skipped.length > 0 && currentPage * QUESTIONS_PER_PAGE >= questions.length) {
+                showSkippedQuestions();
+            } else {
+                currentPage++;
+                if (currentPage * QUESTIONS_PER_PAGE < questions.length) {
+                    showQuestions(currentPage);
+                } else if (skipped.length === 0) {
+                    endQuiz();
+                } else {
+                    showSkippedQuestions();
+                }
+            }
+        }
+
+        // Show skipped questions
+        function showSkippedQuestions() {
+            questions.splice(0, questions.length, ...skipped);
+            skipped = [];
+            currentPage = 0;
+            showQuestions(currentPage);
+        }
+
+        // End quiz and show results
+        function endQuiz() {
+            clearInterval(timerInterval);
+            quizEl.innerHTML = '';
+            scoreEl.textContent = `Final Score: ${score} out of ${questions.length} (${((score / questions.length) * 100).toFixed(2)}%)`;
+            resultsEl.classList.remove('hidden');
+
+            resultsBody.innerHTML = questions.map((q, i) => {
+                const userAnswer = userAnswers[i] === null ? 'Not attempted' :
+                                  userAnswers[i] === 'Skipped' ? 'Skipped' :
+                                  userAnswers[i];
+                const correctAnswer = q.options[q.answer];
+                const status = userAnswers[i] === q.options[q.answer] ? 'Correct' :
+                              userAnswers[i] === 'Skipped' ? 'Skipped' :
+                              userAnswers[i] === null ? 'Not attempted' : 'Wrong';
+                return `
+                    <tr>
+                        <td>${i + 1}. ${q.q}</td>
+                        <td>${userAnswer}</td>
+                        <td>${correctAnswer}</td>
+                        <td class="${status.toLowerCase().replace(' ', '-')}">${status}</td>
+                        <td class="explanation">${q.explanation}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            localStorage.removeItem('quizProgressMaintenance');
+        }
+
+        // Restart quiz
+        function restartQuiz() {
+            clearProgress();
+            resultsEl.classList.add('hidden');
+            scoreEl.textContent = '';
+            startTimer();
+            showQuestions(currentPage);
+            updateCurrentScore();
+        }
+
+        // Initialize quiz
+        function initialize() {
+            clearProgress();
+            startTimer();
+            showQuestions(currentPage);
+            updateCurrentScore();
+        }
+
+        // Start quiz on page load
+        initialize();
+    </script>
+</body>
+</html>
