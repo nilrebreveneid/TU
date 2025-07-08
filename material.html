@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Material Science MCQs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Roboto', -apple-system, Arial, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background: linear-gradient(135deg, #e0f7fa, #80deea);
+      color: #1a202c;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.6;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2b6cb0;
+      margin-bottom: 0.5rem;
+      font-size: 2.5rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #c53030;
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+
+    .quiz-container {
+      max-width: 1000px;
+      width: 100%;
+      background: #ffffff;
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+      margin-bottom: 2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .quiz-container:hover {
+      transform: translateY(-5px);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background: #edf2f7;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    .progress {
+      height: 100%;
+      background: linear-gradient(to right, #4299e1, #3182ce);
+      border-radius: 6px;
+      transition: width 0.4s ease-in-out;
+    }
+
+    #timer {
+      text-align: right;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: #c53030;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .question {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      border-radius: 8px;
+      background: #f7fafc;
+      border: 1px solid #e2e8f0;
+      animation: fadeIn 0.5s ease-out;
+      transition: box-shadow 0.3s;
+    }
+
+    .question:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .question h3 {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #2d3748;
+      margin-bottom: 1rem;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .options button {
+      padding: 0.75rem 1.25rem;
+      width: 100%;
+      background: #ebf8ff;
+      border: 2px solid #bee3f8;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      text-align: left;
+      transition: all 0.3s ease;
+      color: #2d3748;
+    }
+
+    .options button:hover:not(:disabled) {
+      background: #bee3f8;
+      border-color: #90cdf4;
+      transform: translateX(4px);
+    }
+
+    .options button:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+    }
+
+    .options button.correct {
+      background: #c6f6d5 !important;
+      border-color: #68d391 !important;
+      color: #22543d;
+      animation: pulse 0.5s;
+    }
+
+    .options button.wrong {
+      background: #fed7d7 !important;
+      border-color: #f56565 !important;
+      color: #742a2a;
+      animation: shake 0.3s;
+    }
+
+    .options button:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .explanation {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f0fff4;
+      border-left: 4px solid #48bb78;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      color: #2d3748;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.3s ease, max-height 0.3s ease;
+    }
+
+    .explanation.show {
+      opacity: 1;
+      max-height: 200px;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+      gap: 1rem;
+    }
+
+    .pagination-button {
+      background: #4299e1;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    .pagination-button:hover:not(:disabled) {
+      background: #3182ce;
+    }
+
+    .pagination-button:disabled {
+      background: #e2e8f0;
+      cursor: not-allowed;
+    }
+
+    .submit-button, .restart-button {
+      background: #4299e1;
+      color: #fff;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      width: 100%;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .submit-button:hover:not(:disabled), .restart-button:hover:not(:disabled) {
+      background: #3182ce;
+      transform: translateY(-2px);
+    }
+
+    .submit-button:disabled {
+      background: #e2e8f0;
+      cursor: not-allowed;
+    }
+
+    #score, #results {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-top: 2rem;
+      font-weight: 700;
+      color: #2d3748;
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .results-table th, .results-table td {
+      border: 1px solid #e2e8f0;
+      padding: 1rem;
+      text-align: left;
+    }
+
+    .results-table th {
+      background: #edf2f7;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .results-table td.correct { color: #2f855a; font-weight: 600; }
+    .results-table td.wrong { color: #c53030; font-weight: 600; }
+    .results-table td.not-attempted { color: #718096; }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      .quiz-container {
+        padding: 1.5rem;
+      }
+      .question h3 {
+        font-size: 1.1rem;
+      }
+      .options button {
+        font-size: 0.95rem;
+        padding: 0.6rem 1rem;
+      }
+      .results-table th, .results-table td {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+      }
+      .pagination-button {
+        padding: 0.6rem 1rem;
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.2rem;
+      }
+      .submit-button, .restart-button {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Material Science MCQs</h1>
+  <h2>Test Your Knowledge: 50 MCQs Will Appear in Exam</h2>
+  <div class="quiz-container">
+    <div id="timer">Time: 00:00</div>
+    <div class="progress-bar">
+      <div class="progress" id="progress"></div>
+    </div>
+    <div id="quiz" role="region" aria-live="polite"></div>
+    <div class="pagination">
+      <button class="pagination-button" id="prev-page" disabled aria-label="Previous page">Previous</button>
+      <button class="pagination-button" id="next-page" aria-label="Next page">Next</button>
+    </div>
+    <button class="submit-button" id="submit-button" disabled aria-label="Submit quiz">Submit Quiz</button>
+    <div id="score"></div>
+    <div id="results" class="hidden">
+      <h2>Quiz Results</h2>
+      <div class="overflow-x-auto">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Question</th>
+              <th>Your Answer</th>
+              <th>Correct Answer</th>
+              <th>Status</th>
+              <th>Explanation</th>
+            </tr>
+          </thead>
+          <tbody id="results-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <button class="restart-button hidden" id="restart-button" aria-label="Restart quiz">Restart Quiz</button>
+
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/beep-01a.mp3"></audio>
+  <audio id="wrong-sound" src="https://www.soundjay.com/buttons/beep-02.mp3"></audio>
+
+  <script>
+    const quizData = [
+      { q: "Which of the following is a ferrous metal?", options: ["Aluminum", "Copper", "Carbon steel", "Titanium"], answer: 2, explanation: "Carbon steel contains iron as its primary component, classifying it as a ferrous metal." },
+      { q: "Which nonferrous metal is widely used in aerospace due to its high strength-to-weight ratio?", options: ["Zinc", "Titanium", "Copper", "Lead"], answer: 1, explanation: "Titanium is favored in aerospace for its excellent strength-to-weight ratio and corrosion resistance." },
+      { q: "Which of the following is an example of a non-metallic material?", options: ["Cast iron", "Fiberglass", "Alloy steel", "Stainless steel"], answer: 1, explanation: "Fiberglass is a composite non-metallic material used for its strength and lightweight properties." },
+      { q: "What is the primary factor considered during material selection for a corrosive environment?", options: ["Cost", "Corrosion resistance", "Aesthetic appeal", "Weight"], answer: 1, explanation: "Corrosion resistance is critical to ensure durability in corrosive conditions." },
+      { q: "Which mechanical property describes a material's ability to absorb energy before fracturing?", options: ["Hardness", "Toughness", "Ductility", "Brittleness"], answer: 1, explanation: "Toughness measures a material's capacity to absorb energy and deform plastically." },
+      { q: "A material that can be drawn into wires exhibits which property?", options: ["Malleability", "Ductility", "Elasticity", "Brittleness"], answer: 1, explanation: "Ductility allows a material to be drawn into wires under tensile stress." },
+      { q: "Which property is characterized by a material fracturing with little deformation?", options: ["Toughness", "Brittleness", "Malleability", "Elasticity"], answer: 1, explanation: "Brittleness indicates a tendency to fracture with minimal plastic deformation." },
+      { q: "What is the unit of stress in the SI system?", options: ["N/m²", "J/m³", "kg/m²", "Pa/s"], answer: 0, explanation: "Stress is force per unit area, measured in Pascals (N/m²)." },
+      { q: "Strain is defined as the ratio of:", options: ["Force to area", "Change in length to original length", "Stress to modulus of elasticity", "Energy to volume"], answer: 1, explanation: "Strain (ε) is the change in length (ΔL) divided by the original length (L)." },
+      { q: "Hooke's Law states that stress is proportional to strain within the:", options: ["Plastic limit", "Elastic limit", "Yield point", "Fracture point"], answer: 1, explanation: "Hooke's Law applies within the elastic limit where deformation is reversible." },
+      { q: "What is the purpose of hardening in heat treatment of steel?", options: ["Increase toughness", "Increase hardness", "Reduce internal stresses", "Improve machinability"], answer: 1, explanation: "Hardening increases hardness by forming martensite through rapid cooling." },
+      { q: "Annealing of steel involves:", options: ["Rapid cooling", "Slow cooling after heating", "Heating without cooling", "Quenching in water"], answer: 1, explanation: "Annealing involves slow cooling to soften steel and relieve stresses." },
+      { q: "Normalizing is performed by:", options: ["Heating and quenching", "Heating and air cooling", "Heating and slow cooling", "Reheating quenched steel"], answer: 1, explanation: "Normalizing refines grain structure by heating above critical temperature and air cooling." },
+      { q: "Quenching is a process that involves:", options: ["Slow cooling in air", "Rapid cooling after heating", "Reheating to a low temperature", "Heating without cooling"], answer: 1, explanation: "Quenching rapidly cools heated steel to harden it." },
+      { q: "Tempering is used to:", options: ["Increase brittleness", "Reduce brittleness and increase toughness", "Harden the steel further", "Remove all stresses"], answer: 1, explanation: "Tempering reheats quenched steel to reduce brittleness and enhance toughness." },
+      { q: "The eutectoid point on the iron-carbon diagram occurs at:", options: ["0.83% C, 723°C", "4.3% C, 1147°C", "2.0% C, 900°C", "0.5% C, 600°C"], answer: 0, explanation: "The eutectoid point is where austenite transforms to pearlite at 0.83% carbon and 723°C." },
+      { q: "Which phase is soft and ductile in the iron-carbon diagram?", options: ["Austenite", "Ferrite", "Cementite", "Pearlite"], answer: 1, explanation: "Ferrite is a soft, ductile phase with low carbon content." },
+      { q: "Cementite is represented as:", options: ["Fe", "Fe₃C", "Fe₂C", "C"], answer: 1, explanation: "Cementite is iron carbide (Fe₃C), a hard and brittle phase." },
+      { q: "Pearlite is a mixture of:", options: ["Ferrite and austenite", "Ferrite and cementite", "Austenite and cementite", "Ferrite and martensite"], answer: 1, explanation: "Pearlite is a lamellar structure of ferrite and cementite." },
+      { q: "The gamma (γ) iron phase has a:", options: ["Body-centered cubic structure", "Face-centered cubic structure", "Hexagonal close-packed structure", "Simple cubic structure"], answer: 1, explanation: "Gamma iron (austenite) has a face-centered cubic structure, allowing carbon solubility." },
+      { q: "Which alloying element is commonly added to steel to improve corrosion resistance?", options: ["Carbon", "Chromium", "Silicon", "Manganese"], answer: 1, explanation: "Chromium enhances corrosion resistance, as seen in stainless steel." },
+      { q: "Which non-metallic material is known for its high heat resistance?", options: ["Rubber", "Porcelain", "Plastic", "Polyester"], answer: 1, explanation: "Porcelain, a ceramic, exhibits excellent heat resistance." },
+      { q: "The ability to be hammered into thin sheets is known as:", options: ["Ductility", "Malleability", "Elasticity", "Toughness"], answer: 1, explanation: "Malleability allows materials to be shaped into sheets." },
+      { q: "Hooke's Law does not apply beyond the:", options: ["Elastic limit", "Yield point", "Ultimate tensile strength", "Fracture point"], answer: 0, explanation: "Hooke's Law is valid only up to the elastic limit." },
+      { q: "Which heat treatment process relieves internal stresses in steel?", options: ["Hardening", "Annealing", "Quenching", "Tempering"], answer: 1, explanation: "Annealing relieves internal stresses through slow cooling." },
+      { q: "The eutectic point on the iron-carbon diagram is at:", options: ["0.83% C, 723°C", "4.3% C, 1147°C", "2.11% C, 1130°C", "1.0% C, 700°C"], answer: 1, explanation: "The eutectic point occurs at 4.3% carbon and 1147°C, forming ledeburite." },
+      { q: "Which phase is formed by rapid cooling of austenite?", options: ["Ferrite", "Martensite", "Pearlite", "Cementite"], answer: 1, explanation: "Martensite forms due to rapid quenching of austenite." },
+      { q: "The modulus of elasticity is a measure of:", options: ["Ductility", "Stiffness", "Toughness", "Hardness"], answer: 1, explanation: "Modulus of elasticity (E) indicates a material's stiffness." },
+      { q: "Which material selection factor is most important for lightweight structures?", options: ["Cost", "Weight", "Hardness", "Corrosion resistance"], answer: 1, explanation: "Weight is critical for designing lightweight structures." },
+      { q: "Cast iron is an example of:", options: ["Nonferrous metal", "Ferrous metal", "Non-metallic material", "Composite"], answer: 1, explanation: "Cast iron is a ferrous metal due to its high iron content." },
+      { q: "Which test is used to measure hardness?", options: ["Tensile test", "Rockwell test", "Impact test", "Compression test"], answer: 1, explanation: "The Rockwell test measures a material's resistance to indentation." },
+      { q: "Tempering is typically performed after:", options: ["Annealing", "Quenching", "Normalizing", "Hardening"], answer: 1, explanation: "Tempering follows quenching to reduce brittleness." },
+      { q: "The alpha (α) iron phase exists up to:", options: ["723°C", "912°C", "1147°C", "1394°C"], answer: 1, explanation: "Alpha iron is stable up to 912°C with a body-centered cubic structure." },
+      { q: "Which of the following increases with heat treatment hardening?", options: ["Ductility", "Toughness", "Hardness", "Malleability"], answer: 2, explanation: "Hardening increases hardness but reduces ductility and toughness." },
+      { q: "Strain is a:", options: ["Dimensionless quantity", "Force per unit area", "Energy per unit volume", "Length per unit time"], answer: 0, explanation: "Strain (ε) is a ratio and thus dimensionless." },
+      { q: "Which non-metallic material is flexible and used in tires?", options: ["Alumina", "Rubber", "Porcelain", "Glass"], answer: 1, explanation: "Rubber is flexible and commonly used in tire manufacturing." },
+      { q: "The process of heating steel to refine grain structure is:", options: ["Tempering", "Normalizing", "Quenching", "Annealing"], answer: 1, explanation: "Normalizing refines grain structure through air cooling." },
+      { q: "In the iron-carbon diagram, ledeburite forms at:", options: ["0.83% C", "2.11% C", "4.3% C", "6.67% C"], answer: 2, explanation: "Ledeburite forms at the eutectic point of 4.3% carbon." },
+      { q: "Which property allows a material to return to its original shape?", options: ["Plasticity", "Elasticity", "Brittleness", "Malleability"], answer: 1, explanation: "Elasticity enables a material to recover its shape after deformation." },
+      { q: "Copper is primarily used for:", options: ["Structural support", "Electrical wiring", "Cutting tools", "Bearings"], answer: 1, explanation: "Copper’s high conductivity makes it ideal for electrical wiring." },
+      { q: "The yield point marks the transition from:", options: ["Elastic to plastic deformation", "Plastic to brittle failure", "Elastic to ductile behavior", "Hard to soft state"], answer: 0, explanation: "The yield point is where elastic deformation turns into plastic deformation." },
+      { q: "Which heat treatment process improves machinability?", options: ["Hardening", "Annealing", "Quenching", "Tempering"], answer: 1, explanation: "Annealing softens steel, enhancing its machinability." },
+      { q: "The face-centered cubic structure is characteristic of:", options: ["Alpha iron", "Gamma iron", "Delta iron", "Cementite"], answer: 1, explanation: "Gamma iron (austenite) has a face-centered cubic structure." },
+      { q: "Which factor is least important in material selection for decorative items?", options: ["Cost", "Aesthetic appeal", "Corrosion resistance", "Strength"], answer: 3, explanation: "Strength is less critical for decorative items compared to appearance." },
+      { q: "The hardness of steel increases with:", options: ["Higher carbon content", "Lower carbon content", "Increased temperature", "Reduced alloying"], answer: 0, explanation: "Higher carbon content enhances hardness during heat treatment." },
+      { q: "Shear stress acts:", options: ["Perpendicular to the surface", "Parallel to the surface", "Along the length", "Across the width"], answer: 1, explanation: "Shear stress involves forces acting parallel to the surface." },
+      { q: "The iron-carbon diagram helps predict:", options: ["Electrical conductivity", "Phase transformations", "Thermal expansion", "Density changes"], answer: 1, explanation: "It predicts phase changes during heating and cooling." },
+      { q: "Which steel treatment reduces hardness but increases ductility?", options: ["Quenching", "Tempering", "Hardening", "Normalizing"], answer: 1, explanation: "Tempering reduces hardness and brittleness, increasing ductility." },
+      { q: "A composite material like fiberglass combines:", options: ["Metal and ceramic", "Glass and polymer", "Iron and carbon", "Steel and aluminum"], answer: 1, explanation: "Fiberglass is a composite of glass fibers and a polymer matrix." },
+      { q: "The maximum carbon solubility in gamma iron is:", options: ["0.83%", "2.11%", "4.3%", "6.67%"], answer: 1, explanation: "Gamma iron (austenite) can dissolve up to 2.11% carbon at high temperatures." }
+    ];
+
+    let score = 0;
+    let userAnswers = Array(quizData.length).fill(null);
+    let timerSeconds = 0;
+    let timerInterval;
+    let shuffledQuizData = [];
+    let currentPage = 0;
+    const questionsPerPage = 20;
+
+    const quizEl = document.getElementById("quiz");
+    const scoreEl = document.getElementById("score");
+    const resultsEl = document.getElementById("results");
+    const resultsBody = document.getElementById("results-body");
+    const progressEl = document.getElementById("progress");
+    const timerEl = document.getElementById("timer");
+    const submitButton = document.getElementById("submit-button");
+    const restartButton = document.getElementById("restart-button");
+    const prevPageButton = document.getElementById("prev-page");
+    const nextPageButton = document.getElementById("next-page");
+    const correctSound = document.getElementById("correct-sound");
+    const wrongSound = document.getElementById("wrong-sound");
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function shuffleOptions(quizData) {
+      return quizData.map(q => {
+        const correct = q.options[q.answer];
+        const shuffled = [...q.options].sort(() => Math.random() - 0.5);
+        return {
+          ...q,
+          options: shuffled,
+          answer: shuffled.indexOf(correct)
+        };
+      });
+    }
+
+    function startTimer() {
+      const minutes = Math.floor(timerSeconds / 60);
+      const seconds = timerSeconds % 60;
+      timerEl.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      timerInterval = setInterval(() => {
+        timerSeconds++;
+        const minutes = Math.floor(timerSeconds / 60);
+        const seconds = timerSeconds % 60;
+        timerEl.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    function updateProgress() {
+      const answered = userAnswers.filter(answer => answer !== null).length;
+      const percentage = (answered / quizData.length) * 100;
+      progressEl.style.width = `${percentage}%`;
+      checkAllAnswered();
+    }
+
+    function showPage(pageIndex) {
+      currentPage = pageIndex;
+      const startIndex = pageIndex * questionsPerPage;
+      const endIndex = Math.min(startIndex + questionsPerPage, shuffledQuizData.length);
+      const fragment = document.createDocumentFragment();
+      const pageQuestions = shuffledQuizData.slice(startIndex, endIndex);
+      pageQuestions.forEach((q, index) => {
+        const globalIndex = startIndex + index;
+        const isAnswered = userAnswers[globalIndex] !== null;
+        const selectedAnswer = userAnswers[globalIndex];
+        const correctAnswer = q.options[q.answer];
+        const options = q.options.map((opt, j) => {
+          let buttonClass = '';
+          if (isAnswered) {
+            buttonClass += opt === correctAnswer ? ' correct' :
+                          opt === selectedAnswer && selectedAnswer !== correctAnswer ? ' wrong' : '';
+          }
+          return `<button class="${buttonClass}" aria-label="Option ${escapeHtml(opt)}" ${isAnswered ? 'disabled' : ''}>${escapeHtml(opt)}</button>`;
+        }).join('');
+        const div = document.createElement('div');
+        div.className = 'question';
+        div.dataset.index = globalIndex;
+        div.innerHTML = `
+          <h3>${globalIndex + 1}. ${escapeHtml(q.q)}</h3>
+          <div class="options">${options}</div>
+          <div class="explanation ${isAnswered ? 'show' : ''}" id="explanation-${globalIndex}">
+            ${isAnswered ? escapeHtml(q.explanation || 'No explanation available.') : ''}
+          </div>
+        `;
+        fragment.appendChild(div);
+      });
+      quizEl.innerHTML = '';
+      quizEl.appendChild(fragment);
+
+      // Attach event listeners to buttons
+      quizEl.querySelectorAll('.options button').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const questionDiv = e.target.closest('.question');
+          const questionIndex = parseInt(questionDiv.dataset.index);
+          const selected = Array.from(questionDiv.querySelectorAll('.options button')).indexOf(e.target);
+          const selectedText = e.target.textContent;
+          checkAnswer(e.target, questionIndex, selected, selectedText);
+        });
+      });
+
+      prevPageButton.disabled = currentPage === 0;
+      nextPageButton.disabled = endIndex === quizData.length;
+      updateProgress();
+    }
+
+    function checkAnswer(button, questionIndex, selected, selectedText) {
+      if (userAnswers[questionIndex] !== null) return;
+      const q = shuffledQuizData[questionIndex];
+      const correct = q.answer;
+      const buttons = button.parentElement.querySelectorAll("button");
+      const explanationEl = document.getElementById(`explanation-${questionIndex}`);
+
+      buttons.forEach((btn, j) => {
+        btn.disabled = true;
+        if (j === correct) btn.classList.add("correct");
+        if (btn === button && selected !== correct) btn.classList.add("wrong");
+      });
+
+      userAnswers[questionIndex] = selectedText;
+      if (selected === correct) {
+        score++;
+        correctSound.play().catch(() => console.log("Correct sound playback failed"));
+      } else {
+        wrongSound.play().catch(() => console.log("Wrong sound playback failed"));
+      }
+
+      explanationEl.textContent = q.explanation || 'No explanation available.';
+      explanationEl.classList.add('show');
+      saveProgress();
+      updateProgress();
+    }
+
+    function checkAllAnswered() {
+      const allAnswered = userAnswers.every(answer => answer !== null);
+      submitButton.disabled = !allAnswered;
+    }
+
+    function endQuiz() {
+      clearInterval(timerInterval);
+      quizEl.innerHTML = '';
+      prevPageButton.classList.add("hidden");
+      nextPageButton.classList.add("hidden");
+      submitButton.classList.add("hidden");
+      scoreEl.innerHTML = `Your score: ${score} / ${quizData.length} (${((score / quizData.length) * 100).toFixed(2)}%)`;
+      resultsEl.classList.remove("hidden");
+      restartButton.classList.remove("hidden");
+
+      resultsBody.innerHTML = shuffledQuizData.map((q, i) => {
+        const userAnswer = userAnswers[i] === null ? "Not attempted" : escapeHtml(userAnswers[i]);
+        const correctAnswer = escapeHtml(q.options[q.answer]);
+        const status = userAnswers[i] === q.options[q.answer] ? "Correct" :
+                      userAnswers[i] === null ? "Not attempted" : "Wrong";
+        return `
+          <tr>
+            <td>${i + 1}. ${escapeHtml(q.q)}</td>
+            <td>${userAnswer}</td>
+            <td>${correctAnswer}</td>
+            <td class="${status.toLowerCase()}">${status}</td>
+            <td>${escapeHtml(q.explanation || 'No explanation available.')}</td>
+          </tr>
+        `;
+      }).join('');
+      localStorage.removeItem("materialScienceMCQProgress");
+    }
+
+    function restartQuiz() {
+      score = 0;
+      userAnswers = Array(quizData.length).fill(null);
+      timerSeconds = 0;
+      currentPage = 0;
+      shuffledQuizData = shuffleOptions(quizData);
+      resultsEl.classList.add("hidden");
+      prevPageButton.classList.remove("hidden");
+      nextPageButton.classList.remove("hidden");
+      submitButton.classList.remove("hidden");
+      scoreEl.innerHTML = "";
+      clearInterval(timerInterval);
+      startTimer();
+      showPage(0);
+    }
+
+    function loadProgress() {
+      const saved = localStorage.getItem("materialScienceMCQProgress");
+      if (saved) {
+        const { score: savedScore, answers: savedAnswers, time: savedTime } = JSON.parse(saved);
+        score = savedScore || 0;
+        userAnswers = savedAnswers && savedAnswers.length === quizData.length ? savedAnswers : Array(quizData.length).fill(null);
+        timerSeconds = savedTime || 0;
+      }
+    }
+
+    function saveProgress() {
+      localStorage.setItem("materialScienceMCQProgress", JSON.stringify({
+        score,
+        answers: userAnswers,
+        time: timerSeconds
+      }));
+    }
+
+    // Initialize
+    shuffledQuizData = shuffleOptions(quizData);
+    loadProgress();
+    startTimer();
+    showPage(0);
+
+    // Event listeners
+    submitButton.addEventListener("click", endQuiz);
+    restartButton.addEventListener("click", restartQuiz);
+    prevPageButton.addEventListener("click", () => {
+      if (currentPage > 0) showPage(currentPage - 1);
+    });
+    nextPageButton.addEventListener("click", () => {
+      if ((currentPage + 1) * questionsPerPage < quizData.length) showPage(currentPage + 1);
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !submitButton.disabled) {
+        submitButton.click();
+      } else if (e.key === 'ArrowLeft' && !prevPageButton.disabled) {
+        prevPageButton.click();
+      } else if (e.key === 'ArrowRight' && !nextPageButton.disabled) {
+        nextPageButton.click();
+      }
+    });
+  </script>
+</body>
+</html>
