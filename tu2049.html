@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>त्रिभुवन विश्वविद्यालय MCQ क्विज</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Roboto', -apple-system, Arial, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background: linear-gradient(135deg, #e0f7fa, #80deea);
+      color: #1a202c;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.6;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2b6cb0;
+      margin-bottom: 0.5rem;
+      font-size: 2.5rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #c53030;
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+
+    .quiz-container {
+      max-width: 1000px;
+      width: 100%;
+      background: #ffffff;
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+      margin-bottom: 2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .quiz-container:hover {
+      transform: translateY(-5px);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background: #edf2f7;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    .progress {
+      height: 100%;
+      background: linear-gradient(to right, #4299e1, #3182ce);
+      border-radius: 6px;
+      transition: width 0.4s ease-in-out;
+    }
+
+    #timer {
+      text-align: right;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: #c53030;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .question {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      border-radius: 8px;
+      background: #f7fafc;
+      border: 1px solid #e2e8f0;
+      animation: fadeIn 0.5s ease-out;
+      transition: box-shadow 0.3s;
+    }
+
+    .question:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .question h3 {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #2d3748;
+      margin-bottom: 1rem;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .options button {
+      padding: 0.75rem 1.25rem;
+      width: 100%;
+      background: #ebf8ff;
+      border: 2px solid #bee3f8;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      text-align: left;
+      transition: all 0.3s ease;
+      color: #2d3748;
+    }
+
+    .options button:hover:not(:disabled) {
+      background: #bee3f8;
+      border-color: #90cdf4;
+      transform: translateX(4px);
+    }
+
+    .options button:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+    }
+
+    .options button.correct {
+      background: #c6f6d5 !important;
+      border-color: #68d391 !important;
+      color: #22543d;
+      animation: pulse 0.5s;
+    }
+
+    .options button.wrong {
+      background: #fed7d7 !important;
+      border-color: #f56565 !important;
+      color: #742a2a;
+      animation: shake 0.3s;
+    }
+
+    .options button:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .explanation {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f0fff4;
+      border-left: 4px solid #48bb78;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      color: #2d3748;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.3s ease, max-height 0.3s ease;
+    }
+
+    .explanation.show {
+      opacity: 1;
+      max-height: 200px;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+      gap: 1rem;
+    }
+
+    .pagination-button {
+      background: #4299e1;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    .pagination-button:hover:not(:disabled) {
+      background: #3182ce;
+    }
+
+    .pagination-button:disabled {
+      background: #e2e8f0;
+      cursor: not-allowed;
+    }
+
+    .submit-button, .restart-button {
+      background: #4299e1;
+      color: #fff;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      width: 100%;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .submit-button:hover:not(:disabled), .restart-button:hover:not(:disabled) {
+      background: #3182ce;
+      transform: translateY(-2px);
+    }
+
+    .submit-button:disabled {
+      background: #e2e8f0;
+      cursor: not-allowed;
+    }
+
+    #score, #results {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-top: 2rem;
+      font-weight: 700;
+      color: #2d3748;
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .results-table th, .results-table td {
+      border: 1px solid #e2e8f0;
+      padding: 1rem;
+      text-align: left;
+    }
+
+    .results-table th {
+      background: #edf2f7;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .results-table td.correct { color: #2f855a; font-weight: 600; }
+    .results-table td.wrong { color: #c53030; font-weight: 600; }
+    .results-table td.not-attempted { color: #718096; }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      .quiz-container {
+        padding: 1.5rem;
+      }
+      .question h3 {
+        font-size: 1.1rem;
+      }
+      .options button {
+        font-size: 0.95rem;
+        padding: 0.6rem 1rem;
+      }
+      .results-table th, .results-table td {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+      }
+      .pagination-button {
+        padding: 0.6rem 1rem;
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.2rem;
+      }
+      .submit-button, .restart-button {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>त्रिभुवन विश्वविद्यालय MCQ क्विज</h1>
+  <h2>आफ्नो ज्ञान परीक्षण गर्नुहोस्: ५० प्रश्नहरू</h2>
+  <div class="quiz-container">
+    <div id="timer">समय: 00:00</div>
+    <div class="progress-bar">
+      <div class="progress" id="progress"></div>
+    </div>
+    <div id="quiz" role="region" aria-live="polite"></div>
+    <div class="pagination">
+      <button class="pagination-button" id="prev-page" disabled aria-label="अघिल्लो पृष्ठ">अघिल्लो</button>
+      <button class="pagination-button" id="next-page" aria-label="अर्को पृष्ठ">अर्को</button>
+    </div>
+    <button class="submit-button" id="submit-button" disabled aria-label="प्रश्नपत्र बुझाउनुहोस्">प्रश्नपत्र बुझाउनुहोस्</button>
+    <div id="score"></div>
+    <div id="results" class="hidden">
+      <h2>प्रश्नपत्र परिणाम</h2>
+      <div class="overflow-x-auto">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>प्रश्न</th>
+              <th>तपाईंको जवाफ</th>
+              <th>सही जवाफ</th>
+              <th>स्थिति</th>
+              <th>व्याख्या</th>
+            </tr>
+          </thead>
+          <tbody id="results-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <button class="restart-button hidden" id="restart-button" aria-label="प्रश्नपत्र पुन: सुरु गर्नुहोस्">प्रश्नपत्र पुन: सुरु गर्नुहोस्</button>
+
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/beep-01a.mp3"></audio>
+  <audio id="wrong-sound" src="https://www.soundjay.com/buttons/beep-02.mp3"></audio>
+
+  <script>
+    const quizData = [
+      { q: "त्रिभुवन विश्वविद्यालयको स्थापना कुन वर्षमा भएको हो?", options: ["२०१५ वि.सं.", "२०२५ वि.सं.", "२०३५ वि.सं.", "२०४५ वि.सं."], answer: 0, explanation: "त्रिभुवन विश्वविद्यालय २०१५ वि.सं. (१९५९ ई.) मा स्थापना भएको हो।" },
+      { q: "त्रिभुवन विश्वविद्यालयको संक्षिप्त नाम के हो?", options: ["TU", "NU", "KU", "PU"], answer: 0, explanation: "TU त्रिभुवन विश्वविद्यालयको संक्षिप्त नाम हो।" },
+      { q: "त्रिभुवन विश्वविद्यालयको केन्द्रीय कार्यालय कहाँ अवस्थित छ?", options: ["पोखरा", "काठमाडौं", "विराटनगर", "चितवन"], answer: 1, explanation: "केन्द्रीय कार्यालय काठमाडौंमा अवस्थित छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको मुख्य उद्देश्य के हो?", options: ["व्यापार गर्नु", "शिक्षा र अनुसन्धान विकास गर्नु", "खेलकुद आयोजना गर्नु", "सांस्कृतिक नृत्य सिकाउनु"], answer: 1, explanation: "शिक्षा र अनुसन्धान विकास मुख्य उद्देश्य हो।" },
+      { q: "त्रिभुवन विश्वविद्यालय ऐन कुन वर्षमा संशोधन भएको हुन सक्छ?", options: ["२०४९ वि.सं.", "२०१० वि.सं.", "२०६० वि.सं.", "२०७० वि.सं."], answer: 0, explanation: "२०४९ वि.सं. मा संशोधन भएको अनुमान छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयले कुन क्षेत्रको विकासमा योगदान दिन्छ?", options: ["केवल स्वास्थ्य", "कला, विज्ञान, प्रविधि र स्वास्थ्य", "केवल कृषि", "केवल खेलकुद"], answer: 1, explanation: "कला, विज्ञान, प्रविधि र स्वास्थ्यमा योगदान दिन्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको सर्वोच्च निकाय के हो?", options: ["कार्यकारी परिषद्", "सभा", "सेवा आयोग", "रजिष्ट्रार"], answer: 1, explanation: "सभा सर्वोच्च निकाय हो।" },
+      { q: "त्रिभुवन विश्वविद्यालयको उपकुलपति कसले नियुक्त गर्छ?", options: ["सभा", "राष्ट्रपति", "कार्यकारी परिषद्", "सेवा आयोग"], answer: 1, explanation: "राष्ट्रपतिले नियुक्त गर्छन्।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावली कुन भाषामा लेखिएको छ?", options: ["अंग्रेजी", "नेपाली", "हिन्दी", "संस्कृत"], answer: 1, explanation: "नियमावली नेपालीमा लेखिएको छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयमा कति जना सदस्य सेवा आयोगमा हुन्छन्?", options: ["३", "५", "७", "९"], answer: 0, explanation: "सेवा आयोगमा ३ जना सदस्य हुन्छन्।" },
+      { q: "त्रिभुवन विश्वविद्यालयको वार्षिक बजेट कसले स्वीकृत गर्छ?", options: ["सेवा आयोग", "सभा", "कार्यकारी परिषद्", "उपकुलपति"], answer: 1, explanation: "सभाले बजेट स्वीकृत गर्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको सेवा नियममा कति प्रकारका विदा हुन्छन्?", options: ["५", "७", "९", "११"], answer: 2, explanation: "९ प्रकारका विदा हुन्छन्।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कति परिच्छेद छन्?", options: ["१०", "१५", "१७", "२०"], answer: 2, explanation: "१७ परिच्छेद छन्।" },
+      { q: "त्रिभुवन विश्वविद्यालयको क्याम्पस प्रमुख कसले नियुक्त गर्छ?", options: ["सेवा आयोग", "कार्यकारी परिषद्", "सभा", "डीन"], answer: 1, explanation: "कार्यकारी परिषद्ले नियुक्त गर्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको कर्मचारीको अनिवार्य अवकाश उमेर कति हो?", options: ["५५ वर्ष", "६० वर्ष", "६५ वर्ष", "५८ वर्ष"], answer: 1, explanation: "६० वर्षमा अवकाश हुन्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयमा कुन समूहले प्राविधिक काम गर्छ?", options: ["प्रशिक्षण समूह", "प्रशासन समूह", "प्राविधिक समूह", "लेखा समूह"], answer: 2, explanation: "प्राविधिक समूहले प्राविधिक काम गर्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कति दफा छन्?", options: ["५०", "७५", "१००", "१५०"], answer: 2, explanation: "लगभग १०० दफा छन्।" },
+      { q: "त्रिभुवन विश्वविद्यालयमा कति वर्ष सेवा गरेपछि उपदान पाइन्छ?", options: ["५ वर्ष", "१० वर्ष", "२० वर्ष", "२५ वर्ष"], answer: 1, explanation: "१० वर्षपछि उपदान पाइन्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको सेवा नियममा कति प्रकारका समूह छन्?", options: ["२", "३", "४", "५"], answer: 1, explanation: "३ प्रकारका समूह छन्।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कुन विदाको लागि चिकित्सा प्रमाणपत्र आवश्यक पर्छ?", options: ["पर्व विदा", "बिरामी विदा", "घर विदा", "अध्ययन विदा"], answer: 1, explanation: "बिरामी विदाका लागि प्रमाणपत्र चाहिन्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावली कुन बिक्रम संवत् वर्षमा जारी भएको हो?", options: ["२०४५ वि.सं.", "२०५० वि.सं.", "२०६० वि.सं.", "२०४० वि.सं."], answer: 1, explanation: "२०५० वि.सं. मा जारी भएको हो।" },
+      { q: "त्रिभुवन विश्वविद्यालयको सेवा आयोगको बैठक कसले बोलाउँछ?", options: ["उपकुलपति", "अध्यक्ष", "रजिष्ट्रार", "सभा"], answer: 1, explanation: "अध्यक्षले बैठक बोलाउँछ।" },
+      { q: "त्रिभुवन विश्वविद्यालयमा कति दिनको घर विदा वार्षिक रूपमा दिइन्छ?", options: ["१५ दिन", "२० दिन", "३० दिन", "४५ दिन"], answer: 2, explanation: "३० दिनको घर विदा दिइन्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कुन समूहको वरियता पहिलो छ?", options: ["प्रशिक्षण समूह", "प्रशासन समूह", "प्राविधिक समूह", "लेखा समूह"], answer: 0, explanation: "प्रशिक्षण समूहको वरियता पहिलो छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कति प्रकारका सजाय उल्लेख छन्?", options: ["३", "४", "५", "६"], answer: 1, explanation: "४ प्रकारका सजाय छन्।" },
+      { q: "त्रिभुवन विश्वविद्यालयमा कति वर्ष सेवा गरेपछि निवृत्तिभरण पाइन्छ?", options: ["१० वर्ष", "१५ वर्ष", "२० वर्ष", "२५ वर्ष"], answer: 2, explanation: "२० वर्षपछि निवृत्तिभरण पाइन्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कुन विदा पहिलो उल्लेख छ?", options: ["घर विदा", "बिरामी विदा", "प्रसूति विदा", "पर्व विदा"], answer: 0, explanation: "घर विदा पहिलो उल्लेख छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कुन निकायले तलब निर्धारण गर्छ?", options: ["सभा", "कार्यकारी परिषद्", "सेवा आयोग", "रजिष्ट्रार"], answer: 0, explanation: "सभाले तलब निर्धारण गर्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कति पटक संशोधन भएको छ?", options: ["५", "१०", "१५", "२०"], answer: 1, explanation: "१० पटक संशोधन भएको छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कुन विदा बिना सूचना रद्द हुन्छ?", options: ["पर्व विदा", "बिरामी विदा", "आकस्मिक विदा", "अध्ययन विदा"], answer: 2, explanation: "आकस्मिक विदा बिना सूचना रद्द हुन्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको सेवा नियममा कुन समूहले प्रशासनिक काम गर्छ?", options: ["प्रशिक्षण समूह", "प्रशासन समूह", "प्राविधिक समूह", "लेखा समूह"], answer: 1, explanation: "प्रशासन समूहले प्रशासनिक काम गर्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कति दिनको असाधारण विदा दिइन्छ?", options: ["५ दिन", "१० दिन", "१५ दिन", "२० दिन"], answer: 1, explanation: "१० दिनको असाधारण विदा दिइन्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कुन निकायले विदा स्वीकृत गर्छ?", options: ["रजिष्ट्रार", "विभाग प्रमुख", "कार्यकारी परिषद्", "सेवा आयोग"], answer: 1, explanation: "विभाग प्रमुखले विदा स्वीकृत गर्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कति प्रकारका बढुवा उल्लेख छन्?", options: ["१", "२", "३", "४"], answer: 1, explanation: "२ प्रकारका बढुवा छन्।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कुन निकायको बैठक पहिलो उल्लेख छ?", options: ["सभा", "कार्यकारी परिषद्", "सेवा आयोग", "शैक्षिक परिषद्"], answer: 0, explanation: "सभाको बैठक पहिलो उल्लेख छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कुन परिच्छेदले विदाको व्यवस्था गर्छ?", options: ["परिच्छेद १", "परिच्छेद ४", "परिच्छेद ६", "परिच्छेद १०"], answer: 1, explanation: "परिच्छेद ४ मा विदाको व्यवस्था छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको सेवा नियममा कुन दफाले बढुवाको मापदण्ड तोकेको छ?", options: ["दफा १०", "दफा १५", "दफा २१", "दफा ३०"], answer: 2, explanation: "दफा २१ मा बढुवाको मापदण्ड छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयमा कति प्रतिशत अंकको कार्यसम्पादन मूल्यांकन बढुवाका लागि आवश्यक छ?", options: ["५०%", "६०%", "७०%", "८०%"], answer: 2, explanation: "७०% अंक आवश्यक छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कुन परिच्छेदले अनुशासन कारबाहीको व्यवस्था गर्छ?", options: ["परिच्छेद १", "परिच्छेद ५", "परिच्छेद १०", "परिच्छेद १३"], answer: 2, explanation: "परिच्छेद १० मा अनुशासन कारबाही छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयमा कति दिनभित्र अनुशासन कारबाहीको सिफारिस दिनुपर्छ?", options: ["१५ दिन", "३० दिन", "४५ दिन", "६० दिन"], answer: 1, explanation: "३० दिनभित्र सिफारिस दिनुपर्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कति वर्ष सेवा गरेपछि विशेष तलबी विदा पाइन्छ?", options: ["१ वर्ष", "३ वर्ष", "५ वर्ष", "७ वर्ष"], answer: 2, explanation: "५ वर्षपछि विशेष तलबी विदा पाइन्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कुन अवस्थामा कर्मचारीको तलब कट्टी गर्न सकिन्छ?", options: ["बिरामी विदा लिएको", "बिना सूचना अनुपस्थित भएको", "पर्व विदा लिएको", "घर विदा लिएको"], answer: 1, explanation: "बिना सूचना अनुपस्थित भएकोमा तलब कट्टी हुन्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयमा कति महिनाको तलवको उपदान २० वर्ष सेवा गरेपछि पाइन्छ?", options: ["६ महिना", "१२ महिना", "१८ महिना", "२४ महिना"], answer: 1, explanation: "२० वर्षपछि १२ महिनाको तलवको उपदान पाइन्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कुन निकायले विदेशी काजको स्वीकृति दिन सक्छ?", options: ["रजिष्ट्रार", "कार्यकारी परिषद्", "विभाग प्रमुख", "उपकुलपति"], answer: 1, explanation: "कार्यकारी परिषद्ले स्वीकृत गर्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कुन सजायमा सेवा अवधि गणना हुँदैन?", options: ["चेतावनी", "तलब कट्टी", "सेवाबाट हटाउने", "बढुवा रोक्का"], answer: 2, explanation: "सेवाबाट हटाउँदा सेवा अवधि गणना हुँदैन।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीको दफा ४६ अनुसार असाधारण परिवारिक निवृत्तिभरणको अधिकतम प्रतिशत कति हो?", options: ["२५%", "५०%", "७५%", "१००%"], answer: 2, explanation: "७५% सम्म परिवारिक निवृत्तिभरण हुन्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीको परिच्छेद ६ मा उल्लेखित औषधि उपचार खर्चको अधिकतम सीमा कति हो?", options: ["रू. ५०,०००", "रू. १,००,०००", "रू. २,००,०००", "कुनै सीमा छैन"], answer: 1, explanation: "१,००,००० सम्म खर्चको सीमा छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीको दफा ४० अनुसार अवकाशको उमेर विशेष परिस्थितिमा विस्तार भएको अवस्थामा कति हुन्छ?", options: ["६२ वर्ष", "६३ वर्ष", "६५ वर्ष", "६८ वर्ष"], answer: 1, explanation: "विशेष परिस्थितिमा ६३ वर्षसम्म विस्तार हुन्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कति दिनभित्र अनुशासन कारबाहीको सिफारिस फिर्ता लिन सकिन्छ यदि किनारा नलागेमा?", options: ["३० दिन", "६० दिन", "९० दिन", "१२० दिन"], answer: 1, explanation: "६० दिनभित्र फिर्ता लिन सकिन्छ।" },
+      { q: "त्रिभुवन विश्वविद्यालयको नियमावलीमा कुन परिस्थितिमा विदेशी काज बेतलबी हुन्छ?", options: ["३ महिनाभन्दा बढी भएको", "चिकित्सा प्रमाणपत्र नभएको", "कार्यकारी परिषद्को स्वीकृति नभएको", "सबै"], answer: 0, explanation: "३ महिनाभन्दा बढी भएमा बेतलबी हुन्छ।" }
+    ];
+
+    let score = 0;
+    let userAnswers = Array(quizData.length).fill(null);
+    let timerSeconds = 0;
+    let timerInterval;
+    let shuffledQuizData = [];
+    let currentPage = 0;
+    const questionsPerPage = 10;
+
+    const quizEl = document.getElementById("quiz");
+    const scoreEl = document.getElementById("score");
+    const resultsEl = document.getElementById("results");
+    const resultsBody = document.getElementById("results-body");
+    const progressEl = document.getElementById("progress");
+    const timerEl = document.getElementById("timer");
+    const submitButton = document.getElementById("submit-button");
+    const restartButton = document.getElementById("restart-button");
+    const prevPageButton = document.getElementById("prev-page");
+    const nextPageButton = document.getElementById("next-page");
+    const correctSound = document.getElementById("correct-sound");
+    const wrongSound = document.getElementById("wrong-sound");
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function shuffleOptions(quizData) {
+      return quizData.map(q => {
+        const correct = q.options[q.answer];
+        const shuffled = [...q.options].sort(() => Math.random() - 0.5);
+        return {
+          ...q,
+          options: shuffled,
+          answer: shuffled.indexOf(correct)
+        };
+      });
+    }
+
+    function startTimer() {
+      const minutes = Math.floor(timerSeconds / 60);
+      const seconds = timerSeconds % 60;
+      timerEl.textContent = `समय: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      timerInterval = setInterval(() => {
+        timerSeconds++;
+        const minutes = Math.floor(timerSeconds / 60);
+        const seconds = timerSeconds % 60;
+        timerEl.textContent = `समय: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    function updateProgress() {
+      const answered = userAnswers.filter(answer => answer !== null).length;
+      const percentage = (answered / quizData.length) * 100;
+      progressEl.style.width = `${percentage}%`;
+      checkAllAnswered();
+    }
+
+    function showPage(pageIndex) {
+      currentPage = pageIndex;
+      const startIndex = pageIndex * questionsPerPage;
+      const endIndex = Math.min(startIndex + questionsPerPage, shuffledQuizData.length);
+      const fragment = document.createDocumentFragment();
+      const pageQuestions = shuffledQuizData.slice(startIndex, endIndex);
+      pageQuestions.forEach((q, index) => {
+        const globalIndex = startIndex + index;
+        const isAnswered = userAnswers[globalIndex] !== null;
+        const selectedAnswer = userAnswers[globalIndex];
+        const correctAnswer = q.options[q.answer];
+        const options = q.options.map((opt, j) => {
+          let buttonClass = '';
+          if (isAnswered) {
+            buttonClass += opt === correctAnswer ? ' correct' :
+                          opt === selectedAnswer && selectedAnswer !== correctAnswer ? ' wrong' : '';
+          }
+          return `<button class="${buttonClass}" aria-label="विकल्प ${escapeHtml(opt)}" ${isAnswered ? 'disabled' : ''}>${escapeHtml(opt)}</button>`;
+        }).join('');
+        const div = document.createElement('div');
+        div.className = 'question';
+        div.dataset.index = globalIndex;
+        div.innerHTML = `
+          <h3>${globalIndex + 1}. ${escapeHtml(q.q)}</h3>
+          <div class="options">${options}</div>
+          <div class="explanation ${isAnswered ? 'show' : ''}" id="explanation-${globalIndex}">
+            ${isAnswered ? escapeHtml(q.explanation || 'कुनै व्याख्या उपलब्ध छैन।') : ''}
+          </div>
+        `;
+        fragment.appendChild(div);
+      });
+      quizEl.innerHTML = '';
+      quizEl.appendChild(fragment);
+
+      // Attach event listeners to buttons
+      quizEl.querySelectorAll('.options button').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const questionDiv = e.target.closest('.question');
+          const questionIndex = parseInt(questionDiv.dataset.index);
+          const selected = Array.from(questionDiv.querySelectorAll('.options button')).indexOf(e.target);
+          const selectedText = e.target.textContent;
+          checkAnswer(e.target, questionIndex, selected, selectedText);
+        });
+      });
+
+      prevPageButton.disabled = currentPage === 0;
+      nextPageButton.disabled = endIndex === quizData.length;
+      updateProgress();
+    }
+
+    function checkAnswer(button, questionIndex, selected, selectedText) {
+      if (userAnswers[questionIndex] !== null) return;
+      const q = shuffledQuizData[questionIndex];
+      const correct = q.answer;
+      const buttons = button.parentElement.querySelectorAll("button");
+      const explanationEl = document.getElementById(`explanation-${questionIndex}`);
+
+      buttons.forEach((btn, j) => {
+        btn.disabled = true;
+        if (j === correct) btn.classList.add("correct");
+        if (btn === button && selected !== correct) btn.classList.add("wrong");
+      });
+
+      userAnswers[questionIndex] = selectedText;
+      if (selected === correct) {
+        score++;
+        correctSound.play().catch(() => console.log("सही ध्वनि प्लेब्याक असफल भयो"));
+      } else {
+        wrongSound.play().catch(() => console.log("गलत ध्वनि प्लेब्याक असफल भयो"));
+      }
+
+      explanationEl.textContent = q.explanation || 'कुनै व्याख्या उपलब्ध छैन।';
+      explanationEl.classList.add('show');
+      saveProgress();
+      updateProgress();
+    }
+
+    function checkAllAnswered() {
+      const allAnswered = userAnswers.every(answer => answer !== null);
+      submitButton.disabled = !allAnswered;
+    }
+
+    function endQuiz() {
+      clearInterval(timerInterval);
+      quizEl.innerHTML = '';
+      prevPageButton.classList.add("hidden");
+      nextPageButton.classList.add("hidden");
+      submitButton.classList.add("hidden");
+      scoreEl.innerHTML = `तपाईंको स्कोर: ${score} / ${quizData.length} (${((score / quizData.length) * 100).toFixed(2)}%)`;
+      resultsEl.classList.remove("hidden");
+      restartButton.classList.remove("hidden");
+
+      resultsBody.innerHTML = shuffledQuizData.map((q, i) => {
+        const userAnswer = userAnswers[i] === null ? "प्रयास नगरिएको" : escapeHtml(userAnswers[i]);
+        const correctAnswer = escapeHtml(q.options[q.answer]);
+        const status = userAnswers[i] === q.options[q.answer] ? "सही" :
+                      userAnswers[i] === null ? "प्रयास नगरिएको" : "गलत";
+        return `
+          <tr>
+            <td>${i + 1}. ${escapeHtml(q.q)}</td>
+            <td>${userAnswer}</td>
+            <td>${correctAnswer}</td>
+            <td class="${status.toLowerCase()}">${status}</td>
+            <td>${escapeHtml(q.explanation || 'कुनै व्याख्या उपलब्ध छैन।')}</td>
+          </tr>
+        `;
+      }).join('');
+      localStorage.removeItem("tuMCQProgress");
+    }
+
+    function restartQuiz() {
+      score = 0;
+      userAnswers = Array(quizData.length).fill(null);
+      timerSeconds = 0;
+      currentPage = 0;
+      shuffledQuizData = shuffleOptions(quizData);
+      resultsEl.classList.add("hidden");
+      prevPageButton.classList.remove("hidden");
+      nextPageButton.classList.remove("hidden");
+      submitButton.classList.remove("hidden");
+      scoreEl.innerHTML = "";
+      clearInterval(timerInterval);
+      startTimer();
+      showPage(0);
+    }
+
+    function loadProgress() {
+      const saved = localStorage.getItem("tuMCQProgress");
+      if (saved) {
+        const { score: savedScore, answers: savedAnswers, time: savedTime } = JSON.parse(saved);
+        score = savedScore || 0;
+        userAnswers = savedAnswers && savedAnswers.length === quizData.length ? savedAnswers : Array(quizData.length).fill(null);
+        timerSeconds = savedTime || 0;
+      }
+    }
+
+    function saveProgress() {
+      localStorage.setItem("tuMCQProgress", JSON.stringify({
+        score,
+        answers: userAnswers,
+        time: timerSeconds
+      }));
+    }
+
+    // Initialize
+    shuffledQuizData = shuffleOptions(quizData);
+    loadProgress();
+    startTimer();
+    showPage(0);
+
+    // Event listeners
+    submitButton.addEventListener("click", endQuiz);
+    restartButton.addEventListener("click", restartQuiz);
+    prevPageButton.addEventListener("click", () => {
+      if (currentPage > 0) showPage(currentPage - 1);
+    });
+    nextPageButton.addEventListener("click", () => {
+      if ((currentPage + 1) * questionsPerPage < quizData.length) showPage(currentPage + 1);
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !submitButton.disabled) {
+        submitButton.click();
+      } else if (e.key === 'ArrowLeft' && !prevPageButton.disabled) {
+        prevPageButton.click();
+      } else if (e.key === 'ArrowRight' && !nextPageButton.disabled) {
+        nextPageButton.click();
+      }
+    });
+  </script>
+</body>
+</html>
