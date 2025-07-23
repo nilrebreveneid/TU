@@ -258,7 +258,7 @@
   <button class="restart-button hidden" id="restart-button" aria-label="Restart quiz">Restart Quiz</button>
 
   <script>
-     const questions = [
+ const questions = [
   {
     "q": "An attempt to turn a key into a lock manifests in the application of:",
     "options": ["Coplanar force", "Moment", "Linear force", "Shear force"],
@@ -1098,6 +1098,24 @@
     "options": ["Pascal’s law", "Hooke’s law", "Boyle’s law", "Charles’ law"],
     "answer": 1,
     "explanation": "Hooke’s law states that stress is proportional to strain within the elastic limit."
+  },
+  {
+    "q": "The relationship between power (P), torque (τ), and angular velocity (ω) is given by:",
+    "options": ["P = τ / ω", "P = τ × ω", "P = τ + ω", "P = τ² × ω"],
+    "answer": 1,
+    "explanation": "Power in rotational motion is given by P = τ × ω, where τ is torque and ω is angular velocity in radians per second."
+  },
+  {
+    "q": "If a machine operates at 1200 rpm and produces a torque of 50 Nm, what is the power output (in watts)? (Use ω = 2πN/60, where N is rpm)",
+    "options": ["6283 W", "3141 W", "12566 W", "1570 W"],
+    "answer": 0,
+    "explanation": "Angular velocity ω = 2π × 1200 / 60 = 125.66 rad/s. Power P = τ × ω = 50 × 125.66 ≈ 6283 W."
+  },
+  {
+    "q": "To increase the power output of a rotating system while keeping torque constant, you should:",
+    "options": ["Decrease rpm", "Increase rpm", "Keep rpm constant", "Reduce angular acceleration"],
+    "answer": 1,
+    "explanation": "Power is P = τ × ω. For constant torque, increasing rpm (which increases ω) increases power."
   }
 ]
     let score = 0;
