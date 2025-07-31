@@ -1,0 +1,708 @@
+<!-- 
+  { q: "If the angle of contact of a drop of liquid is acute, then:", options: ["Cohesion is more than adhesion", "Cohesion is less than adhesion"], answer: 1 },
+  { q: "The impeller of a centrifugal pump may have:", options: ["Vortex casing", "Any one of these"], answer: 1 },
+  { q: "When two capillary tubes of different diameters are dipped vertically, the rise of the liquid is:", options: ["more in the tube of larger diameter", "more in the tube of smaller diameter"], answer: 1 },
+  { q: "The amount of water vapor in air is known as:", options: ["Saturation point", "Humidity"], answer: 1 },
+  { q: "1 kg/cm² of pressure is equivalent to:", options: ["10 meter of water column", "100 meter of water column"], answer: 1 },
+  { q: "“Piezoelectric” opening pressure is used for measuring:", options: ["The total pressure", "The pressure in the static fluid"], answer: 1 },
+  { q: "The property of a fluid by which molecules of different kinds of fluid are not attracted to each other is:", options: ["Cohesion", "Adhesion"], answer: 1 },
+  { q: "Venturimeter is used to measure:", options: ["Pressure", "Velocity"], answer: 1 },
+  { q: "In the case of flow through series pipes, which is true?", options: ["Head loss in each pipe is same", "Flow in each pipe is same"], answer: 1 },
+  { q: "Pitot tube is used to measure:", options: ["Static pressure", "Velocity"], answer: 1 },
+  { q: "Fluid is a substance that can:", options: ["Resist shear stress", "Flow under applied force"], answer: 1 },
+  { q: "The SI unit of viscosity is:", options: ["Pascal-second", "Newton-meter"], answer: 0 },
+  { q: "Which device is used to measure fluid pressure?", options: ["Manometer", "Barometer"], answer: 0 },
+  { q: "Which principle does a Venturimeter work on?", options: ["Bernoulli’s principle", "Pascal’s law"], answer: 0 },
+  { q: "Pascal’s Law states that pressure applied to a confined fluid is:", options: ["Transmitted equally in all directions", "Absorbed completely"], answer: 0 },
+  { q: "Turbulence in fluid flow occurs when Reynolds number is:", options: ["Greater than 4000", "Less than 2000"], answer: 0 },
+  { q: "The upward force experienced by a body submerged in fluid is:", options: ["Buoyant force", "Drag force"], answer: 0 },
+  { q: "Continuity equation is based on conservation of:", options: ["Mass", "Energy"], answer: 0 },
+  { q: "Bernoulli’s equation is applicable to:", options: ["Ideal incompressible fluid", "Compressible viscous fluid"], answer: 0 },
+  { q: "A device used to measure the velocity of fluid is:", options: ["Pitot tube", "Orifice meter"], answer: 0 },
+  { q: "Viscosity of water is ___ than that of oil.", options: ["Lower", "Higher"], answer: 0 },
+  { q: "Surface tension is due to:", options: ["Cohesion", "Adhesion"], answer: 0 },
+  { q: "Which instrument is used to measure very low pressure?", options: ["McLeod gauge", "Manometer"], answer: 0 },
+  { q: "Capillary rise is higher in:", options: ["Narrow tubes", "Wider tubes"], answer: 0 },
+  { q: "Which component increases pressure in a hydraulic system?", options: ["Pump", "Valve"], answer: 0 },
+  { q: "Specific gravity is defined as:", options: ["Ratio of fluid density to water density", "Mass per unit volume"], answer: 0 },
+  { q: "Flow of fluid in which layers slide smoothly is called:", options: ["Laminar flow", "Turbulent flow"], answer: 0 },
+  { q: "Which of the following is not a property of fluid?", options: ["Elasticity", "Viscosity"], answer: 0 },
+  { q: "Bulk modulus is related to:", options: ["Compressibility", "Viscosity"], answer: 0 },
+  { q: "The velocity of fluid is maximum at:", options: ["Center of pipe", "Pipe wall"], answer: 0 },
+  { q: "The property of a material which enables it to resist fracture due to high impact loads is known as:", options: ["Elasticity", "Strength"], answer: 1 },
+  { q: "The property of a material which enables it to be drawn into wires is:", options: ["Toughness", "Ductility"], answer: 1 },
+  { q: "Medium carbon steel contains:", options: ["0.15% carbon", "0.8 to 1.5% carbon"], answer: 1 },
+  { q: "Bronze is an alloy of:", options: ["Copper and zinc", "Copper and tin"], answer: 1 },
+  { q: "In a structure, the degree of freedom is:", options: ["1", "2"], answer: 1 },
+  { q: "Kinematic pairs are those which have:", options: ["Pairs of elements having surface contact", "Two elements that permit relative motion"], answer: 1 },
+  { q: "According to maximum normal stress theory:", options: ["Failure will occur when the magnitude of the major principal stress reaches that which causes fracture in a simple tension test", "Yielding will occur when the magnitude of the principal stress reaches that which causes fracture in a simple tension test"], answer: 1 },
+  { q: "Where l = number of links, p = number of pairs, the relation is:", options: ["l = 2p + 4", "l = 2p - 4"], answer: 1 },
+  { q: "If a machine member is subjected to direct tensile stress σ and shear stress τ, the maximum normal stress is:", options: ["σ/2 - ½ √(σ² - 4τ²)", "σ/2 + ½ √(σ² + 4τ²)"], answer: 1 },
+  { q: "Factor of safety for fatigue loading is the ratio of:", options: ["Elastic limit to the working stress", "Endurance limit to the working stress"], answer: 1 },
+  { q: "Stress concentration factor is defined as the ratio of:", options: ["Nominal stress to the maximum stress", "Maximum stress to the nominal stress"], answer: 1 },
+  { q: "Strain is defined as:", options: ["Change in length / Original length", "Original length / Change in length"], answer: 0 },
+  { q: "The unit of stress is:", options: ["N/m²", "m/N²"], answer: 0 },
+  { q: "Modulus of elasticity is the ratio of:", options: ["Stress / Strain", "Strain / Stress"], answer: 0 },
+  { q: "Poisson’s ratio is the ratio of:", options: ["Lateral strain / Longitudinal strain", "Longitudinal strain / Lateral strain"], answer: 0 },
+  { q: "Hooke’s law is valid up to:", options: ["Elastic limit", "Yield point"], answer: 0 },
+  { q: "The energy stored in a body within elastic limit is called:", options: ["Strain energy", "Kinetic energy"], answer: 0 },
+  { q: "A material is said to be brittle if it:", options: ["Fails without much deformation", "Shows high elongation before failure"], answer: 0 },
+  { q: "Shear stress acts:", options: ["Tangential to surface", "Normal to surface"], answer: 0 },
+  { q: "In a cantilever beam, maximum bending moment occurs at:", options: ["Fixed end", "Free end"], answer: 0 },
+  { q: "A simply supported beam has maximum deflection at:", options: ["Center of span", "Support"], answer: 0 },
+  { q: "The section modulus is used in:", options: ["Bending stress calculations", "Shear stress calculations"], answer: 0 },
+  { q: "Principal stresses are:", options: ["Maximum normal stresses", "Maximum shear stresses"], answer: 0 },
+  { q: "Torsion is a result of:", options: ["Twisting moment", "Axial force"], answer: 0 },
+  { q: "The neutral axis in bending is:", options: ["The axis with zero stress", "The axis with maximum stress"], answer: 0 },
+  { q: "The slenderness ratio is defined for:", options: ["Columns", "Beams"], answer: 0 }
+ -->
+
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fluid Mechanics MCQ Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Roboto', -apple-system, Arial, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background: linear-gradient(135deg, #e0f7fa, #80deea);
+      color: #1a202c;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.6;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2b6cb0;
+      margin-bottom: 0.5rem;
+      font-size: 2.5rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #c53030;
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+
+    .quiz-container {
+      max-width: 1000px;
+      width: 100%;
+      background: #ffffff;
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+      margin-bottom: 2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .quiz-container:hover {
+      transform: translateY(-5px);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background: #edf2f7;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    .progress {
+      height: 100%;
+      background: linear-gradient(to right, #4299e1, #3182ce);
+      border-radius: 6px;
+      transition: width 0.4s ease-in-out;
+    }
+
+    #timer {
+      text-align: right;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: #c53030;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .question {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      border-radius: 8px;
+      background: #f7fafc;
+      border: 1px solid #e2e8f0;
+      animation: fadeIn 0.5s ease-out;
+      transition: box-shadow 0.3s;
+    }
+
+    .question:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .question p {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #2d3748;
+      margin-bottom: 1rem;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .options button {
+      padding: 0.75rem 1.25rem;
+      width: 100%;
+      background: #ebf8ff;
+      border: 2px solid #bee3f8;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      text-align: left;
+      transition: all 0.3s ease;
+      color: #2d3748;
+    }
+
+    .options button:hover:not(:disabled) {
+      background: #bee3f8;
+      border-color: #90cdf4;
+      transform: translateX(4px);
+    }
+
+    .options button:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+    }
+
+    .options button.correct {
+      background: #c6f6d5 !important;
+      border-color: #68d391 !important;
+      color: #22543d;
+      animation: pulse 0.5s;
+    }
+
+    .options button.wrong {
+      background: #fed7d7 !important;
+      border-color: #f56565 !important;
+      color: #742a2a;
+      animation: shake 0.3s;
+    }
+
+    .options button:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .explanation {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f0fff4;
+      border-left: 4px solid #48bb78;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      color: #2d3748;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.3s ease, max-height 0.3s ease;
+    }
+
+    .explanation.show {
+      opacity: 1;
+      max-height: 200px;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+      gap: 1rem;
+    }
+
+    .pagination-button {
+      background: #4299e1;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    .pagination-button:hover:not(:disabled) {
+      background: #3182ce;
+    }
+
+    .pagination-button:disabled {
+      background: #e2e8f0;
+      cursor: not-allowed;
+    }
+
+    .submit-button, .restart-button {
+      background: #4299e1;
+      color: #fff;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      width: 100%;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .submit-button:hover:not(:disabled), .restart-button:hover:not(:disabled) {
+      background: #3182ce;
+      transform: translateY(-2px);
+    }
+
+    .submit-button:disabled {
+      background: #e2e8f0;
+      cursor: not-allowed;
+    }
+
+    #score, #results {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-top: 2rem;
+      font-weight: 700;
+      color: #2d3748;
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .results-table th, .results-table td {
+      border: 1px solid #e2e8f0;
+      padding: 1rem;
+      text-align: left;
+    }
+
+    .results-table th {
+      background: #edf2f7;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .results-table td.correct { color: #2f855a; font-weight: 600; }
+    .results-table td.wrong { color: #c53030; font-weight: 600; }
+    .results-table td.not-attempted { color: #718096; }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      .quiz-container {
+        padding: 1.5rem;
+      }
+      .question p {
+        font-size: 1.1rem;
+      }
+      .options button {
+        font-size: 0.95rem;
+        padding: 0.6rem 1rem;
+      }
+      .results-table th, .results-table td {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+      }
+      .pagination-button {
+        padding: 0.6rem 1rem;
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.2rem;
+      }
+      .submit-button, .restart-button {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Fluid Mechanics MCQ Quiz (30 Questions)</h1>
+  <h2>Test Your Knowledge</h2>
+  <div class="quiz-container">
+    <div id="timer">Time: 00:00</div>
+    <div class="progress-bar">
+      <div class="progress" id="progress"></div>
+    </div>
+    <div id="quiz" role="region" aria-live="polite"></div>
+    <div class="pagination">
+      <button class="pagination-button" id="prev-page" disabled aria-label="Previous page">Previous</button>
+      <button class="pagination-button" id="next-page" aria-label="Next page">Next</button>
+    </div>
+    <button class="submit-button" id="submit-button" disabled aria-label="Submit quiz">Submit Quiz</button>
+    <div id="score"></div>
+    <div id="results" class="hidden">
+      <h2>Quiz Results</h2>
+      <div class="overflow-x-auto">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Question</th>
+              <th>Your Answer</th>
+              <th>Correct Answer</th>
+              <th>Status</th>
+              <th>Explanation</th>
+            </tr>
+          </thead>
+          <tbody id="results-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <button class="restart-button hidden" id="restart-button" aria-label="Restart quiz">Restart Quiz</button>
+
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/beep-01a.mp3"></audio>
+  <audio id="wrong-sound" src="https://www.soundjay.com/buttons/beep-02.mp3"></audio>
+
+  <script>
+    const questions = [
+  // Easy (20 MCQs)
+  { q: "What causes the cohesion in liquids?", options: ["Intermolecular forces", "External pressure"], answer: 0, explanation: "Cohesion is due to intermolecular forces holding fluid molecules together." },
+  { q: "Surface tension acts on which part of the fluid?", options: ["Surface molecules", "Bulk molecules"], answer: 0, explanation: "Surface tension arises from forces among molecules at the surface." },
+  { q: "At what temperature does water reach its maximum density?", options: ["4°C", "0°C"], answer: 0, explanation: "Water has maximum density at 4°C." },
+  { q: "The SI unit of pressure is:", options: ["Pascal", "Bar"], answer: 0, explanation: "Pressure in SI is measured in pascals (Pa)." },
+  { q: "In a manometer, what liquid is commonly used?", options: ["Mercury", "Water"], answer: 0, explanation: "Mercury is widely used because of its high density and non-volatility." },
+  { q: "What happens to fluid velocity in a constricted pipe section?", options: ["Increases", "Decreases"], answer: 0, explanation: "Velocity increases due to continuity in the smaller cross-section." },
+  { q: "The pressure at a given depth in fluid depends on:", options: ["Depth", "Velocity"], answer: 0, explanation: "Pressure depends on depth, fluid density, and gravitation." },
+  { q: "Viscosity measures a fluid’s:", options: ["Resistance to flow", "Density"], answer: 0, explanation: "Viscosity indicates internal friction resisting motion." },
+  { q: "Capillary action occurs due to:", options: ["Adhesion and cohesion", "Gravity"], answer: 0, explanation: "It's caused by molecular attraction between liquid and tube surface and within the liquid." },
+  { q: "The height to which a liquid rises in a capillary tube is inversely proportional to:", options: ["Tube diameter", "Surface tension"], answer: 0, explanation: "Smaller diameter tubes cause higher capillary rise." },
+  { q: "The Pitot tube measures:", options: ["Fluid velocity", "Pressure"], answer: 0, explanation: "It measures fluid velocity via dynamic pressure difference." },
+  { q: "Dynamic viscosity decreases with:", options: ["Increasing temperature", "Increasing pressure"], answer: 0, explanation: "Viscosity typically decreases when temperature rises." },
+  { q: "Bulk modulus measures fluid’s:", options: ["Resistance to compression", "Viscosity"], answer: 0, explanation: "It quantifies how incompressible a fluid is." },
+  { q: "Humidity is the measure of water vapor in:", options: ["Air", "Water"], answer: 0, explanation: "Humidity quantifies water vapor content in air." },
+  { q: "The Bernoulli equation assumes fluid flow is:", options: ["Inviscid and steady", "Compressible and turbulent"], answer: 0, explanation: "Bernoulli’s principle applies to ideal, steady, incompressible, non-viscous flows." },
+  { q: "The discharge of a Venturi meter depends on:", options: ["Pressure difference", "Fluid temperature"], answer: 0, explanation: "Pressure differential across constriction determines flow rate." },
+  { q: "Compressibility of liquids is:", options: ["Very low", "High"], answer: 0, explanation: "Liquids are nearly incompressible compared to gases." },
+  { q: "Which force acts upward on a submerged body?", options: ["Buoyant force", "Gravitational force"], answer: 0, explanation: "Buoyant force pushes upward equal to the displaced fluid weight." },
+  { q: "Flow rate through a pipe is constant if:", options: ["Flow is steady", "Pressure is constant"], answer: 0, explanation: "Steady flow maintains constant volumetric flow rate." },
+  { q: "Mercury is preferred in manometers due to its:", options: ["High density", "Low viscosity"], answer: 0, explanation: "High density makes mercury ideal for measuring large pressures with shorter columns." },
+
+  // Medium (20 MCQs)
+  { q: "Why is air considered compressible and water incompressible?", options: ["Molecular spacing difference", "Viscosity difference"], answer: 0, explanation: "Gas molecules are far apart allowing easy compression; liquid molecules are closer." },
+  { q: "Which factor causes head loss in pipe flow?", options: ["Friction", "Pressure"], answer: 0, explanation: "Friction between fluid and pipe walls causes energy loss." },
+  { q: "Viscosity is related to which dimension in SI units?", options: ["Pascal-second", "Newton-meter"], answer: 0, explanation: "Viscosity unit is Pascal-second (Pa·s), equivalent to kg/(m·s)." },
+  { q: "The flow in pipe switches from laminar to turbulent at Reynolds number:", options: ["Around 2300", "At 1000"], answer: 0, explanation: "Transition typically occurs near Reynolds number 2300." },
+  { q: "The height of mercury column in a barometer corresponds to:", options: ["Atmospheric pressure", "Water pressure"], answer: 0, explanation: "Mercury column height measures atmospheric pressure." },
+  { q: "Why is a venturimeter preferred over an orifice meter?", options: ["Lower pressure loss", "Lower cost"], answer: 0, explanation: "Venturimeters cause less permanent pressure loss." },
+  { q: "Which component in a Venturi meter measures pressure difference?", options: ["Pressure taps", "Nozzle"], answer: 0, explanation: "Pressure taps at inlet and throat measure differential pressure." },
+  { q: "The maximum pressure in a static fluid occurs at:", options: ["Lowest point", "Surface"], answer: 0, explanation: "Pressure increases with depth, maximum at the bottom." },
+  { q: "The center of pressure on a vertical submerged surface lies:", options: ["Below centroid", "Above centroid"], answer: 0, explanation: "Located below centroid due to pressure increasing with depth." },
+  { q: "Which device measures flow rate by variable area principle?", options: ["Rotameter", "Orifice meter"], answer: 0, explanation: "Rotameter’s float moves with flow changing the effective area." },
+  { q: "Why does surface tension decrease with temperature?", options: ["Reduced cohesion", "Increased density"], answer: 0, explanation: "Higher temperature decreases molecular cohesion at the surface." },
+  { q: "The force due to fluid pressure on a submerged vertical rectangular surface depends on:", options: ["Area and depth", "Width only"], answer: 0, explanation: "Force depends on area and centroid depth from surface." },
+  { q: "Which instrument can measure very low vacuum pressures?", options: ["McLeod gauge", "Bourdon gauge"], answer: 0, explanation: "McLeod gauges measure pressures in very low vacuum ranges." },
+  { q: "The SI unit of dynamic viscosity can also be expressed as:", options: ["kg/(m·s)", "Pa·m²"], answer: 0, explanation: "Pa·s equals kg/(m·s), the standard unit of dynamic viscosity." },
+  { q: "The effective pressure head in a piezometer depends on:", options: ["Static pressure", "Velocity head"], answer: 0, explanation: "Piezometers measure static pressure head in fluids." },
+  { q: "The flow rate through a pipe is the product of:", options: ["Area and velocity", "Pressure and velocity"], answer: 0, explanation: "Volumetric flow rate = cross-sectional area × velocity." },
+  { q: "Fluid with zero viscosity is called:", options: ["Ideal fluid", "Real fluid"], answer: 0, explanation: "Ideal fluids have no viscosity and no internal resistance." },
+  { q: "The viscosity of gases typically:", options: ["Increases with temperature", "Decreases with temperature"], answer: 0, explanation: "Gas viscosity rises as temperature increases, opposite to liquids." },
+  { q: "A pitot-static tube combines measurements for:", options: ["Total and static pressure", "Flow rate and temperature"], answer: 0, explanation: "Measures both total (stagnation) and static pressure to find velocity." },
+  { q: "The hydrostatic pressure formula P = ρgh assumes:", options: ["Fluid is incompressible", "Fluid velocity affects pressure"], answer: 0, explanation: "Applicable only for static, incompressible fluids." },
+
+  // Hard (10 MCQs)
+  { q: "Which principle explains how a rotameter works?", options: ["Variable area flow meter principle", "Bernoulli’s principle"], answer: 0, explanation: "Rotameter varies flow area, affecting float position for flow measurement." },
+  { q: "The flow measurement error in orifice meter increases due to:", options: ["Wear on orifice edge", "Flow pulsation"], answer: 0, explanation: "Orifice edge wear changes discharge coefficient causing error." },
+  { q: "In a Venturi meter, what does the throat diameter affect?", options: ["Flow velocity", "Pressure at inlet"], answer: 0, explanation: "Smaller throat diameter increases velocity and reduces pressure." },
+  { q: "The coefficient of discharge (Cd) depends mainly on:", options: ["Meter geometry", "Fluid density"], answer: 0, explanation: "Shape and surface condition of meter influence Cd." },
+  { q: "In fluid statics, the center of pressure is:", options: ["Point of resultant force", "Point of centroid"], answer: 0, explanation: "It's the effective location where total pressure acts." },
+  { q: "Hydrostatic paradox states pressure at the bottom depends on:", options: ["Height of fluid", "Fluid volume"], answer: 0, explanation: "Pressure depends only on height of fluid column, not volume." },
+  { q: "Why does cavitation cause damage in pumps?", options: ["Collapse of vapor bubbles", "Excess flow velocity"], answer: 0, explanation: "Vapor bubbles collapse causing shockwaves that erode surfaces." },
+  { q: "Bulk modulus of elasticity is defined as:", options: ["Ratio of pressure increase to relative volume decrease", "Ratio of flow velocity to pressure"], answer: 0, explanation: "Bulk modulus = ΔPressure / (ΔVolume/Volume)." },
+  { q: "Which term describes the ratio of viscous to inertial forces?", options: ["Reynolds number", "Mach number"], answer: 0, explanation: "Reynolds number characterizes flow regime based on inertial and viscous forces." },
+  { q: "Compressibility effects become significant when Mach number exceeds:", options: ["0.3", "1"], answer: 0, explanation: "Above Mach 0.3, fluid compressibility must be considered." }
+];
+ 
+
+
+      
+    let score = 0;
+    let userAnswers = Array(questions.length).fill(null);
+    let timerSeconds = 0;
+    let timerInterval;
+    let shuffledQuestions = [];
+    let currentPage = 0;
+    const questionsPerPage = 20;
+
+    const quizEl = document.getElementById("quiz");
+    const scoreEl = document.getElementById("score");
+    const resultsEl = document.getElementById("results");
+    const resultsBody = document.getElementById("results-body");
+    const progressEl = document.getElementById("progress");
+    const timerEl = document.getElementById("timer");
+    const submitButton = document.getElementById("submit-button");
+    const restartButton = document.getElementById("restart-button");
+    const prevPageButton = document.getElementById("prev-page");
+    const nextPageButton = document.getElementById("next-page");
+    const correctSound = document.getElementById("correct-sound");
+    const wrongSound = document.getElementById("wrong-sound");
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function shuffleOptions(questions) {
+      return questions.map(q => {
+        const correct = q.options[q.answer];
+        const shuffled = [...q.options].sort(() => Math.random() - 0.5);
+        return {
+          ...q,
+          options: shuffled,
+          answer: shuffled.indexOf(correct)
+        };
+      });
+    }
+
+    function startTimer() {
+      const minutes = Math.floor(timerSeconds / 60);
+      const seconds = timerSeconds % 60;
+      timerEl.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      timerInterval = setInterval(() => {
+        timerSeconds++;
+        const minutes = Math.floor(timerSeconds / 60);
+        const seconds = timerSeconds % 60;
+        timerEl.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    function updateProgress() {
+      const answered = userAnswers.filter(answer => answer !== null).length;
+      const percentage = (answered / questions.length) * 100;
+      progressEl.style.width = `${percentage}%`;
+      checkAllAnswered();
+    }
+
+    function showPage(pageIndex) {
+      currentPage = pageIndex;
+      const startIndex = pageIndex * questionsPerPage;
+      const endIndex = Math.min(startIndex + questionsPerPage, shuffledQuestions.length);
+      const fragment = document.createDocumentFragment();
+      const pageQuestions = shuffledQuestions.slice(startIndex, endIndex);
+      pageQuestions.forEach((q, index) => {
+        const globalIndex = startIndex + index;
+        const isAnswered = userAnswers[globalIndex] !== null;
+        const selectedAnswer = userAnswers[globalIndex];
+        const correctAnswer = q.options[q.answer];
+        const options = q.options.map((opt, j) => {
+          let buttonClass = '';
+          if (isAnswered) {
+            buttonClass += opt === correctAnswer ? ' correct' :
+                          opt === selectedAnswer && selectedAnswer !== correctAnswer ? ' wrong' : '';
+          }
+          return `<button class="${buttonClass}" aria-label="Option ${escapeHtml(opt)}" ${isAnswered ? 'disabled' : ''}>${escapeHtml(opt)}</button>`;
+        }).join('');
+        const div = document.createElement('div');
+        div.className = 'question';
+        div.dataset.index = globalIndex;
+        div.innerHTML = `
+          <p>${globalIndex + 1}. ${escapeHtml(q.q)}</p>
+          <div class="options">${options}</div>
+          <div class="explanation ${isAnswered ? 'show' : ''}" id="explanation-${globalIndex}">
+            ${isAnswered ? escapeHtml(q.explanation || 'No explanation available.') : ''}
+          </div>
+        `;
+        fragment.appendChild(div);
+      });
+      quizEl.innerHTML = '';
+      quizEl.appendChild(fragment);
+
+      quizEl.querySelectorAll('.options button').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const questionDiv = e.target.closest('.question');
+          const questionIndex = parseInt(questionDiv.dataset.index);
+          const selected = Array.from(questionDiv.querySelectorAll('.options button')).indexOf(e.target);
+          const selectedText = e.target.textContent;
+          checkAnswer(e.target, questionIndex, selected, selectedText);
+        });
+      });
+
+      prevPageButton.disabled = currentPage === 0;
+      nextPageButton.disabled = endIndex === questions.length;
+      updateProgress();
+    }
+
+    function checkAnswer(button, questionIndex, selected, selectedText) {
+      if (userAnswers[questionIndex] !== null) return;
+      const q = shuffledQuestions[questionIndex];
+      const correct = q.answer;
+      const buttons = button.parentElement.querySelectorAll("button");
+      const explanationEl = document.getElementById(`explanation-${questionIndex}`);
+
+      buttons.forEach((btn, j) => {
+        btn.disabled = true;
+        if (j === correct) btn.classList.add("correct");
+        if (btn === button && selected !== correct) btn.classList.add("wrong");
+      });
+
+      userAnswers[questionIndex] = selectedText;
+      if (selected === correct) {
+        score++;
+        correctSound.play().catch(() => console.log("Correct sound playback failed"));
+      } else {
+        wrongSound.play().catch(() => console.log("Wrong sound playback failed"));
+      }
+
+      explanationEl.textContent = q.explanation || 'No explanation available.';
+      explanationEl.classList.add('show');
+      saveProgress();
+      updateProgress();
+    }
+
+    function checkAllAnswered() {
+      const allAnswered = userAnswers.every(answer => answer !== null);
+      submitButton.disabled = !allAnswered;
+    }
+
+    function endQuiz() {
+      clearInterval(timerInterval);
+      quizEl.innerHTML = '';
+      prevPageButton.classList.add("hidden");
+      nextPageButton.classList.add("hidden");
+      submitButton.classList.add("hidden");
+      scoreEl.innerHTML = `Your score: ${score} / ${questions.length} (${((score / questions.length) * 100).toFixed(2)}%)`;
+      resultsEl.classList.remove("hidden");
+      restartButton.classList.remove("hidden");
+
+      resultsBody.innerHTML = shuffledQuestions.map((q, i) => {
+        const userAnswer = userAnswers[i] === null ? "Not attempted" : escapeHtml(userAnswers[i]);
+        const correctAnswer = escapeHtml(q.options[q.answer]);
+        const status = userAnswers[i] === q.options[q.answer] ? "Correct" :
+                      userAnswers[i] === null ? "Not attempted" : "Wrong";
+        return `
+          <tr>
+            <td>${i + 1}. ${escapeHtml(q.q)}</td>
+            <td>${userAnswer}</td>
+            <td>${correctAnswer}</td>
+            <td class="${status.toLowerCase()}">${status}</td>
+            <td>${escapeHtml(q.explanation || 'No explanation available.')}</td>
+          </tr>
+        `;
+      }).join('');
+      localStorage.removeItem("fluidMechanicsMCQProgress");
+    }
+
+    function restartQuiz() {
+      score = 0;
+      userAnswers = Array(questions.length).fill(null);
+      timerSeconds = 0;
+      currentPage = 0;
+      shuffledQuestions = shuffleOptions(questions);
+      resultsEl.classList.add("hidden");
+      prevPageButton.classList.remove("hidden");
+      nextPageButton.classList.remove("hidden");
+      submitButton.classList.remove("hidden");
+      scoreEl.innerHTML = "";
+      clearInterval(timerInterval);
+      startTimer();
+      showPage(0);
+    }
+
+    function loadProgress() {
+      const saved = localStorage.getItem("fluidMechanicsMCQProgress");
+      if (saved) {
+        const { score: savedScore, answers: savedAnswers, time: savedTime } = JSON.parse(saved);
+        score = savedScore || 0;
+        userAnswers = savedAnswers && savedAnswers.length === questions.length ? savedAnswers : Array(questions.length).fill(null);
+        timerSeconds = savedTime || 0;
+      }
+    }
+
+    function saveProgress() {
+      localStorage.setItem("fluidMechanicsMCQProgress", JSON.stringify({
+        score,
+        answers: userAnswers,
+        time: timerSeconds
+      }));
+    }
+
+    // Initialize
+    shuffledQuestions = shuffleOptions(questions);
+    loadProgress();
+    startTimer();
+    showPage(0);
+
+    // Event listeners
+    submitButton.addEventListener("click", endQuiz);
+    restartButton.addEventListener("click", restartQuiz);
+    prevPageButton.addEventListener("click", () => {
+      if (currentPage > 0) showPage(currentPage - 1);
+    });
+    nextPageButton.addEventListener("click", () => {
+      if ((currentPage + 1) * questionsPerPage < questions.length) showPage(currentPage + 1);
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !submitButton.disabled) {
+        submitButton.click();
+      } else if (e.key === 'ArrowLeft' && !prevPageButton.disabled) {
+        prevPageButton.click();
+      } else if (e.key === 'ArrowRight' && !nextPageButton.disabled) {
+        nextPageButton.click();
+      }
+    });
+  </script>
+</body>
+</html>
