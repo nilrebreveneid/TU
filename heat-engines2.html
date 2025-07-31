@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Heat Engines Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Roboto', -apple-system, Arial, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background: linear-gradient(135deg, #e0f7fa, #80deea);
+      color: #1a202c;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.6;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2b6cb0;
+      margin-bottom: 0.5rem;
+      font-size: 2.5rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #c53030;
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+
+    .quiz-container {
+      max-width: 1000px;
+      width: 100%;
+      background: #ffffff;
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+      margin-bottom: 2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .quiz-container:hover {
+      transform: translateY(-5px);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background: #edf2f7;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    .progress {
+      height: 100%;
+      background: linear-gradient(to right, #4299e1, #3182ce);
+      border-radius: 6px;
+      transition: width 0.4s ease-in-out;
+    }
+
+    #timer {
+      text-align: right;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: #c53030;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .question {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      border-radius: 8px;
+      background: #f7fafc;
+      border: 1px solid #e2e8f0;
+      animation: fadeIn 0.5s ease-out;
+      transition: box-shadow 0.3s;
+    }
+
+    .question:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .question p {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #2d3748;
+      margin-bottom: 1rem;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .options button {
+      padding: 0.75rem 1.25rem;
+      width: 100%;
+      background: #ebf8ff;
+      border: 2px solid #bee3f8;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      text-align: left;
+      transition: all 0.3s ease;
+      color: #2d3748;
+    }
+
+    .options button:hover:not(:disabled) {
+      background: #bee3f8;
+      border-color: #90cdf4;
+      transform: translateX(4px);
+    }
+
+    .options button:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+    }
+
+    .options button.correct {
+      background: #c6f6d5 !important;
+      border-color: #68d391 !important;
+      color: #22543d;
+      animation: pulse 0.5s;
+    }
+
+    .options button.wrong {
+      background: #fed7d7 !important;
+      border-color: #f56565 !important;
+      color: #742a2a;
+      animation: shake 0.3s;
+    }
+
+    .options button:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .explanation {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f0fff4;
+      border-left: 4px solid #48bb78;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      color: #2d3748;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.3s ease, max-height 0.3s ease;
+    }
+
+    .explanation.show {
+      opacity: 1;
+      max-height: 200px;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+      gap: 1rem;
+    }
+
+    .pagination-button {
+      background: #4299e1;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    .pagination-button:hover:not(:disabled) {
+      background: #3182ce;
+    }
+
+    .pagination-button:disabled {
+      background: #e2e8f0;
+      cursor: not-allowed;
+    }
+
+    .submit-button, .restart-button {
+      background: #4299e1;
+      color: #fff;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      width: 100%;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .submit-button:hover:not(:disabled), .restart-button:hover:not(:disabled) {
+      background: #3182ce;
+      transform: translateY(-2px);
+    }
+
+    .submit-button:disabled {
+      background: #e2e8f0;
+      cursor: not-allowed;
+    }
+
+    #score, #results {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-top: 2rem;
+      font-weight: 700;
+      color: #2d3748;
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .results-table th, .results-table td {
+      border: 1px solid #e2e8f0;
+      padding: 1rem;
+      text-align: left;
+    }
+
+    .results-table th {
+      background: #edf2f7;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .results-table td.correct { color: #2f855a; font-weight: 600; }
+    .results-table td.wrong { color: #c53030; font-weight: 600; }
+    .results-table td.not-attempted { color: #718096; }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      .quiz-container {
+        padding: 1.5rem;
+      }
+      .question p {
+        font-size: 1.1rem;
+      }
+      .options button {
+        font-size: 0.95rem;
+        padding: 0.6rem 1rem;
+      }
+      .results-table th, .results-table td {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+      }
+      .pagination-button {
+        padding: 0.6rem 1rem;
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.2rem;
+      }
+      .submit-button, .restart-button {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Heat Engines Quiz</h1>
+  <h2>Test Your Knowledge: 3 MCQs Will Appear in Exam</h2>
+  <div class="quiz-container">
+    <div id="timer">Time: 00:00</div>
+    <div class="progress-bar">
+      <div class="progress" id="progress"></div>
+    </div>
+    <div id="quiz" role="region" aria-live="polite"></div>
+    <div class="pagination">
+      <button class="pagination-button" id="prev-page" disabled aria-label="Previous page">Previous</button>
+      <button class="pagination-button" id="next-page" aria-label="Next page">Next</button>
+    </div>
+    <button class="submit-button" id="submit-button" disabled aria-label="Submit quiz">Submit Quiz</button>
+    <div id="score"></div>
+    <div id="results" class="hidden">
+      <h2>Quiz Results</h2>
+      <div class="overflow-x-auto">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Question</th>
+              <th>Your Answer</th>
+              <th>Correct Answer</th>
+              <th>Status</th>
+              <th>Explanation</th>
+            </tr>
+          </thead>
+          <tbody id="results-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <button class="restart-button hidden" id="restart-button" aria-label="Restart quiz">Restart Quiz</button>
+
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/beep-01a.mp3"></audio>
+  <audio id="wrong-sound" src="https://www.soundjay.com/buttons/beep-02.mp3"></audio>
+
+  <script>
+    const questions = 
+
+      [
+  {
+    "q": "What is the primary function of the oil pump in an internal combustion engine?",
+    "options": ["Cool the engine", "Lubricate moving parts", "Control fuel injection", "Regulate air intake"],
+    "answer": 1,
+    "explanation": "The oil pump circulates engine oil to lubricate moving parts, reducing friction and wear."
+  },
+  {
+    "q": "Which thermodynamic law governs the operation of heat engines?",
+    "options": ["Zeroth Law", "First Law", "Second Law", "Third Law"],
+    "answer": 2,
+    "explanation": "The Second Law of Thermodynamics governs heat engines, stating that not all heat can be converted to work."
+  },
+  {
+    "q": "In a CI engine, the air-fuel mixture is compressed to a temperature that is:",
+    "options": ["Below ignition point", "Above ignition point", "Equal to boiling point", "Below boiling point"],
+    "answer": 1,
+    "explanation": "In CI engines, air is compressed to a temperature above the fuel’s ignition point for auto-ignition."
+  },
+  {
+    "q": "What is the purpose of the intercooler in a turbocharged engine?",
+    "options": ["Cool the exhaust gases", "Cool the compressed intake air", "Increase fuel pressure", "Reduce engine noise"],
+    "answer": 1,
+    "explanation": "The intercooler cools compressed intake air to increase its density and improve combustion efficiency."
+  },
+  {
+    "q": "Which component in an SI engine prevents fuel-air mixture leakage during compression?",
+    "options": ["Piston rings", "Crankshaft", "Camshaft", "Flywheel"],
+    "answer": 0,
+    "explanation": "Piston rings seal the combustion chamber to prevent leakage of the fuel-air mixture."
+  },
+  {
+    "q": "The air standard efficiency of a Diesel cycle increases with:",
+    "options": ["Lower compression ratio", "Higher compression ratio", "Lower heat input", "Higher exhaust temperature"],
+    "answer": 1,
+    "explanation": "Higher compression ratios improve the air standard efficiency of the Diesel cycle."
+  },
+  {
+    "q": "What is the primary source of hydrocarbon emissions in SI engines?",
+    "options": ["Complete combustion", "Incomplete combustion", "High compression", "Excess air"],
+    "answer": 1,
+    "explanation": "Incomplete combustion in SI engines leads to hydrocarbon emissions."
+  },
+  {
+    "q": "Which type of fuel injection system is commonly used in modern CI engines?",
+    "options": ["Carburetor", "Mechanical injection", "Common rail injection", "Throttle body injection"],
+    "answer": 2,
+    "explanation": "Common rail injection systems provide precise fuel delivery in modern CI engines."
+  },
+  {
+    "q": "The purpose of the crankcase ventilation system in an engine is to:",
+    "options": ["Cool the engine", "Remove blow-by gases", "Increase fuel pressure", "Control valve timing"],
+    "answer": 1,
+    "explanation": "The crankcase ventilation system removes blow-by gases to prevent pressure buildup."
+  },
+  {
+    "q": "Which cycle is used in jet engines?",
+    "options": ["Otto cycle", "Diesel cycle", "Brayton cycle", "Rankine cycle"],
+    "answer": 2,
+    "explanation": "Jet engines operate on the Brayton cycle, involving constant-pressure combustion."
+  },
+  {
+    "q": "The primary function of the exhaust manifold in an engine is to:",
+    "options": ["Cool the engine", "Collect exhaust gases", "Mix air and fuel", "Control air intake"],
+    "answer": 1,
+    "explanation": "The exhaust manifold collects exhaust gases from cylinders and directs them to the exhaust system."
+  },
+  {
+    "q": "What is the effect of increasing the compression ratio in an SI engine?",
+    "options": ["Decreases efficiency", "Increases efficiency", "No effect on efficiency", "Reduces power output"],
+    "answer": 1,
+    "explanation": "Increasing the compression ratio improves thermal efficiency in SI engines."
+  },
+  {
+    "q": "Which component in a CI engine controls the timing of fuel injection?",
+    "options": ["Fuel pump", "Injector", "ECU", "Throttle valve"],
+    "answer": 2,
+    "explanation": "The Electronic Control Unit (ECU) controls the timing of fuel injection in modern CI engines."
+  },
+  {
+    "q": "The primary purpose of the clutch in an automotive engine is to:",
+    "options": ["Control speed", "Engage/disengage power", "Cool the engine", "Regulate fuel flow"],
+    "answer": 1,
+    "explanation": "The clutch engages or disengages power transmission from the engine to the drivetrain."
+  },
+  {
+    "q": "Which of the following is a measure of engine performance?",
+    "options": ["Brake thermal efficiency", "Fuel flow rate", "Exhaust temperature", "Oil viscosity"],
+    "answer": 0,
+    "explanation": "Brake thermal efficiency measures how effectively an engine converts fuel energy to mechanical work."
+  },
+  {
+    "q": "The primary function of the thermostat in an engine cooling system is to:",
+    "options": ["Pump coolant", "Regulate coolant flow", "Cool the radiator", "Increase air intake"],
+    "answer": 1,
+    "explanation": "The thermostat regulates coolant flow to maintain optimal engine temperature."
+  },
+  {
+    "q": "Which type of combustion occurs in a CI engine?",
+    "options": ["Premixed combustion", "Diffusion combustion", "Homogeneous combustion", "Stoichiometric combustion"],
+    "answer": 1,
+    "explanation": "CI engines use diffusion combustion, where fuel burns as it mixes with air."
+  },
+  {
+    "q": "The primary function of the intake manifold in an engine is to:",
+    "options": ["Distribute air-fuel mixture", "Collect exhaust gases", "Cool the engine", "Store fuel"],
+    "answer": 0,
+    "explanation": "The intake manifold distributes the air-fuel mixture to the cylinders."
+  },
+  {
+    "q": "What is the primary advantage of a two-stroke engine over a four-stroke engine?",
+    "options": ["Higher fuel efficiency", "Simpler design", "Lower emissions", "Higher torque"],
+    "answer": 1,
+    "explanation": "Two-stroke engines have a simpler design with fewer moving parts."
+  },
+  {
+    "q": "The primary purpose of the fuel filter in an engine is to:",
+    "options": ["Increase fuel pressure", "Remove impurities", "Mix fuel and air", "Cool the fuel"],
+    "answer": 1,
+    "explanation": "The fuel filter removes impurities to protect the engine’s fuel system."
+  },
+  {
+    "q": "Which of the following is a characteristic of the Rankine cycle?",
+    "options": ["Constant-volume heat addition", "Isothermal compression", "Constant-pressure heat addition", "Adiabatic expansion only"],
+    "answer": 2,
+    "explanation": "The Rankine cycle involves constant-pressure heat addition in steam power plants."
+  },
+  {
+    "q": "The primary function of the alternator in an automotive engine is to:",
+    "options": ["Start the engine", "Charge the battery", "Cool the engine", "Control fuel injection"],
+    "answer": 1,
+    "explanation": "The alternator generates electricity to charge the battery and power electrical systems."
+  },
+  {
+    "q": "Which of the following is a primary emission from SI engines?",
+    "options": ["Particulate matter", "Carbon monoxide", "Sulfur dioxide", "Ammonia"],
+    "answer": 1,
+    "explanation": "Carbon monoxide is a primary emission from SI engines due to incomplete combustion."
+  },
+  {
+    "q": "The primary function of the timing chain in an engine is to:",
+    "options": ["Connect piston to crankshaft", "Synchronize crankshaft and camshaft", "Control fuel injection", "Cool the engine"],
+    "answer": 1,
+    "explanation": "The timing chain synchronizes the crankshaft and camshaft for proper valve timing."
+  },
+  {
+    "q": "What is the primary purpose of the air filter in an engine?",
+    "options": ["Cool the air", "Remove dust and debris", "Increase air pressure", "Mix air and fuel"],
+    "answer": 1,
+    "explanation": "The air filter removes dust and debris to protect the engine’s internal components."
+  },
+  {
+    "q": "Which of the following is a key factor affecting engine knocking in CI engines?",
+    "options": ["Cetane number", "Octane number", "Fuel viscosity", "Air temperature"],
+    "answer": 0,
+    "explanation": "Lower cetane numbers increase ignition delay, leading to knocking in CI engines."
+  },
+  {
+    "q": "The primary function of the radiator fan in an engine cooling system is to:",
+    "options": ["Pump coolant", "Cool the radiator", "Regulate coolant flow", "Increase air intake"],
+    "answer": 1,
+    "explanation": "The radiator fan enhances airflow to cool the radiator and dissipate engine heat."
+  },
+  {
+    "q": "Which of the following is a feature of the Wankel engine?",
+    "options": ["Piston-based design", "Rotary combustion chamber", "Four-stroke cycle only", "External combustion"],
+    "answer": 1,
+    "explanation": "The Wankel engine uses a rotary combustion chamber instead of pistons."
+  },
+  {
+    "q": "The primary purpose of the supercharger in an engine is to:",
+    "options": ["Cool the intake air", "Increase air intake pressure", "Reduce emissions", "Control fuel injection"],
+    "answer": 1,
+    "explanation": "A supercharger increases air intake pressure to boost engine power output."
+  },
+  {
+    "q": "Which of the following is a characteristic of the Carnot cycle?",
+    "options": ["Constant-pressure processes", "Isothermal and adiabatic processes", "Constant-volume processes", "Irreversible processes"],
+    "answer": 1,
+    "explanation": "The Carnot cycle consists of two isothermal and two adiabatic processes."
+  },
+  {
+    "q": "The primary function of the oil filter in an engine is to:",
+    "options": ["Cool the oil", "Remove contaminants", "Increase oil pressure", "Store oil"],
+    "answer": 1,
+    "explanation": "The oil filter removes contaminants to protect engine components."
+  },
+  {
+    "q": "Which of the following is a primary advantage of CI engines over SI engines?",
+    "options": ["Lower fuel consumption", "Higher emissions", "Lower power output", "Complex design"],
+    "answer": 0,
+    "explanation": "CI engines have lower fuel consumption due to higher thermal efficiency."
+  },
+  {
+    "q": "The primary purpose of the pushrod in an engine is to:",
+    "options": ["Connect piston to crankshaft", "Transfer motion to valves", "Control fuel injection", "Cool the engine"],
+    "answer": 1,
+    "explanation": "The pushrod transfers motion from the camshaft to open and close valves."
+  },
+  {
+    "q": "Which of the following is a key parameter in engine performance testing?",
+    "options": ["Brake specific fuel consumption", "Oil viscosity", "Coolant temperature", "Exhaust color"],
+    "answer": 0,
+    "explanation": "Brake specific fuel consumption measures fuel efficiency per unit power output."
+  },
+  {
+    "q": "The primary function of the fuel injector in an SI engine is to:",
+    "options": ["Ignite the mixture", "Deliver fuel to the combustion chamber", "Cool the engine", "Control air intake"],
+    "answer": 1,
+    "explanation": "The fuel injector delivers fuel to the combustion chamber for combustion."
+  },
+  {
+    "q": "Which of the following is a characteristic of the Stirling cycle?",
+    "options": ["Constant-pressure heat addition", "Constant-volume heat transfer", "Isothermal compression only", "Adiabatic expansion only"],
+    "answer": 1,
+    "explanation": "The Stirling cycle involves constant-volume heat transfer between working fluid and heat sources."
+  },
+  {
+    "q": "The primary purpose of the water pump in an engine cooling system is to:",
+    "options": ["Cool the radiator", "Circulate coolant", "Regulate air intake", "Control fuel injection"],
+    "answer": 1,
+    "explanation": "The water pump circulates coolant through the engine and radiator."
+  },
+  {
+    "q": "Which of the following is a primary source of CO2 emissions in engines?",
+    "options": ["Incomplete combustion", "Complete combustion", "High compression", "Low air-fuel ratio"],
+    "answer": 1,
+    "explanation": "Complete combustion of fuel produces CO2 as a byproduct."
+  },
+  {
+    "q": "The primary function of the valve spring in an engine is to:",
+    "options": ["Open the valve", "Close the valve", "Control fuel injection", "Cool the engine"],
+    "answer": 1,
+    "explanation": "The valve spring ensures the valve closes after being opened by the camshaft."
+  },
+  {
+    "q": "Which of the following is a characteristic of the Brayton cycle?",
+    "options": ["Constant-volume heat addition", "Constant-pressure heat addition", "Isothermal compression", "Adiabatic heat rejection"],
+    "answer": 1,
+    "explanation": "The Brayton cycle involves constant-pressure heat addition and rejection."
+  },
+  {
+    "q": "The primary purpose of the oxygen sensor in an SI engine is to:",
+    "options": ["Measure air intake", "Monitor exhaust gases", "Control fuel injection", "Cool the engine"],
+    "answer": 1,
+    "explanation": "The oxygen sensor monitors exhaust gases to optimize the air-fuel ratio."
+  },
+  {
+    "q": "Which of the following is a primary advantage of water tube boilers over fire tube boilers?",
+    "options": ["Lower efficiency", "Higher heat transfer rate", "Simpler design", "Lower pressure capacity"],
+    "answer": 1,
+    "explanation": "Water tube boilers have a higher heat transfer rate due to water flowing inside tubes."
+  },
+  {
+    "q": "The primary function of the gudgeon pin in an engine is to:",
+    "options": ["Connect piston to connecting rod", "Control valve timing", "Cool the piston", "Store rotational energy"],
+    "answer": 0,
+    "explanation": "The gudgeon pin connects the piston to the connecting rod."
+  },
+  {
+    "q": "Which of the following is a key factor affecting thermal efficiency in heat engines?",
+    "options": ["Ambient temperature", "Fuel color", "Engine weight", "Oil viscosity"],
+    "answer": 0,
+    "explanation": "Ambient temperature affects the temperature difference, impacting thermal efficiency."
+  },
+  {
+    "q": "The primary purpose of the exhaust valve in an engine is to:",
+    "options": ["Allow air-fuel mixture intake", "Expel burnt gases", "Control fuel injection", "Cool the engine"],
+    "answer": 1,
+    "explanation": "The exhaust valve allows burnt gases to exit the combustion chamber."
+  },
+  {
+    "q": "Which of the following is a characteristic of the Otto cycle?",
+    "options": ["Constant-pressure heat addition", "Constant-volume heat addition", "Isothermal expansion", "Adiabatic compression only"],
+    "answer": 1,
+    "explanation": "The Otto cycle involves constant-volume heat addition during combustion."
+  },
+  {
+    "q": "The primary function of the rocker arm in an engine is to:",
+    "options": ["Connect piston to crankshaft", "Transfer motion to valves", "Control fuel injection", "Cool the engine"],
+    "answer": 1,
+    "explanation": "The rocker arm transfers motion from the pushrod or camshaft to open valves."
+  },
+  {
+    "q": "Which of the following is a primary source of sulfur dioxide emissions in CI engines?",
+    "options": ["High combustion temperature", "Sulfur content in fuel", "Incomplete combustion", "Excess air"],
+    "answer": 1,
+    "explanation": "Sulfur dioxide emissions result from the sulfur content in diesel fuel."
+  },
+  {
+    "q": "The primary purpose of the crankshaft bearing in an engine is to:",
+    "options": ["Connect piston to crankshaft", "Support the crankshaft", "Control valve timing", "Cool the engine"],
+    "answer": 1,
+    "explanation": "Crankshaft bearings support the crankshaft and reduce friction."
+  },
+  {
+    "q": "Which of the following is a key parameter in CI engine fuel quality?",
+    "options": ["Octane number", "Cetane number", "Flash point", "Viscosity"],
+    "answer": 1,
+    "explanation": "Cetane number indicates the ignition quality of diesel fuel in CI engines."
+  }
+]
+    let score = 0;
+    let userAnswers = Array(questions.length).fill(null);
+    let timerSeconds = 0;
+    let timerInterval;
+    let shuffledQuestions = [];
+    let currentPage = 0;
+    const questionsPerPage = 20;
+
+    const quizEl = document.getElementById("quiz");
+    const scoreEl = document.getElementById("score");
+    const resultsEl = document.getElementById("results");
+    const resultsBody = document.getElementById("results-body");
+    const progressEl = document.getElementById("progress");
+    const timerEl = document.getElementById("timer");
+    const submitButton = document.getElementById("submit-button");
+    const restartButton = document.getElementById("restart-button");
+    const prevPageButton = document.getElementById("prev-page");
+    const nextPageButton = document.getElementById("next-page");
+    const correctSound = document.getElementById("correct-sound");
+    const wrongSound = document.getElementById("wrong-sound");
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function shuffleOptions(questions) {
+      return questions.map(q => {
+        const correct = q.options[q.answer];
+        const shuffled = [...q.options].sort(() => Math.random() - 0.5);
+        return {
+          ...q,
+          options: shuffled,
+          answer: shuffled.indexOf(correct)
+        };
+      });
+    }
+
+    function startTimer() {
+      const minutes = Math.floor(timerSeconds / 60);
+      const seconds = timerSeconds % 60;
+      timerEl.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      timerInterval = setInterval(() => {
+        timerSeconds++;
+        const minutes = Math.floor(timerSeconds / 60);
+        const seconds = timerSeconds % 60;
+        timerEl.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    function updateProgress() {
+      const answered = userAnswers.filter(answer => answer !== null).length;
+      const percentage = (answered / questions.length) * 100;
+      progressEl.style.width = `${percentage}%`;
+      checkAllAnswered();
+    }
+
+    function showPage(pageIndex) {
+      currentPage = pageIndex;
+      const startIndex = pageIndex * questionsPerPage;
+      const endIndex = Math.min(startIndex + questionsPerPage, shuffledQuestions.length);
+      const fragment = document.createDocumentFragment();
+      const pageQuestions = shuffledQuestions.slice(startIndex, endIndex);
+      pageQuestions.forEach((q, index) => {
+        const globalIndex = startIndex + index;
+        const isAnswered = userAnswers[globalIndex] !== null;
+        const selectedAnswer = userAnswers[globalIndex];
+        const correctAnswer = q.options[q.answer];
+        const options = q.options.map((opt, j) => {
+          let buttonClass = '';
+          if (isAnswered) {
+            buttonClass += opt === correctAnswer ? ' correct' :
+                          opt === selectedAnswer && selectedAnswer !== correctAnswer ? ' wrong' : '';
+          }
+          return `<button class="${buttonClass}" aria-label="Option ${escapeHtml(opt)}" ${isAnswered ? 'disabled' : ''}>${escapeHtml(opt)}</button>`;
+        }).join('');
+        const div = document.createElement('div');
+        div.className = 'question';
+        div.dataset.index = globalIndex;
+        div.innerHTML = `
+          <p>${globalIndex + 1}. ${escapeHtml(q.q)}</p>
+          <div class="options">${options}</div>
+          <div class="explanation ${isAnswered ? 'show' : ''}" id="explanation-${globalIndex}">
+            ${isAnswered ? escapeHtml(q.explanation || 'No explanation available.') : ''}
+          </div>
+        `;
+        fragment.appendChild(div);
+      });
+      quizEl.innerHTML = '';
+      quizEl.appendChild(fragment);
+
+      // Attach event listeners to buttons
+      quizEl.querySelectorAll('.options button').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const questionDiv = e.target.closest('.question');
+          const questionIndex = parseInt(questionDiv.dataset.index);
+          const selected = Array.from(questionDiv.querySelectorAll('.options button')).indexOf(e.target);
+          const selectedText = e.target.textContent;
+          checkAnswer(e.target, questionIndex, selected, selectedText);
+        });
+      });
+
+      prevPageButton.disabled = currentPage === 0;
+      nextPageButton.disabled = endIndex === questions.length;
+      updateProgress();
+    }
+
+    function checkAnswer(button, questionIndex, selected, selectedText) {
+      if (userAnswers[questionIndex] !== null) return;
+      const q = shuffledQuestions[questionIndex];
+      const correct = q.answer;
+      const buttons = button.parentElement.querySelectorAll("button");
+      const explanationEl = document.getElementById(`explanation-${questionIndex}`);
+
+      buttons.forEach((btn, j) => {
+        btn.disabled = true;
+        if (j === correct) btn.classList.add("correct");
+        if (btn === button && selected !== correct) btn.classList.add("wrong");
+      });
+
+      userAnswers[questionIndex] = selectedText;
+      if (selected === correct) {
+        score++;
+        correctSound.play().catch(() => console.log("Correct sound playback failed"));
+      } else {
+        wrongSound.play().catch(() => console.log("Wrong sound playback failed"));
+      }
+
+      explanationEl.textContent = q.explanation || 'No explanation available.';
+      explanationEl.classList.add('show');
+      saveProgress();
+      updateProgress();
+    }
+
+    function checkAllAnswered() {
+      const allAnswered = userAnswers.every(answer => answer !== null);
+      submitButton.disabled = !allAnswered;
+    }
+
+    function endQuiz() {
+      clearInterval(timerInterval);
+      quizEl.innerHTML = '';
+      prevPageButton.classList.add("hidden");
+      nextPageButton.classList.add("hidden");
+      submitButton.classList.add("hidden");
+      scoreEl.innerHTML = `Your score: ${score} / ${questions.length} (${((score / questions.length) * 100).toFixed(2)}%)`;
+      resultsEl.classList.remove("hidden");
+      restartButton.classList.remove("hidden");
+
+      resultsBody.innerHTML = shuffledQuestions.map((q, i) => {
+        const userAnswer = userAnswers[i] === null ? "Not attempted" : escapeHtml(userAnswers[i]);
+        const correctAnswer = escapeHtml(q.options[q.answer]);
+        const status = userAnswers[i] === q.options[q.answer] ? "Correct" :
+                      userAnswers[i] === null ? "Not attempted" : "Wrong";
+        return `
+          <tr>
+            <td>${i + 1}. ${escapeHtml(q.q)}</td>
+            <td>${userAnswer}</td>
+            <td>${correctAnswer}</td>
+            <td class="${status.toLowerCase()}">${status}</td>
+            <td>${escapeHtml(q.explanation || 'No explanation available.')}</td>
+          </tr>
+        `;
+      }).join('');
+      localStorage.removeItem("heatEnginesQuizProgress");
+    }
+
+    function restartQuiz() {
+      score = 0;
+      userAnswers = Array(questions.length).fill(null);
+      timerSeconds = 0;
+      currentPage = 0;
+      shuffledQuestions = shuffleOptions(questions);
+      resultsEl.classList.add("hidden");
+      prevPageButton.classList.remove("hidden");
+      nextPageButton.classList.remove("hidden");
+      submitButton.classList.remove("hidden");
+      scoreEl.innerHTML = "";
+      clearInterval(timerInterval);
+      startTimer();
+      showPage(0);
+    }
+
+    function loadProgress() {
+      const saved = localStorage.getItem("heatEnginesQuizProgress");
+      if (saved) {
+        const { score: savedScore, answers: savedAnswers, time: savedTime } = JSON.parse(saved);
+        score = savedScore || 0;
+        userAnswers = savedAnswers && savedAnswers.length === questions.length ? savedAnswers : Array(questions.length).fill(null);
+        timerSeconds = savedTime || 0;
+      }
+    }
+
+    function saveProgress() {
+      localStorage.setItem("heatEnginesQuizProgress", JSON.stringify({
+        score,
+        answers: userAnswers,
+        time: timerSeconds
+      }));
+    }
+
+    // Initialize
+    shuffledQuestions = shuffleOptions(questions);
+    loadProgress();
+    startTimer();
+    showPage(0);
+
+    // Event listeners
+    submitButton.addEventListener("click", endQuiz);
+    restartButton.addEventListener("click", restartQuiz);
+    prevPageButton.addEventListener("click", () => {
+      if (currentPage > 0) showPage(currentPage - 1);
+    });
+    nextPageButton.addEventListener("click", () => {
+      if ((currentPage + 1) * questionsPerPage < questions.length) showPage(currentPage + 1);
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !submitButton.disabled) {
+        submitButton.click();
+      } else if (e.key === 'ArrowLeft' && !prevPageButton.disabled) {
+        prevPageButton.click();
+      } else if (e.key === 'ArrowRight' && !nextPageButton.disabled) {
+        nextPageButton.click();
+      }
+    });
+  </script>
+</body>
+</html>
