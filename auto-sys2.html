@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Automotive System, Fuels and Lubricants Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #e0e7ff, #c3dafe);
+            margin: 0;
+            padding: 2rem;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #1e3a8a;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e3a8a;
+            margin: 1rem 0;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .timer {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #d81b60;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress {
+            height: 100%;
+            background: #3b82f6;
+            transition: width 0.3s ease;
+        }
+
+        .question {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            animation: fadeIn 0.5s;
+            transition: transform 0.2s ease;
+        }
+
+        .question:hover {
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .question p {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+        }
+
+        .options button {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            color: #374151;
+        }
+
+        .options button:hover:not(:disabled) {
+            background: #f3f4f6;
+            border-color: #3b82f6;
+            transform: translateX(4px);
+        }
+
+        .options button.correct {
+            background: #bbf7d0;
+            border-color: #22c55e;
+            color: #166534;
+            animation: pulse 0.5s;
+        }
+
+        .options button.wrong {
+            background: #fecaca;
+            border-color: #ef4444;
+            color: #991b1b;
+            animation: shake 0.3s;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .options button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .explanation {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #eff6ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+            font-size: 0.95rem;
+        }
+
+        .skip-button {
+            background: #fff3cd;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            width: 100%;
+            border: 1px solid #ffca28;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .skip-button:hover {
+            background: #ffecb3;
+        }
+
+        .next-button {
+            background: #3b82f6;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            display: block;
+            width: 100%;
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+
+        .next-button:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        .next-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .score-container {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .score {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .results-table th, .results-table td {
+            border: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .results-table th {
+            background: #f8fafc;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        .results-table .correct {
+            color: #166534;
+            font-weight: bold;
+        }
+
+        .results-table .wrong {
+            color: #991b1b;
+            font-weight: bold;
+        }
+
+        .results-table .skipped, .results-table .not-attempted {
+            color: #d97706;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .restart-button {
+            background: #22c55e;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 1rem auto;
+            display: block;
+            width: 100%;
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+
+        .restart-button:hover {
+            background: #16a34a;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+            }
+
+            .quiz-container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .question p {
+                font-size: 1rem;
+            }
+
+            .options button, .skip-button, .next-button, .restart-button {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+
+            .results-table th, .results-table td {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Automotive System, Fuels and Lubricants Quiz</h1>
+        <div class="quiz-header">
+            <div class="timer" id="timer">Time: 00:00</div>
+            <div class="score" id="current-score">Score: 0/80</div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        <div id="quiz"></div>
+        <div class="score-container">
+            <div class="score" id="score"></div>
+            <div id="results" class="hidden">
+                <h2>Quiz Results</h2>
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>Your Answer</th>
+                            <th>Correct Answer</th>
+                            <th>Status</th>
+                            <th>Explanation</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body"></tbody>
+                </table>
+                <button class="restart-button" onclick="restartQuiz()">Restart Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="correct-sound" src="https://www.soundjay.com/buttons/beep-01a.mp3"></audio>
+    <audio id="wrong-sound" src="https://www.soundjay.com/buttons/beep-02.mp3"></audio>
+
+    <script>
+        const questions =  [
+  // Easy (20 MCQs)
+  { q: "What type of clutch is commonly used in most passenger cars?", options: ["Cone clutch", "Friction plate clutch"], answer: 1, explanation: "Friction plate clutches are widely used for smooth power transmission." },
+  { q: "Which system controls the vehicle’s speed?", options: ["Braking system", "Accelerator system"], answer: 1, explanation: "The accelerator system regulates engine throttle to control speed." },
+  { q: "What does the shock absorber primarily dampen?", options: ["Vibrations and bumps", "Fuel flow"], answer: 0, explanation: "Shock absorbers reduce vibrations and impacts from the road." },
+  { q: "Which component circulates coolant in the engine?", options: ["Radiator", "Water pump"], answer: 1, explanation: "The water pump circulates coolant throughout the engine cooling system." },
+  { q: "What does the oil sump in a lubricating system do?", options: ["Stores oil", "Filters oil"], answer: 0, explanation: "The oil sump collects and stores lubricating oil at the engine base." },
+  { q: "Which part of the exhaust system reduces noise?", options: ["Muffler", "Catalytic converter"], answer: 0, explanation: "The muffler reduces engine noise by absorbing sound waves." },
+  { q: "Which electrical component converts mechanical energy to electrical energy?", options: ["Starter motor", "Alternator"], answer: 1, explanation: "Alternators generate electrical power during engine operation." },
+  { q: "What is the role of the fuel tank in a vehicle?", options: ["Stores fuel", "Filters air"], answer: 0, explanation: "The fuel tank stores the fuel used for combustion." },
+  { q: "Which braking system component produces frictional force?", options: ["Brake pads", "Brake master cylinder"], answer: 0, explanation: "Brake pads create friction against rotors or drums to stop the vehicle." },
+  { q: "What is the primary role of tires on a vehicle?", options: ["Provide traction", "Power engine"], answer: 0, explanation: "Tires provide grip and traction on the road surface." },
+  { q: "Which fuel is used in spark-ignition engines?", options: ["Petrol", "Diesel"], answer: 0, explanation: "Petrol is used in spark-ignition engines." },
+  { q: "What is a characteristic of a good engine oil?", options: ["High viscosity index", "Low lubricity"], answer: 0, explanation: "High viscosity index ensures good performance across temperatures." },
+  { q: "Which lubricant reduces wear between engine moving parts?", options: ["Engine oil", "Brake fluid"], answer: 0, explanation: "Engine oil lubricates and protects moving parts from wear." },
+  { q: "What fuel mixture is used in two-stroke engines?", options: ["Petrol-oil mixture", "Pure diesel"], answer: 0, explanation: "Two-stroke engines run on petrol mixed with oil for lubrication." },
+  { q: "Which system cools the engine by circulating coolant?", options: ["Cooling system", "Lubrication system"], answer: 0, explanation: "The cooling system maintains engine temperature within limits." },
+  { q: "How often is engine oil typically changed in normal use?", options: ["Every 10,000 km", "Every 50,000 km"], answer: 0, explanation: "Engine oil is commonly changed every 10,000 to 15,000 km." },
+  { q: "Which lubricant is used for wheel bearings?", options: ["Grease", "Engine oil"], answer: 0, explanation: "Grease is suitable for lubricating wheel bearings due to its consistency." },
+  { q: "What is the main function of the clutch?", options: ["Engage and disengage power", "Steer the vehicle"], answer: 0, explanation: "The clutch connects and disconnects the engine power to the transmission." },
+  { q: "Which system uses spark plugs?", options: ["Ignition system", "Fuel system"], answer: 0, explanation: "Spark plugs ignite the air-fuel mixture in petrol engines." },
+  { q: "In vehicles, what is CNG?", options: ["Compressed Natural Gas", "Cylinder Natural Gas"], answer: 0, explanation: "CNG stands for Compressed Natural Gas, an alternative fuel." },
+
+  // Medium (20 MCQs)
+  { q: "What type of braking system uses hydraulic fluid?", options: ["Disc brake", "Mechanical brake"], answer: 0, explanation: "Disc brakes use hydraulic pressure to actuate pistons and pads." },
+  { q: "What component controls ignition timing in an engine?", options: ["Distributor", "Carburetor"], answer: 0, explanation: "The distributor controls spark timing for combustion." },
+  { q: "Which fuel property affects knocking?", options: ["Octane rating", "Cetane rating"], answer: 0, explanation: "Higher octane rating reduces knocking in petrol engines." },
+  { q: "Diesel engines operate on which ignition principle?", options: ["Compression ignition", "Spark ignition"], answer: 0, explanation: "Diesel engines ignite fuel by compression heating air inside the cylinder." },
+  { q: "Which lubricant is recommended for gears?", options: ["Gear oil", "Engine oil"], answer: 0, explanation: "Gear oil has additives for high pressure and extreme loads in gears." },
+  { q: "What is the main cause of brake fade?", options: ["Overheating brake components", "Low tire pressure"], answer: 0, explanation: "Excessive heat reduces brake effectiveness, causing fade." },
+  { q: "What kind of suspension system is a leaf spring?", options: ["Semi-elliptical spring", "Coil spring"], answer: 0, explanation: "Leaf springs are semi-elliptical and commonly used in heavy vehicles." },
+  { q: "What does a thermostat regulate in the cooling system?", options: ["Coolant flow based on temperature", "Oil pressure"], answer: 0, explanation: "Thermostat opens/closes to control coolant flow, maintaining engine temperature." },
+  { q: "What happens to fuel efficiency when engine oil is neglected?", options: ["Decreases", "Increases"], answer: 0, explanation: "Poor lubrication increases friction, reducing fuel efficiency." },
+  { q: "Which fuel type requires a glow plug for starting?", options: ["Diesel engine", "Petrol engine"], answer: 0, explanation: "Glow plugs preheat diesel engine cylinders for cold start." },
+  { q: "How does a catalytic converter reduce emissions?", options: ["Converts harmful gases to less harmful compounds", "Filters particulates"], answer: 0, explanation: "Catalytic converters chemically convert CO, NOx to less harmful gases." },
+  { q: "Which part transmits engine power to the wheels?", options: ["Transmission system", "Steering system"], answer: 0, explanation: "The transmission system transfers power from engine to wheels." },
+  { q: "Why is synthetic oil preferred in modern engines?", options: ["Better thermal stability", "Lower cost"], answer: 0, explanation: "Synthetic oils withstand higher temperatures and last longer." },
+  { q: "What is the effect of improper tire inflation?", options: ["Uneven tire wear", "Better grip"], answer: 0, explanation: "Incorrect inflation causes uneven and faster tire wear." },
+  { q: "What component adjusts the air-fuel mixture in carbureted engines?", options: ["Throttle valve", "Oil pump"], answer: 0, explanation: "Throttle controls air flow impacting fuel mixture ratios." },
+  { q: "Which system uses a flywheel?", options: ["Transmission", "Fuel"], answer: 0, explanation: "The flywheel smooths engine power delivery and stores rotational energy." },
+  { q: "When should transmission fluid ideally be changed?", options: ["60,000-100,000 km", "Every 10,000 km"], answer: 0, explanation: "Longer intervals prevent premature failure while ensuring lubricant quality." },
+  { q: "Which is a characteristic of heavy-duty grease?", options: ["High load carrying capacity", "Low temperature performance"], answer: 0, explanation: "Heavy-duty grease performs well under heavy loads and slow speeds." },
+  { q: "Which component converts DC to AC current in a vehicle?", options: ["Alternator", "Battery"], answer: 0, explanation: "Alternators generate AC current which is rectified to DC for vehicle use." },
+  { q: "Why is coolant mixture usually water and antifreeze?", options: ["Prevent freezing and boiling", "Increase viscosity"], answer: 0, explanation: "Antifreeze lowers freezing point and raises boiling point of coolant." },
+
+  // Hard (10 MCQs)
+  { q: "Which type of cooling system uses pressurized coolant to raise boiling point?", options: ["Closed system with radiator cap", "Open system"], answer: 0, explanation: "Closed systems increase pressure, elevating boiling point to avoid vaporization." },
+  { q: "How does the differential improve vehicle cornering?", options: ["Allows wheels to rotate at different speeds", "Increases engine torque"], answer: 0, explanation: "Differentials let wheels spin at different rates, preventing tire skidding." },
+  { q: "What does the cetane number indicate?", options: ["Ignition quality of diesel", "Viscosity of lubricant"], answer: 0, explanation: "High cetane numbers mean better ignition characteristics for diesel fuel." },
+  { q: "What causes cavitation in hydraulic pumps?", options: ["Vapor bubble formation due to low pressure", "Excessive oil temperature"], answer: 0, explanation: "Low pressure causes vapor bubbles that implode, damaging pump components." },
+  { q: "How does synthetic oil differ chemically from mineral oil?", options: ["Uniform molecular structure", "Higher impurities"], answer: 0, explanation: "Synthetic oils are engineered with uniform molecules for better performance." },
+  { q: "Which property of engine oil prevents sludge formation?", options: ["Detergent additives", "Viscosity"], answer: 0, explanation: "Detergents keep engine clean by preventing residue and sludge buildup." },
+  { q: "What is the maximum allowable tire pressure tolerance?", options: ["±2 psi", "±10 psi"], answer: 0, explanation: "Maintaining pressure within ±2 psi ensures safety and performance." },
+  { q: "Which testing method detects bearing wear in timely manner?", options: ["Vibration analysis", "Visual inspection"], answer: 0, explanation: "Vibration analysis identifies early faults not visible otherwise." },
+  { q: "What is the effect of additive 'anti-wear' in lubricants?", options: ["Reduces metal-to-metal contact", "Increases oil thickness"], answer: 0, explanation: "Anti-wear additives form protective films reducing friction and wear." },
+  { q: "What is the role of the flywheel in manual transmission?", options: ["Smoothens engine pulses", "Controls gear shifting"], answer: 0, explanation: "Flywheels store inertia to smooth power delivery and aid clutch operation." }
+];
+
+
+        let currentPage = 0;
+        let score = 0;
+        let skipped = [];
+        let userAnswers = Array(questions.length).fill(null);
+        let timerSeconds = 0;
+        let timerInterval;
+        const QUESTIONS_PER_PAGE = 5;
+        const ANSWER_DELAY = 1000;
+
+        const quizEl = document.getElementById("quiz");
+        const scoreEl = document.getElementById("score");
+        const resultsEl = document.getElementById("results");
+        const resultsBody = document.getElementById("results-body");
+        const progressEl = document.getElementById("progress");
+        const timerEl = document.getElementById("timer");
+        const currentScoreEl = document.getElementById("current-score");
+        const correctSound = document.getElementById("correct-sound");
+        const wrongSound = document.getElementById("wrong-sound");
+
+        // Clear progress to start fresh
+        function clearProgress() {
+            localStorage.removeItem("quizProgressAutomotive");
+            currentPage = 0;
+            score = 0;
+            skipped = [];
+            userAnswers = Array(questions.length).fill(null);
+            timerSeconds = 0;
+        }
+
+        // Save progress to localStorage
+        function saveProgress() {
+            localStorage.setItem("quizProgressAutomotive", JSON.stringify({
+                currentPage,
+                score,
+                skipped,
+                answers: userAnswers,
+                time: timerSeconds
+            }));
+        }
+
+        // Update current score display
+        function updateCurrentScore() {
+            currentScoreEl.textContent = `Score: ${score}/${questions.length}`;
+        }
+
+        // Shuffle array
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Start timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timerSeconds++;
+                const minutes = Math.floor(timerSeconds / 60);
+                const seconds = timerSeconds % 60;
+                timerEl.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                saveProgress();
+            }, 1000);
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const answeredCount = userAnswers.filter(answer => answer !== null).length;
+            const percentage = (answeredCount / questions.length) * 100;
+            progressEl.style.width = `${percentage}%`;
+        }
+
+        // Show questions for the current page
+        function showQuestions(page) {
+            quizEl.innerHTML = '';
+            const startIndex = page * QUESTIONS_PER_PAGE;
+            const endIndex = Math.min(startIndex + QUESTIONS_PER_PAGE, questions.length);
+
+            for (let i = startIndex; i < endIndex; i++) {
+                const q = questions[i];
+                const shuffledOptions = shuffle([...q.options].map((opt, j) => ({ text: opt, index: j })));
+                const optionsHtml = shuffledOptions
+                    .map(opt => `<button onclick="checkAnswer(this, ${i}, ${opt.index}, '${opt.text.replace(/'/g, "\\'")}')">${opt.text}</button>`)
+                    .join('');
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+                questionDiv.dataset.index = i;
+                questionDiv.innerHTML = `
+                    <p>Q${i + 1}. ${q.q}</p>
+                    <div class="options">${optionsHtml}</div>
+                    <button class="skip-button" onclick="skipQuestion(${i})">Skip</button>
+                    <div class="explanation">${q.explanation}</div>
+                `;
+                quizEl.appendChild(questionDiv);
+            }
+
+            if (endIndex < questions.length || skipped.length > 0) {
+                const nextButton = document.createElement('button');
+                nextButton.classList.add('next-button');
+                nextButton.textContent = endIndex < questions.length ? 'Next' : 'Review Skipped Questions';
+                nextButton.onclick = nextPage;
+                nextButton.disabled = !areAllQuestionsAnsweredOnPage(startIndex, endIndex);
+                quizEl.appendChild(nextButton);
+            } else {
+                const submitButton = document.createElement('button');
+                submitButton.classList.add('next-button');
+                submitButton.textContent = 'Submit Quiz';
+                submitButton.onclick = endQuiz;
+                submitButton.disabled = !areAllQuestionsAnsweredOnPage(startIndex, endIndex);
+                quizEl.appendChild(submitButton);
+            }
+
+            updateProgress();
+            saveProgress();
+            restoreAnswers(startIndex, endIndex);
+        }
+
+        // Restore previous answers for the current page
+        function restoreAnswers(startIndex, endIndex) {
+            for (let i = startIndex; i < endIndex; i++) {
+                if (userAnswers[i] !== null && userAnswers[i] !== 'Skipped') {
+                    const questionDiv = document.querySelector(`.question[data-index="${i}"]`);
+                    const buttons = questionDiv.querySelectorAll('.options button');
+                    const q = questions[i];
+                    buttons.forEach(btn => {
+                        btn.disabled = true;
+                        if (btn.textContent === q.options[q.answer]) {
+                            btn.classList.add('correct');
+                        }
+                        if (btn.textContent === userAnswers[i] && userAnswers[i] !== q.options[q.answer]) {
+                            btn.classList.add('wrong');
+                        }
+                    });
+                    questionDiv.querySelector('.explanation').style.display = 'block';
+                    questionDiv.querySelector('.skip-button').disabled = true;
+                } else if (userAnswers[i] === 'Skipped') {
+                    const questionDiv = document.querySelector(`.question[data-index="${i}"]`);
+                    questionDiv.querySelectorAll('.options button').forEach(btn => btn.disabled = true);
+                    questionDiv.querySelector('.skip-button').disabled = true;
+                    questionDiv.querySelector('.explanation').style.display = 'block';
+                }
+            }
+        }
+
+        // Check if all questions on the current page are answered or skipped
+        function areAllQuestionsAnsweredOnPage(startIndex, endIndex) {
+            for (let i = startIndex; i < endIndex; i++) {
+                if (userAnswers[i] === null) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Check answer
+        function checkAnswer(button, questionIndex, selected, selectedText) {
+            const q = questions[questionIndex];
+            const correct = q.answer;
+            const buttons = button.parentElement.querySelectorAll("button");
+            const questionDiv = button.closest('.question');
+            const explanationDiv = questionDiv.querySelector('.explanation');
+
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                if (q.options.indexOf(btn.textContent) === correct) {
+                    btn.classList.add('correct');
+                }
+                if (btn === button && selected !== correct) {
+                    btn.classList.add('wrong');
+                }
+            });
+
+            questionDiv.querySelector('.skip-button').disabled = true;
+            explanationDiv.style.display = 'block';
+
+            userAnswers[questionIndex] = selectedText;
+            if (selected === correct) {
+                score++;
+                correctSound.play().catch(() => console.log("Audio playback failed"));
+            } else {
+                wrongSound.play().catch(() => console.log("Audio playback failed"));
+            }
+
+            updateCurrentScore();
+            saveProgress();
+            const nextButton = quizEl.querySelector('.next-button');
+            if (nextButton) {
+                nextButton.disabled = !areAllQuestionsAnsweredOnPage(
+                    currentPage * QUESTIONS_PER_PAGE,
+                    Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, questions.length)
+                );
+            }
+
+            setTimeout(() => {
+                if (areAllQuestionsAnsweredOnPage(
+                    currentPage * QUESTIONS_PER_PAGE,
+                    Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, questions.length)
+                )) {
+                    nextPage();
+                }
+            }, ANSWER_DELAY);
+        }
+
+        // Skip question
+        function skipQuestion(questionIndex) {
+            if (!skipped.includes(questions[questionIndex])) {
+                skipped.push(questions[questionIndex]);
+                userAnswers[questionIndex] = 'Skipped';
+                const questionDiv = document.querySelector(`.question[data-index="${questionIndex}"]`);
+                if (questionDiv) {
+                    questionDiv.querySelectorAll('.options button').forEach(btn => btn.disabled = true);
+                    questionDiv.querySelector('.skip-button').disabled = true;
+                    questionDiv.querySelector('.explanation').style.display = 'block';
+                }
+                saveProgress();
+                const nextButton = quizEl.querySelector('.next-button');
+                if (nextButton) {
+                    nextButton.disabled = !areAllQuestionsAnsweredOnPage(
+                        currentPage * QUESTIONS_PER_PAGE,
+                        Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, questions.length)
+                    );
+                }
+            }
+        }
+
+        // Move to next page
+        function nextPage() {
+            if (skipped.length > 0 && currentPage * QUESTIONS_PER_PAGE >= questions.length) {
+                showSkippedQuestions();
+            } else {
+                currentPage++;
+                if (currentPage * QUESTIONS_PER_PAGE < questions.length) {
+                    showQuestions(currentPage);
+                } else if (skipped.length === 0) {
+                    endQuiz();
+                } else {
+                    showSkippedQuestions();
+                }
+            }
+        }
+
+        // Show skipped questions
+        function showSkippedQuestions() {
+            questions.splice(0, questions.length, ...skipped);
+            skipped = [];
+            currentPage = 0;
+            showQuestions(currentPage);
+        }
+
+        // End quiz and show results
+        function endQuiz() {
+            clearInterval(timerInterval);
+            quizEl.innerHTML = '';
+            scoreEl.textContent = `Final Score: ${score} out of ${questions.length} (${((score / questions.length) * 100).toFixed(2)}%)`;
+            resultsEl.classList.remove('hidden');
+
+            resultsBody.innerHTML = questions.map((q, i) => {
+                const userAnswer = userAnswers[i] === null ? 'Not attempted' :
+                                  userAnswers[i] === 'Skipped' ? 'Skipped' :
+                                  userAnswers[i];
+                const correctAnswer = q.options[q.answer];
+                const status = userAnswers[i] === q.options[q.answer] ? 'Correct' :
+                              userAnswers[i] === 'Skipped' ? 'Skipped' :
+                              userAnswers[i] === null ? 'Not-attempted' : 'Wrong';
+                return `
+                    <tr>
+                        <td>${i + 1}. ${q.q}</td>
+                        <td>${userAnswer}</td>
+                        <td>${correctAnswer}</td>
+                        <td class="${status.toLowerCase().replace(' ', '-')}">${status}</td>
+                        <td class="explanation">${q.explanation}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            localStorage.removeItem('quizProgressAutomotive');
+        }
+
+        // Restart quiz
+        function restartQuiz() {
+            clearProgress();
+            resultsEl.classList.add('hidden');
+            scoreEl.textContent = '';
+            startTimer();
+            showQuestions(currentPage);
+            updateCurrentScore();
+        }
+
+        // Initialize quiz
+        function initialize() {
+            clearProgress();
+            startTimer();
+            showQuestions(currentPage);
+            updateCurrentScore();
+        }
+
+        // Start quiz on page load
+        initialize();
+    </script>
+</body>
+</html>
