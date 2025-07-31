@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Logsewa Safety Practices Mock Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #e0e7ff, #c3dafe);
+            margin: 0;
+            padding: 2rem;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #1e3a8a;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e3a8a;
+            margin: 1rem 0;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .timer {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #d81b60;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress {
+            height: 100%;
+            background: #3b82f6;
+            transition: width 0.3s ease;
+        }
+
+        .question {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            animation: fadeIn 0.5s;
+            transition: transform 0.2s ease;
+        }
+
+        .question:hover {
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .question p {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+        }
+
+        .options button {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            color: #374151;
+        }
+
+        .options button:hover:not(:disabled) {
+            background: #f3f4f6;
+            border-color: #3b82f6;
+            transform: translateX(4px);
+        }
+
+        .options button.correct {
+            background: #bbf7d0;
+            border-color: #22c55e;
+            color: #166534;
+            animation: pulse 0.5s;
+        }
+
+        .options button.wrong {
+            background: #fecaca;
+            border-color: #ef4444;
+            color: #991b1b;
+            animation: shake 0.3s;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .options button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .explanation {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #eff6ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+            font-size: 0.95rem;
+        }
+
+        .skip-button {
+            background: #fff3cd;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            width: 100%;
+            border: 1px solid #ffca28;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .skip-button:hover {
+            background: #ffecb3;
+        }
+
+        .next-button {
+            background: #3b82f6;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            display: block;
+            width: 100%;
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+
+        .next-button:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        .next-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .score-container {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .score {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .results-table th, .results-table td {
+            border: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .results-table th {
+            background: #f8fafc;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        .results-table .correct {
+            color: #166534;
+            font-weight: bold;
+        }
+
+        .results-table .wrong {
+            color: #991b1b;
+            font-weight: bold;
+        }
+
+        .results-table .skipped, .results-table .not-attempted {
+            color: #d97706;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .restart-button {
+            background: #22c55e;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 1rem auto;
+            display: block;
+            width: 100%;
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+
+        .restart-button:hover {
+            background: #16a34a;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+            }
+
+            .quiz-container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .question p {
+                font-size: 1rem;
+            }
+
+            .options button, .skip-button, .next-button, .restart-button {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+
+            .results-table th, .results-table td {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Logsewa Safety Practices Mock Test</h1>
+        <div class="quiz-header">
+            <div class="timer" id="timer">Time: 00:00</div>
+            <div class="score" id="current-score">Score: 0/40</div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        <div id="quiz"></div>
+        <div class="score-container">
+            <div class="score" id="score"></div>
+            <div id="results" class="hidden">
+                <h2>Quiz Results</h2>
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>Your Answer</th>
+                            <th>Correct Answer</th>
+                            <th>Status</th>
+                            <th>Explanation</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body"></tbody>
+                </table>
+                <button class="restart-button" onclick="restartQuiz()">Restart Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="correct-sound" src="https://www.soundjay.com/buttons/beep-01a.mp3"></audio>
+    <audio id="wrong-sound" src="https://www.soundjay.com/buttons/beep-02.mp3"></audio>
+
+    <script>
+
+const questions = [
+  // Easy (20 MCQs)
+  { q: "What is the primary cause of most workplace accidents?", options: ["Equipment failure", "Human negligence", "Poor lighting", "Excessive noise"], answer: 1, explanation: "Human negligence is a leading cause of workplace accidents." },
+  { q: "Which of these is an immediate action after a minor injury in the workshop?", options: ["Report to supervisor", "Apply first aid", "Ignore it", "Continue working"], answer: 1, explanation: "Applying first aid helps prevent infection and further injury." },
+  { q: "Which fire extinguisher is suitable for oil fires?", options: ["Water", "Foam", "CO2", "Dry powder"], answer: 1, explanation: "Foam extinguishers are effective on oil and liquid fires." },
+  { q: "Wearing gloves in a workshop helps protect against?", options: ["Noise", "Chemical burns", "Electric shock", "Slips"], answer: 1, explanation: "Gloves protect hands from chemical burns and cuts." },
+  { q: "Installing machine guards helps to:", options: ["Improve speed", "Prevent accidents", "Increase noise", "Reduce lighting"], answer: 1, explanation: "Machine guards prevent contact with moving hazardous parts." },
+  { q: "A first aid box should contain:", options: ["A hammer", "Bandages and antiseptic", "Lubricating oil", "Measuring tape"], answer: 1, explanation: "Bandages and antiseptic are basic first aid essentials." },
+  { q: "Which of these is a sign of electrical hazard in a workshop?", options: ["Sparks from wire", "Loud noise", "Oil spills", "Cracked floor"], answer: 0, explanation: "Sparks indicate a risk of electrical fire or shock." },
+  { q: "What should be done if you smell burning electrical insulation?", options: ["Investigate safely and switch off power", "Ignore it", "Increase ventilation", "Use water to extinguish"], answer: 0, explanation: "Switching off power prevents fire and shock risk." },
+  { q: "What is the correct way to lift heavy objects?", options: ["Use back muscles only", "Bend knees and lift with legs", "Lift quickly", "Twist while lifting"], answer: 1, explanation: "Bending knees and lifting with legs reduces back injuries." },
+  { q: "Safety helmets protect workers from:", options: ["Chemical burns", "Falling objects", "Noise", "Electrical shock"], answer: 1, explanation: "Helmets prevent injury from falling or flying objects." },
+  { q: "What is the major objective of a fire drill?", options: ["To extinguish fire", "To practice evacuation", "To check fire alarms", "To test water pressure"], answer: 1, explanation: "Fire drills train workers to evacuate safely in emergencies." },
+  { q: "Slips, trips, and falls can be prevented by:", options: ["Wearing loose clothes", "Keeping floors clean and dry", "Running in workshops", "Ignoring spillages"], answer: 1, explanation: "Clean, dry floors reduce these common accidents." },
+  { q: "The basic safety rule when using electrical tools is to:", options: ["Use with wet hands", "Inspect before use", "Ignore damaged cords", "Overload circuits"], answer: 1, explanation: "Inspecting tools helps identify hazards before operation." },
+  { q: "Purpose of a safety sign in a factory is to:", options: ["Alert about hazards", "Decorate walls", "Indicate break times", "List employees"], answer: 0, explanation: "Safety signs warn of potential dangers to workers." },
+  { q: "Regular training on safety improves:", options: ["Worker confidence", "Machine speed", "Material costs", "Energy consumption"], answer: 0, explanation: "Training increases awareness, reducing accident risks." },
+  { q: "Which of the following is NOT a personal protective equipment (PPE)?", options: ["Safety boots", "Hard hat", "Safety goggles", "Hammer"], answer: 3, explanation: "Hammer is a tool, not protective equipment." },
+  { q: "Proper housekeeping in a workshop refers to:", options: ["Organizing tools and cleaning", "Ignoring clutter", "Piling materials randomly", "Leaving chemicals uncovered"], answer: 0, explanation: "Good housekeeping reduces hazards and improves safety." },
+  { q: "In case of chemical spills, the first step is to:", options: ["Alert supervisor and evacuate", "Wash it with water", "Ignore it", "Cover with cloth"], answer: 0, explanation: "Alerting and evacuating prevents accidents and exposure." },
+  { q: "Which of these is a basic principle of first aid?", options: ["Always move the injured', 'Ignore bleeding", "Control bleeding and prevent shock", "Delay treatment", "Apply unsterilized dressings"], answer: 1, explanation: "Controlling bleeding and preventing shock are essential first aid steps." },
+  { q: "To prevent electrical fires, workshops should:", options: ["Overload circuits", "Use proper fuses and breakers", "Ignore faults", "Store liquids near panels"], answer: 1, explanation: "Proper electrical protection prevents fires and shocks." },
+
+  // Medium (20 MCQs)
+  { q: "What type of fire extinguisher is recommended for paper and wood fires?", options: ["Water", "CO2", "Foam", "Dry chemical"], answer: 0, explanation: "Water extinguishers are effective for class A fires (wood, paper)."}, 
+  { q: "Which factor commonly contributes to accidents involving moving machinery?", options: ["Lack of guards", "Proper training", "Regular maintenance", "Adequate lighting"], answer: 0, explanation: "Lack of guards exposes workers to moving parts and injuries." },
+  { q: "What is the correct sequence in administering first aid?", options: ["Assess, call for help, provide aid", "Provide aid, call for help, assess", "Call for help, assess, provide aid", "Ignore assessment"], answer: 0, explanation: "Assessment first ensures appropriate aid and response." },
+  { q: "Which fire class includes fires caused by flammable liquids?", options: ["Class A", "Class B"], answer: 1, explanation: "Class B fires involve flammable liquids like oils and solvents." },
+  { q: "How often should workplace safety audits be conducted?", options: ["Monthly", "Annually"], answer: 0, explanation: "Monthly audits help timely identification of hazards." },
+  { q: "Which is a mechanical hazard in workshops?", options: ["Moving belts", "Loud noise"], answer: 0, explanation: "Moving belts and gears pose mechanical hazards." },
+  { q: "What safety practice should be followed when using ladders?", options: ["Place on uneven ground", "Maintain three points of contact", "Use slippery shoes"], answer: 1, explanation: "Three points of contact improve ladder safety." },
+  { q: "What safety equipment protects lungs in dusty environments?", options: ["Ear plugs", "Dust masks"], answer: 1, explanation: "Dust masks prevent inhalation of harmful particles." },
+  { q: "Which principle helps prevent spread of fire?", options: ["Removing fuel", "Increasing oxygen", "Adding heat"], answer: 0, explanation: "Removing fuel starves the fire, preventing spread." },
+  { q: "Which is an example of ergonomic hazard?", options: ["Heavy lifting", "Excessive noise"], answer: 0, explanation: "Heavy lifting stresses muscles, causing ergonomic injuries." },
+  { q: "An effective way of controlling workplace hazards is:", options: ["Personal protective equipment", "Ignoring hazards"], answer: 0, explanation: "PPE is a last line of defense in hazard control." },
+  { q: "Which emergency number should be called first in case of serious injuries?", options: ["Police", "Medical emergency"], answer: 1, explanation: "Medical emergency services come first for injuries." },
+  { q: "How should combustibles be stored near workplaces?", options: ["In labeled, ventilated areas", "Scattered randomly"], answer: 0, explanation: "Proper storage reduces fire hazards." },
+  { q: "The main advantage of a CO2 fire extinguisher is:", options: ["Leaves no residue", "Douses fires with water"], answer: 0, explanation: "CO2 does not leave residue, good for electrical fires." },
+  { q: "Which factor reduces the effectiveness of fire extinguishers?", options: ["Expired extinguisher", "Proper training"], answer: 0, explanation: "Expired extinguishers may not work properly." },
+  { q: "Which cause is common for workshop falls?", options: ["Wet floors", "Machine noise"], answer: 0, explanation: "Wet or oily floors increase fall risk." },
+  { q: "Which first aid measure is used to treat burns?", options: ["Cooling the burn with water", "Applying ice directly"], answer: 0, explanation: "Cool water soothes burns, while ice can cause tissue damage." },
+  { q: "Hearing protection should be worn when noise levels exceed:", options: ["85 decibels", "60 decibels"], answer: 0, explanation: "Long exposure above 85 dB can damage hearing." },
+  { q: "Which piece of PPE is essential when working with chemicals?", options: ["Gloves", "Ear plugs"], answer: 0, explanation: "Gloves protect hands from chemical exposure." },
+  { q: "How should flammable liquids be transported in workshops?", options: ["In approved containers", "In open buckets"], answer: 0, explanation: "Approved containers reduce spillage and fire risk." },
+
+  // Hard (10 MCQs)
+  { q: "Which legislation primarily governs workplace safety in Nepal?", options: ["Factories Act 1959", "Environmental Protection Act", "Traffic Safety Act", "Consumer Protection Act"], answer: 0, explanation: "Factories Act 1959 defines safety regulations in workplaces." },
+  { q: "The 'Hierarchy of Controls' in safety management includes all EXCEPT:", options: ["Elimination", "Ignorance", "Substitution", "Engineering controls"], answer: 1, explanation: "Ignorance is not part of the hierarchy, which prioritizes hazard control measures." },
+  { q: "In risk assessment, the formula used is:", options: ["Risk = Likelihood × Consequence", "Risk = Frequency + Severity", "Risk = Hazard ÷ Exposure", "Risk = Probability - Impact"], answer: 0, explanation: "Risk is calculated as the product of likelihood and consequence." },
+  { q: "What is the recommended protocol for rescue from confined spaces?", options: ["Use trained personnel with safety gear", "Send untrained workers"], answer: 0, explanation: "Confined space entry requires special training and equipment." },
+  { q: "Which fire extinguisher class is designed for electrical fires?", options: ["Class C", "Class A"], answer: 0, explanation: "Class C extinguishers are for electrical hazards." },
+  { q: "Which document details safety procedures and emergency response?", options: ["Safety Manual", "Inventory list"], answer: 0, explanation: "Safety Manual outlines procedures and responsibilities." },
+  { q: "A comprehensive workplace safety program should include:", options: ["Training, hazard identification, and emergency planning", "Ignoring minor hazards"], answer: 0, explanation: "Effective safety requires training, hazard control, and preparedness." },
+  { q: "Which safety color code represents caution?", options: ["Yellow", "Red"], answer: 0, explanation: "Yellow indicates caution or potential hazard." },
+  { q: "What is the maximum recommended duration for continuous use of hearing protection in high noise?", options: ["8 hours", "30 minutes"], answer: 0, explanation: "Hearing protection should be worn continuously during full shifts in loud environments." },
+  { q: "Lockout/tagout procedures are used to:", options: ["Prevent accidental equipment startup", "Increase machine speed"], answer: 0, explanation: "These procedures ensure machines cannot start during maintenance." }
+];
+
+
+  
+ let currentPage = 0;
+        let score = 0;
+        let skipped = [];
+        let userAnswers = Array(questions.length).fill(null);
+        let timerSeconds = 0;
+        let timerInterval;
+        const QUESTIONS_PER_PAGE = 5;
+        const ANSWER_DELAY = 1000;
+
+        const quizEl = document.getElementById("quiz");
+        const scoreEl = document.getElementById("score");
+        const resultsEl = document.getElementById("results");
+        const resultsBody = document.getElementById("results-body");
+        const progressEl = document.getElementById("progress");
+        const timerEl = document.getElementById("timer");
+        const currentScoreEl = document.getElementById("current-score");
+        const correctSound = document.getElementById("correct-sound");
+        const wrongSound = document.getElementById("wrong-sound");
+
+        // Clear progress to start fresh
+        function clearProgress() {
+            localStorage.removeItem("quizProgressSafetyPractices");
+            currentPage = 0;
+            score = 0;
+            skipped = [];
+            userAnswers = Array(questions.length).fill(null);
+            timerSeconds = 0;
+        }
+
+        // Save progress to localStorage
+        function saveProgress() {
+            localStorage.setItem("quizProgressSafetyPractices", JSON.stringify({
+                currentPage,
+                score,
+                skipped,
+                answers: userAnswers,
+                time: timerSeconds
+            }));
+        }
+
+        // Update current score display
+        function updateCurrentScore() {
+            currentScoreEl.textContent = `Score: ${score}/${questions.length}`;
+        }
+
+        // Shuffle array
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Start timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timerSeconds++;
+                const minutes = Math.floor(timerSeconds / 60);
+                const seconds = timerSeconds % 60;
+                timerEl.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                saveProgress();
+            }, 1000);
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const answeredCount = userAnswers.filter(answer => answer !== null).length;
+            const percentage = (answeredCount / questions.length) * 100;
+            progressEl.style.width = `${percentage}%`;
+        }
+
+        // Show questions for the current page
+        function showQuestions(page) {
+            quizEl.innerHTML = '';
+            const startIndex = page * QUESTIONS_PER_PAGE;
+            const endIndex = Math.min(startIndex + QUESTIONS_PER_PAGE, questions.length);
+
+            for (let i = startIndex; i < endIndex; i++) {
+                const q = questions[i];
+                const shuffledOptions = shuffle([...q.options].map((opt, j) => ({ text: opt, index: j })));
+                const optionsHtml = shuffledOptions
+                    .map(opt => `<button onclick="checkAnswer(this, ${i}, ${opt.index}, '${opt.text.replace(/'/g, "\\'")}')">${opt.text}</button>`)
+                    .join('');
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+                questionDiv.dataset.index = i;
+                questionDiv.innerHTML = `
+                    <p>Q${i + 1}. ${q.q}</p>
+                    <div class="options">${optionsHtml}</div>
+                    <button class="skip-button" onclick="skipQuestion(${i})">Skip</button>
+                    <div class="explanation">${q.explanation}</div>
+                `;
+                quizEl.appendChild(questionDiv);
+            }
+
+            if (endIndex < questions.length || skipped.length > 0) {
+                const nextButton = document.createElement('button');
+                nextButton.classList.add('next-button');
+                nextButton.textContent = endIndex < questions.length ? 'Next' : 'Review Skipped Questions';
+                nextButton.onclick = nextPage;
+                nextButton.disabled = !areAllQuestionsAnsweredOnPage(startIndex, endIndex);
+                quizEl.appendChild(nextButton);
+            } else {
+                const submitButton = document.createElement('button');
+                submitButton.classList.add('next-button');
+                submitButton.textContent = 'Submit Quiz';
+                submitButton.onclick = endQuiz;
+                submitButton.disabled = !areAllQuestionsAnsweredOnPage(startIndex, endIndex);
+                quizEl.appendChild(submitButton);
+            }
+
+            updateProgress();
+            saveProgress();
+            restoreAnswers(startIndex, endIndex);
+        }
+
+        // Restore previous answers for the current page
+        function restoreAnswers(startIndex, endIndex) {
+            for (let i = startIndex; i < endIndex; i++) {
+                if (userAnswers[i] !== null && userAnswers[i] !== 'Skipped') {
+                    const questionDiv = document.querySelector(`.question[data-index="${i}"]`);
+                    const buttons = questionDiv.querySelectorAll('.options button');
+                    const q = questions[i];
+                    buttons.forEach(btn => {
+                        btn.disabled = true;
+                        if (btn.textContent === q.options[q.answer]) {
+                            btn.classList.add('correct');
+                        }
+                        if (btn.textContent === userAnswers[i] && userAnswers[i] !== q.options[q.answer]) {
+                            btn.classList.add('wrong');
+                        }
+                    });
+                    questionDiv.querySelector('.explanation').style.display = 'block';
+                    questionDiv.querySelector('.skip-button').disabled = true;
+                } else if (userAnswers[i] === 'Skipped') {
+                    const questionDiv = document.querySelector(`.question[data-index="${i}"]`);
+                    questionDiv.querySelectorAll('.options button').forEach(btn => btn.disabled = true);
+                    questionDiv.querySelector('.skip-button').disabled = true;
+                    questionDiv.querySelector('.explanation').style.display = 'block';
+                }
+            }
+        }
+
+        // Check if all questions on the current page are answered or skipped
+        function areAllQuestionsAnsweredOnPage(startIndex, endIndex) {
+            for (let i = startIndex; i < endIndex; i++) {
+                if (userAnswers[i] === null) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Check answer
+        function checkAnswer(button, questionIndex, selected, selectedText) {
+            const q = questions[questionIndex];
+            const correct = q.answer;
+            const buttons = button.parentElement.querySelectorAll("button");
+            const questionDiv = button.closest('.question');
+            const explanationDiv = questionDiv.querySelector('.explanation');
+
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                if (q.options.indexOf(btn.textContent) === correct) {
+                    btn.classList.add('correct');
+                }
+                if (btn === button && selected !== correct) {
+                    btn.classList.add('wrong');
+                }
+            });
+
+            questionDiv.querySelector('.skip-button').disabled = true;
+            explanationDiv.style.display = 'block';
+
+            userAnswers[questionIndex] = selectedText;
+            if (selected === correct) {
+                score++;
+                correctSound.play().catch(() => console.log("Audio playback failed"));
+            } else {
+                wrongSound.play().catch(() => console.log("Audio playback failed"));
+            }
+
+            updateCurrentScore();
+            saveProgress();
+            const nextButton = quizEl.querySelector('.next-button');
+            if (nextButton) {
+                nextButton.disabled = !areAllQuestionsAnsweredOnPage(
+                    currentPage * QUESTIONS_PER_PAGE,
+                    Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, questions.length)
+                );
+            }
+
+            setTimeout(() => {
+                if (areAllQuestionsAnsweredOnPage(
+                    currentPage * QUESTIONS_PER_PAGE,
+                    Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, questions.length)
+                )) {
+                    nextPage();
+                }
+            }, ANSWER_DELAY);
+        }
+
+        // Skip question
+        function skipQuestion(questionIndex) {
+            if (!skipped.includes(questions[questionIndex])) {
+                skipped.push(questions[questionIndex]);
+                userAnswers[questionIndex] = 'Skipped';
+                const questionDiv = document.querySelector(`.question[data-index="${questionIndex}"]`);
+                if (questionDiv) {
+                    questionDiv.querySelectorAll('.options button').forEach(btn => btn.disabled = true);
+                    questionDiv.querySelector('.skip-button').disabled = true;
+                    questionDiv.querySelector('.explanation').style.display = 'block';
+                }
+                saveProgress();
+                const nextButton = quizEl.querySelector('.next-button');
+                if (nextButton) {
+                    nextButton.disabled = !areAllQuestionsAnsweredOnPage(
+                        currentPage * QUESTIONS_PER_PAGE,
+                        Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, questions.length)
+                    );
+                }
+            }
+        }
+
+        // Move to next page
+        function nextPage() {
+            if (skipped.length > 0 && currentPage * QUESTIONS_PER_PAGE >= questions.length) {
+                showSkippedQuestions();
+            } else {
+                currentPage++;
+                if (currentPage * QUESTIONS_PER_PAGE < questions.length) {
+                    showQuestions(currentPage);
+                } else if (skipped.length === 0) {
+                    endQuiz();
+                } else {
+                    showSkippedQuestions();
+                }
+            }
+        }
+
+        // Show skipped questions
+        function showSkippedQuestions() {
+            questions.splice(0, questions.length, ...skipped);
+            skipped = [];
+            currentPage = 0;
+            showQuestions(currentPage);
+        }
+
+        // End quiz and show results
+        function endQuiz() {
+            clearInterval(timerInterval);
+            quizEl.innerHTML = '';
+            scoreEl.textContent = `Final Score: ${score} out of ${questions.length} (${((score / questions.length) * 100).toFixed(2)}%)`;
+            resultsEl.classList.remove('hidden');
+
+            resultsBody.innerHTML = questions.map((q, i) => {
+                const userAnswer = userAnswers[i] === null ? 'Not attempted' :
+                                  userAnswers[i] === 'Skipped' ? 'Skipped' :
+                                  userAnswers[i];
+                const correctAnswer = q.options[q.answer];
+                const status = userAnswers[i] === q.options[q.answer] ? 'Correct' :
+                              userAnswers[i] === 'Skipped' ? 'Skipped' :
+                              userAnswers[i] === null ? 'Not-attempted' : 'Wrong';
+                return `
+                    <tr>
+                        <td>${i + 1}. ${q.q}</td>
+                        <td>${userAnswer}</td>
+                        <td>${correctAnswer}</td>
+                        <td class="${status.toLowerCase().replace(' ', '-')}">${status}</td>
+                        <td class="explanation">${q.explanation}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            localStorage.removeItem('quizProgressSafetyPractices');
+        }
+
+        // Restart quiz
+        function restartQuiz() {
+            clearProgress();
+            resultsEl.classList.add('hidden');
+            scoreEl.textContent = '';
+            startTimer();
+            showQuestions(currentPage);
+            updateCurrentScore();
+        }
+
+        // Initialize quiz
+        function initialize() {
+            clearProgress();
+            startTimer();
+            showQuestions(currentPage);
+            updateCurrentScore();
+        }
+
+        // Start quiz on page load
+        initialize();
+    </script>
+</body>
+</html>
