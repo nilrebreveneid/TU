@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mechanical Engineering MCQs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Roboto', -apple-system, Arial, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background: linear-gradient(135deg, #e0f7fa, #80deea);
+      color: #1a202c;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.6;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2b6cb0;
+      margin-bottom: 0.5rem;
+      font-size: 2.5rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #c53030;
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+
+    .quiz-container {
+      max-width: 1000px;
+      width: 100%;
+      background: #ffffff;
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+      margin-bottom: 2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .quiz-container:hover {
+      transform: translateY(-5px);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background: #edf2f7;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    .progress {
+      height: 100%;
+      background: linear-gradient(to right, #4299e1, #3182ce);
+      border-radius: 6px;
+      transition: width 0.4s ease-in-out;
+    }
+
+    #timer {
+      text-align: right;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: #c53030;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .question {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      border-radius: 8px;
+      background: #f7fafc;
+      border: 1px solid #e2e8f0;
+      animation: fadeIn 0.5s ease-out;
+      transition: box-shadow 0.3s;
+    }
+
+    .question:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .question h3 {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #2d3748;
+      margin-bottom: 1rem;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .options button {
+      padding: 0.75rem 1.25rem;
+      width: 100%;
+      background: #ebf8ff;
+      border: 2px solid #bee3f8;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      text-align: left;
+      transition: all 0.3s ease;
+      color: #2d3748;
+    }
+
+    .options button:hover:not(:disabled) {
+      background: #bee3f8;
+      border-color: #90cdf4;
+      transform: translateX(4px);
+    }
+
+    .options button:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+    }
+
+    .options button.correct {
+      background: #c6f6d5 !important;
+      border-color: #68d391 !important;
+      color: #22543d;
+      animation: pulse 0.5s;
+    }
+
+    .options button.wrong {
+      background: #fed7d7 !important;
+      border-color: #f56565 !important;
+      color: #742a2a;
+      animation: shake 0.3s;
+    }
+
+    .options button:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .explanation {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f0fff4;
+      border-left: 4px solid #48bb78;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      color: #2d3748;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.3s ease, max-height 0.3s ease;
+    }
+
+    .explanation.show {
+      opacity: 1;
+      max-height: 200px;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+      gap: 1rem;
+    }
+
+    .pagination-button {
+      background: #4299e1;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    .pagination-button:hover:not(:disabled) {
+      background: #3182ce;
+    }
+
+    .pagination-button:disabled {
+      background: #e2e8f0;
+      cursor: not-allowed;
+    }
+
+    .submit-button, .restart-button {
+      background: #4299e1;
+      color: #fff;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      width: 100%;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .submit-button:hover:not(:disabled), .restart-button:hover:not(:disabled) {
+      background: #3182ce;
+      transform: translateY(-2px);
+    }
+
+    .submit-button:disabled {
+      background: #e2e8f0;
+      cursor: not-allowed;
+    }
+
+    #score, #results {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-top: 2rem;
+      font-weight: 700;
+      color: #2d3748;
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .results-table th, .results-table td {
+      border: 1px solid #e2e8f0;
+      padding: 1rem;
+      text-align: left;
+    }
+
+    .results-table th {
+      background: #edf2f7;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .results-table td.correct { color: #2f855a; font-weight: 600; }
+    .results-table td.wrong { color: #c53030; font-weight: 600; }
+    .results-table td.not-attempted { color: #718096; }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      .quiz-container {
+        padding: 1.5rem;
+      }
+      .question h3 {
+        font-size: 1.1rem;
+      }
+      .options button {
+        font-size: 0.95rem;
+        padding: 0.6rem 1rem;
+      }
+      .results-table th, .results-table td {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+      }
+      .pagination-button {
+        padding: 0.6rem 1rem;
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.2rem;
+      }
+      .submit-button, .restart-button {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Mechanical Engineering MCQs</h1>
+  <h2>Test Your Knowledge: 80 MCQs Will Appear in Exam</h2>
+  <div class="quiz-container">
+    <div id="timer">Time: 00:00</div>
+    <div class="progress-bar">
+      <div class="progress" id="progress"></div>
+    </div>
+    <div id="quiz" role="region" aria-live="polite"></div>
+    <div class="pagination">
+      <button class="pagination-button" id="prev-page" disabled aria-label="Previous page">Previous</button>
+      <button class="pagination-button" id="next-page" aria-label="Next page">Next</button>
+    </div>
+    <button class="submit-button" id="submit-button" disabled aria-label="Submit quiz">Submit Quiz</button>
+    <div id="score"></div>
+    <div id="results" class="hidden">
+      <h2>Quiz Results</h2>
+      <div class="overflow-x-auto">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Question</th>
+              <th>Your Answer</th>
+              <th>Correct Answer</th>
+              <th>Status</th>
+              <th>Explanation</th>
+            </tr>
+          </thead>
+          <tbody id="results-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <button class="restart-button hidden" id="restart-button" aria-label="Restart quiz">Restart Quiz</button>
+
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/beep-01a.mp3"></audio>
+  <audio id="wrong-sound" src="https://www.soundjay.com/buttons/beep-02.mp3"></audio>
+
+  <script>
+    const quizData =  [
+  // Easy (20)
+  { q: "Which hand tool is primarily used for marking straight lines on metal?", options: ["Chisel", "Scriber", "File", "Punch"], answer: 1, explanation: "Scriber is sharpened for marking lines on metal." },
+  { q: "What component aligns the axis of a workpiece in a lathe?", options: ["Chuck", "Tailstock", "Tool post", "Bed"], answer: 1, explanation: "Tailstock supports long workpieces and keeps them aligned." },
+  { q: "What is the function of a punch in bench work?", options: ["Cutting", "Marking center", "Filing", "Finishing"], answer: 1, explanation: "Punch is mainly used to mark the center for drilling." },
+  { q: "Which tool is used to measure angles precisely?", options: ["Vernier caliper", "Bevel protractor", "Slip gauge", "Reamer"], answer: 1, explanation: "Bevel protractors are designed for angle measurement." },
+  { q: "Which instrument is best for measuring an external diameter?", options: ["Vernier caliper", "Micrometer", "Feeler gauge", "Comparator"], answer: 1, explanation: "Micrometers offer high accuracy for external measurements." },
+  { q: "In metric drawing, what is the full scale ratio?", options: ["1:2", "1:1", "2:1", "10:1"], answer: 1, explanation: "1:1 means drawing size equals object size." },
+  { q: "Which machine tool part is designed to move up and down in a shaper?", options: ["Table", "Ram", "Saddle", "Lead screw"], answer: 1, explanation: "The ram holds and moves the tool." },
+  { q: "Which gear mechanism is used to feed the table in a milling machine?", options: ["Worm gear", "Bevel gear", "Helical gear", "Spur gear"], answer: 0, explanation: "Worm gears allow fine and controlled movements." },
+  { q: "Which process joins two metals by melting only the filler, not the base metal?", options: ["Soldering", "Arc welding", "Brazing", "Spot welding"], answer: 2, explanation: "Brazing only melts filler for the joint." },
+  { q: "Which color is conventionally used to denote machined surfaces on engineering patterns?", options: ["Black", "Blue", "Red", "Green"], answer: 2, explanation: "Red color indicates surfaces to be machined." },
+  { q: "Which type of fit is used when parts need to move freely but not loosely?", options: ["Transition", "Clearance", "Interference", "Tight"], answer: 1, explanation: "Clearance fit allows sliding or slight play." },
+  { q: "What is typically used as a datum in dimensional measurement?", options: ["Surface plate", "Length bar", "Slip gauge", "Dial gauge"], answer: 0, explanation: "Surface plate provides a reference plane." },
+  { q: "Which of the following lines is used for hidden edges in machine drawing?", options: ["Thick solid", "Dashed", "Chain", "Thin freehand"], answer: 1, explanation: "Dashed lines are standard for hidden features." },
+  { q: "What is the standard unit for Ra (surface roughness) in metrology?", options: ["mm", "µm", "cm", "nm"], answer: 1, explanation: "Surface roughness is given in micrometers (µm)." },
+  { q: "What does a chisel do when struck by a hammer?", options: ["Mark", "Remove metal", "Smooth", "Measure"], answer: 1, explanation: "Chisels cut or remove metal." },
+  { q: "Which operation enlarges the diameter of an already drilled hole?", options: ["Tapping", "Reaming", "Threading", "Filing"], answer: 1, explanation: "Reaming improves size & finish of holes." },
+  { q: "Which metal joining process is reversible with application of heat?", options: ["Soldering", "Arc welding", "Gas welding", "Riveting"], answer: 0, explanation: "Soldered joints can be remelted and separated." },
+  { q: "What is a combination set in workshop tools?", options: ["Marking device", "Measuring instrument", "Joining tool", "Cutting tool"], answer: 1, explanation: "Combination set includes scale, square, and protractor." },
+  { q: "Which machine uses abrasive particles bonded together?", options: ["Shaper", "Drilling", "Grinding", "Milling"], answer: 2, explanation: "Grinding uses bonded abrasives for finishing." },
+  { q: "What would you use to check the parallelism of two surfaces?", options: ["Vernier caliper", "Spirit level", "Surface plate", "Feeler gauge"], answer: 3, explanation: "Feeler gauges check parallel gaps." },
+  
+  // Medium (20)
+  { q: "Which scale is used to draw large areas in a smaller space in engineering drawing?", options: ["Reducing scale", "Full scale", "Enlarging scale", "Vernier scale"], answer: 0, explanation: "Reducing scales convert large areas to small drawings." },
+  { q: "Which part of a micrometer prevents the user from applying excess pressure?", options: ["Barrel", "Ratchet", "Thimble", "Anvil"], answer: 1, explanation: "The ratchet ensures consistent measuring force." },
+  { q: "What type of error is caused by inexperienced users consistently misreading a scale?", options: ["Systematic", "Random", "Gross", "Instrumental"], answer: 0, explanation: "Repeated, consistent errors are systematic." },
+  { q: "Which method is recommended for removing broken bolts?", options: ["Filing", "Tapping", "Using an extractor", "Reaming"], answer: 2, explanation: "Extractors remove broken threaded parts." },
+  { q: "Which process improves fatigue resistance of metal parts?", options: ["Soldering", "Brazing", "Shot peening", "Filing"], answer: 2, explanation: "Shot peening induces compressive stress, improving fatigue life." },
+  { q: "In orthographic projection, where is the right side view placed according to the 1st angle projection?", options: ["Left of front view", "Right of front view", "Below front view", "Above front view"], answer: 0, explanation: "In the first angle, the right side view is to the left." },
+  { q: "Which tool checks the depth of a slot?", options: ["Depth gauge", "Feeler gauge", "Slip gauge", "Caliper"], answer: 0, explanation: "Depth gauges are designed for this purpose." },
+  { q: "Which solution is used to remove rust from ferrous workshop tools?", options: ["Sulphuric acid", "Sodium chloride", "Phosphoric acid", "Sodium hydroxide"], answer: 2, explanation: "Phosphoric acid is used in rust removers." },
+  { q: "Which method measures the straightness of a guideway?", options: ["Surface plate & dial gauge", "Feeler gauge", "Spirit level", "Protractor"], answer: 0, explanation: "Dial gauge on a surface plate checks straightness." },
+  { q: "What is the tolerance zone for H7 hole basis system?", options: ["Upper deviation only", "Symmetrical about zero", "Lower deviation zero", "Fit by press"], answer: 2, explanation: "H7 has a zero lower deviation." },
+  { q: "Which operation uses a die?", options: ["Cutting internal threads", "Cutting external threads", "Scribing", "Punching"], answer: 1, explanation: "Dies cut external (male) threads." },
+  { q: "Why is a knurling operation performed on a lathe?", options: ["Increase diameter", "Improve grip", "Reduce diameter", "Create threaded surface"], answer: 1, explanation: "Knurling produces a textured grip." },
+  { q: "What is the function of a gib in a machine slide?", options: ["Provide lubrication", "Compensate for wear", "Absorb vibration", "Guide the slide"], answer: 1, explanation: "Gibs adjust for wear and maintain tightness." },
+  { q: "A loose fit is required when parts must be:", options: ["Assembled with force", "Interchangeable and easily separated", "Fixed permanently", "Rotated at high speed"], answer: 1, explanation: "Loose fit allows easy disassembly, important for maintainability." },
+  { q: "Which machine uses a rack and pinion for movement?", options: ["Planer", "Milling machine", "Drilling machine", "Grinder"], answer: 2, explanation: "The column of drilling machines is often moved by rack & pinion." },
+  { q: "Which tool checks roundness of a drilled hole?", options: ["Plug gauge", "Ring gauge", "Snap gauge", "Thread gauge"], answer: 0, explanation: "Plug gauges test roundness of and tolerances in a hole." },
+  { q: "What is the main advantage of using alloy steel for measuring equipment?", options: ["Cheaper", "Higher hardness and wear resistance", "More flexible", "Easier to manufacture"], answer: 1, explanation: "Alloy steels resist wear, keeping measurements precise." },
+  { q: "Which symbol represents counterbore in technical drawing?", options: ["⌴", "⌀", "⨀", "⌂"], answer: 0, explanation: "⌴ is standard for counterbore holes." },
+  { q: "Which method improves the finish of a drilled hole?", options: ["Tapping", "Reaming", "Filing", "Spot facing"], answer: 1, explanation: "Reaming makes holes smooth and accurate." },
+  { q: "What does the chain line in drawing represent?", options: ["Visible object", "Hidden edge", "Center line", "Cutting plane"], answer: 3, explanation: "Chain, thick at ends—used for cutting planes." },
+
+  // Hard (10)
+  { q: "How is graduated accuracy in slip gauges maintained?", options: ["By heat treatment and lapping", "Using brass covers", "Calibrating on-site only", "By using digital readouts"], answer: 0, explanation: "Special heat treatment and lapping gives precision finish to slip gauges." },
+  { q: "In tolerance representation, what does the symbol 'e8' specify?", options: ["Hole tolerance", "Shaft tolerance", "General size", "Press fit"], answer: 1, explanation: "'e' always refers to shaft tolerances." },
+  { q: "A transition fit for a size 25H7/k6 offers which of the following?", options: ["Always clearance", "Always interference", "Either clearance or interference", "Loose sliding fit"], answer: 2, explanation: "Transition fits may give either outcome depending on actual tolerance distribution." },
+  { q: "Which method is used for aligning the spindle in a lathe for high-precision work?", options: ["Tailstock offsetting", "Dial test indicator testing", "Leveling with bubble", "Chuck centering"], answer: 1, explanation: "Dial indicator test checks spindle runout for alignment." },
+  { q: "Why are carbide-tipped tools preferred for production machining?", options: ["Cheaper", "Withstand higher speeds and temperatures", "Easier to manufacture", "Used for marking"], answer: 1, explanation: "Carbide retains edge at high temperature, crucial in production." },
+  { q: "If a block gauge is found to be 0.003mm oversized, what type of error is this?", options: ["Systematic", "Gross", "Random", "Human"], answer: 0, explanation: "Consistent manufacturing error = systematic." },
+  { q: "Which drawing symbol indicates a countersink?", options: ["⌴", "⌵", "➳", "◇"], answer: 1, explanation: "⌵ for countersinks in machine drawings." },
+  { q: "While using pneumatic comparators, which property ensures accuracy?", options: ["Steady air pressure supply", "Random bursts of air", "Use only in vacuum", "High temperature"], answer: 0, explanation: "Undisturbed air pressure is vital for accurate comparison readings." },
+  { q: "What specifies the grade or class of a surface finish in drawings?", options: ["Ra value", "Tolerance zone", "Dimension line", "Chain line"], answer: 0, explanation: "Ra value indicates the roughness explicitly." },
+  { q: "For a fit specified as 60 H8/f7, which one has the maximum material condition?", options: ["60.000 mm", "60.010 mm", "60.003 mm", "60.020 mm"], answer: 1, explanation: "Maximum material condition means smallest hole or largest shaft, per fit system." }
+];
+
+    let score = 0;
+    let userAnswers = Array(quizData.length).fill(null);
+    let timerSeconds = 0;
+    let timerInterval;
+    let shuffledQuizData = [];
+    let currentPage = 0;
+    const questionsPerPage = 20;
+
+    const quizEl = document.getElementById("quiz");
+    const scoreEl = document.getElementById("score");
+    const resultsEl = document.getElementById("results");
+    const resultsBody = document.getElementById("results-body");
+    const progressEl = document.getElementById("progress");
+    const timerEl = document.getElementById("timer");
+    const submitButton = document.getElementById("submit-button");
+    const restartButton = document.getElementById("restart-button");
+    const prevPageButton = document.getElementById("prev-page");
+    const nextPageButton = document.getElementById("next-page");
+    const correctSound = document.getElementById("correct-sound");
+    const wrongSound = document.getElementById("wrong-sound");
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function shuffleOptions(quizData) {
+      return quizData.map(q => {
+        const correct = q.options[q.answer];
+        const shuffled = [...q.options].sort(() => Math.random() - 0.5);
+        return {
+          ...q,
+          options: shuffled,
+          answer: shuffled.indexOf(correct)
+        };
+      });
+    }
+
+    function startTimer() {
+      const minutes = Math.floor(timerSeconds / 60);
+      const seconds = timerSeconds % 60;
+      timerEl.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      timerInterval = setInterval(() => {
+        timerSeconds++;
+        const minutes = Math.floor(timerSeconds / 60);
+        const seconds = timerSeconds % 60;
+        timerEl.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    function updateProgress() {
+      const answered = userAnswers.filter(answer => answer !== null).length;
+      const percentage = (answered / quizData.length) * 100;
+      progressEl.style.width = `${percentage}%`;
+      checkAllAnswered();
+    }
+
+    function showPage(pageIndex) {
+      currentPage = pageIndex;
+      const startIndex = pageIndex * questionsPerPage;
+      const endIndex = Math.min(startIndex + questionsPerPage, shuffledQuizData.length);
+      const fragment = document.createDocumentFragment();
+      const pageQuestions = shuffledQuizData.slice(startIndex, endIndex);
+      pageQuestions.forEach((q, index) => {
+        const globalIndex = startIndex + index;
+        const isAnswered = userAnswers[globalIndex] !== null;
+        const selectedAnswer = userAnswers[globalIndex];
+        const correctAnswer = q.options[q.answer];
+        const options = q.options.map((opt, j) => {
+          let buttonClass = '';
+          if (isAnswered) {
+            buttonClass += opt === correctAnswer ? ' correct' :
+                          opt === selectedAnswer && selectedAnswer !== correctAnswer ? ' wrong' : '';
+          }
+          return `<button class="${buttonClass}" aria-label="Option ${escapeHtml(opt)}" ${isAnswered ? 'disabled' : ''}>${escapeHtml(opt)}</button>`;
+        }).join('');
+        const div = document.createElement('div');
+        div.className = 'question';
+        div.dataset.index = globalIndex;
+        div.innerHTML = `
+          <h3>${globalIndex + 1}. ${escapeHtml(q.q)}</h3>
+          <div class="options">${options}</div>
+          <div class="explanation ${isAnswered ? 'show' : ''}" id="explanation-${globalIndex}">
+            ${isAnswered ? escapeHtml(q.explanation || 'No explanation available.') : ''}
+          </div>
+        `;
+        fragment.appendChild(div);
+      });
+      quizEl.innerHTML = '';
+      quizEl.appendChild(fragment);
+
+      // Attach event listeners to buttons
+      quizEl.querySelectorAll('.options button').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const questionDiv = e.target.closest('.question');
+          const questionIndex = parseInt(questionDiv.dataset.index);
+          const selected = Array.from(questionDiv.querySelectorAll('.options button')).indexOf(e.target);
+          const selectedText = e.target.textContent;
+          checkAnswer(e.target, questionIndex, selected, selectedText);
+        });
+      });
+
+      prevPageButton.disabled = currentPage === 0;
+      nextPageButton.disabled = endIndex === quizData.length;
+      updateProgress();
+    }
+
+    function checkAnswer(button, questionIndex, selected, selectedText) {
+      if (userAnswers[questionIndex] !== null) return;
+      const q = shuffledQuizData[questionIndex];
+      const correct = q.answer;
+      const buttons = button.parentElement.querySelectorAll("button");
+      const explanationEl = document.getElementById(`explanation-${questionIndex}`);
+
+      buttons.forEach((btn, j) => {
+        btn.disabled = true;
+        if (j === correct) btn.classList.add("correct");
+        if (btn === button && selected !== correct) btn.classList.add("wrong");
+      });
+
+      userAnswers[questionIndex] = selectedText;
+      if (selected === correct) {
+        score++;
+        correctSound.play().catch(() => console.log("Correct sound playback failed"));
+      } else {
+        wrongSound.play().catch(() => console.log("Wrong sound playback failed"));
+      }
+
+      explanationEl.textContent = q.explanation || 'No explanation available.';
+      explanationEl.classList.add('show');
+      saveProgress();
+      updateProgress();
+    }
+
+    function checkAllAnswered() {
+      const allAnswered = userAnswers.every(answer => answer !== null);
+      submitButton.disabled = !allAnswered;
+    }
+
+    function endQuiz() {
+      clearInterval(timerInterval);
+      quizEl.innerHTML = '';
+      prevPageButton.classList.add("hidden");
+      nextPageButton.classList.add("hidden");
+      submitButton.classList.add("hidden");
+      scoreEl.innerHTML = `Your score: ${score} / ${quizData.length} (${((score / quizData.length) * 100).toFixed(2)}%)`;
+      resultsEl.classList.remove("hidden");
+      restartButton.classList.remove("hidden");
+
+      resultsBody.innerHTML = shuffledQuizData.map((q, i) => {
+        const userAnswer = userAnswers[i] === null ? "Not attempted" : escapeHtml(userAnswers[i]);
+        const correctAnswer = escapeHtml(q.options[q.answer]);
+        const status = userAnswers[i] === q.options[q.answer] ? "Correct" :
+                      userAnswers[i] === null ? "Not attempted" : "Wrong";
+        return `
+          <tr>
+            <td>${i + 1}. ${escapeHtml(q.q)}</td>
+            <td>${userAnswer}</td>
+            <td>${correctAnswer}</td>
+            <td class="${status.toLowerCase()}">${status}</td>
+            <td>${escapeHtml(q.explanation || 'No explanation available.')}</td>
+          </tr>
+        `;
+      }).join('');
+      localStorage.removeItem("mechanicalEngineeringMCQProgress");
+    }
+
+    function restartQuiz() {
+      score = 0;
+      userAnswers = Array(quizData.length).fill(null);
+      timerSeconds = 0;
+      currentPage = 0;
+      shuffledQuizData = shuffleOptions(quizData);
+      resultsEl.classList.add("hidden");
+      prevPageButton.classList.remove("hidden");
+      nextPageButton.classList.remove("hidden");
+      submitButton.classList.remove("hidden");
+      scoreEl.innerHTML = "";
+      clearInterval(timerInterval);
+      startTimer();
+      showPage(0);
+    }
+
+    function loadProgress() {
+      const saved = localStorage.getItem("mechanicalEngineeringMCQProgress");
+      if (saved) {
+        const { score: savedScore, answers: savedAnswers, time: savedTime } = JSON.parse(saved);
+        score = savedScore || 0;
+        userAnswers = savedAnswers && savedAnswers.length === quizData.length ? savedAnswers : Array(quizData.length).fill(null);
+        timerSeconds = savedTime || 0;
+      }
+    }
+
+    function saveProgress() {
+      localStorage.setItem("mechanicalEngineeringMCQProgress", JSON.stringify({
+        score,
+        answers: userAnswers,
+        time: timerSeconds
+      }));
+    }
+
+    // Initialize
+    shuffledQuizData = shuffleOptions(quizData);
+    loadProgress();
+    startTimer();
+    showPage(0);
+
+    // Event listeners
+    submitButton.addEventListener("click", endQuiz);
+    restartButton.addEventListener("click", restartQuiz);
+    prevPageButton.addEventListener("click", () => {
+      if (currentPage > 0) showPage(currentPage - 1);
+    });
+    nextPageButton.addEventListener("click", () => {
+      if ((currentPage + 1) * questionsPerPage < quizData.length) showPage(currentPage + 1);
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !submitButton.disabled) {
+        submitButton.click();
+      } else if (e.key === 'ArrowLeft' && !prevPageButton.disabled) {
+        prevPageButton.click();
+      } else if (e.key === 'ArrowRight' && !nextPageButton.disabled) {
+        nextPageButton.click();
+      }
+    });
+  </script>
+</body>
+</html>
