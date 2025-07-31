@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mechanics MCQ Part 1</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background: linear-gradient(to right, #f8ffae, #43c6ac);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      text-align: center;
+      color: #1e88e5;
+      margin-bottom: 0.5rem;
+      font-size: 2rem;
+    }
+
+    h2 {
+      text-align: center;
+      color: #d81b60;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .quiz-container {
+      max-width: 900px;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 100%;
+      background: #42a5f5;
+      border-radius: 6px;
+      transition: width 0.4s ease-in-out;
+    }
+
+    #timer {
+      text-align: right;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      color: #d81b60;
+      font-weight: 500;
+    }
+
+    .question {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    .question p {
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #444;
+      margin-bottom: 0.75rem;
+    }
+
+    .options button {
+      display: block;
+      margin: 0.5rem 0;
+      padding: 0.75rem 1rem;
+      width: 100%;
+      background: #e3f2fd;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      text-align: left;
+    }
+
+    .options button:hover:not(:disabled) {
+      background: #bbdefb;
+    }
+
+    .options button:focus {
+      outline: 2px solid #1e88e5;
+      outline-offset: 2px;
+    }
+
+    .options button.correct {
+      background-color: #c8e6c9;
+    }
+
+    .options button.wrong {
+      background-color: #ffcdd2;
+    }
+
+    .explanation {
+      background: #f0fff4;
+      border-left: 4px solid #48bb78;
+      padding: 12px;
+      margin-top: 12px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      color: #2d3748;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .explanation.show {
+      opacity: 1;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+      gap: 1rem;
+    }
+
+    .pagination-button {
+      background: #42a5f5;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .pagination-button:hover:not(:disabled) {
+      background: #1e88e5;
+    }
+
+    .pagination-button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    #score, #results {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-top: 2rem;
+      font-weight: bold;
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .results-table th, .results-table td {
+      border: 1px solid #ddd;
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    .results-table th {
+      background: #f5f5f5;
+      font-weight: 600;
+    }
+
+    .results-table td.correct { color: #2e7d32; }
+    .results-table td.wrong { color: #d32f2f; }
+    .results-table td.not-attempted { color: #757575; }
+
+    .submit-button, .restart-button {
+      background: #42a5f5;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 1rem;
+      width: 100%;
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    .submit-button:hover:not(:disabled), .restart-button:hover {
+      background: #1e88e5;
+    }
+
+    .submit-button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .quiz-container {
+        padding: 1rem;
+      }
+      .options button {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+      }
+      .results-table th, .results-table td {
+        padding: 0.5rem;
+      }
+      .pagination-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Mechanics MCQ Part 1</h1>
+  <h2>7 MCQs Will Come in Exam</h2>
+  <div class="quiz-container">
+    <div id="timer">Time: 00:00</div>
+    <div class="progress-bar">
+      <div class="progress" id="progress"></div>
+    </div>
+    <div id="quiz" role="region" aria-live="polite"></div>
+    <div class="pagination">
+      <button class="pagination-button" id="prev-page" disabled aria-label="Previous page">Previous</button>
+      <button class="pagination-button" id="next-page" aria-label="Next page">Next</button>
+    </div>
+    <button class="submit-button" id="submit-button" disabled aria-label="Submit quiz">Submit Quiz</button>
+    <div id="score"></div>
+    <div id="results" class="hidden">
+      <h2>Quiz Results</h2>
+      <div class="overflow-x-auto">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Question</th>
+              <th>Your Answer</th>
+              <th>Correct Answer</th>
+              <th>Status</th>
+              <th>Explanation</th>
+            </tr>
+          </thead>
+          <tbody id="results-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <button class="restart-button hidden" id="restart-button" aria-label="Restart quiz">Restart Quiz</button>
+
+  <script>
+const questions = [
+  {
+    "q": "The resultant of two equal coplanar forces acting at an angle of 90° is:",
+    "options": ["Zero", "√2 times one force", "Twice one force", "Half one force"],
+    "answer": 1,
+    "explanation": "For two equal forces F at 90°, resultant = √(F² + F²) = F√2.",
+    "difficulty": "easy"
+  },
+  {
+    "q": "The moment of a force is zero when the force is applied:",
+    "options": ["Perpendicular to the lever arm", "Parallel to the lever arm", "At the pivot point", "At an angle of 45°"],
+    "answer": 2,
+    "explanation": "Moment is zero when the force passes through the pivot (τ = F × d, d = 0).",
+    "difficulty": "easy"
+  },
+  {
+    "q": "The center of gravity of a rectangular lamina lies at:",
+    "options": ["Its edge", "Intersection of diagonals", "One corner", "Half its height"],
+    "answer": 1,
+    "explanation": "For a uniform rectangular lamina, the C.G. is at the intersection of its diagonals.",
+    "difficulty": "easy"
+  },
+  {
+    "q": "Frictional force always acts:",
+    "options": ["In the direction of motion", "Opposite to the direction of motion", "Perpendicular to motion", "At 45° to motion"],
+    "answer": 1,
+    "explanation": "Frictional force opposes the direction of motion or impending motion.",
+    "difficulty": "easy"
+  },
+  {
+    "q": "Speed is defined as:",
+    "options": ["Displacement per unit time", "Distance per unit time", "Acceleration per unit time", "Velocity in a direction"],
+    "answer": 1,
+    "explanation": "Speed is the rate of distance covered per unit time, a scalar quantity.",
+    "difficulty": "easy"
+  },
+  {
+    "q": "Acceleration is the rate of change of:",
+    "options": ["Distance", "Velocity", "Speed", "Displacement"],
+    "answer": 1,
+    "explanation": "Acceleration is the rate of change of velocity (a = Δv/Δt).",
+    "difficulty": "easy"
+  },
+  {
+    "q": "The trajectory of a projectile is a:",
+    "options": ["Straight line", "Parabola", "Circle", "Ellipse"],
+    "answer": 1,
+    "explanation": "A projectile’s trajectory is parabolic due to gravity and initial velocity.",
+    "difficulty": "easy"
+  },
+  {
+    "q": "Newton’s first law is also known as the law of:",
+    "options": ["Inertia", "Acceleration", "Action-reaction", "Gravitation"],
+    "answer": 0,
+    "explanation": "Newton’s first law, the law of inertia, states a body remains at rest or in motion unless acted upon.",
+    "difficulty": "easy"
+  },
+  {
+    "q": "Work is measured in:",
+    "options": ["Watt", "Newton", "Joule", "Pascal"],
+    "answer": 2,
+    "explanation": "Work is measured in joules (J), equivalent to N·m.",
+    "difficulty": "easy"
+  },
+  {
+    "q": "Power is defined as the rate of:",
+    "options": ["Doing work", "Applying force", "Changing velocity", "Increasing mass"],
+    "answer": 0,
+    "explanation": "Power is the rate of doing work, measured in watts (J/s).",
+    "difficulty": "easy"
+  },
+  {
+    "q": "The SI unit of torque is:",
+    "options": ["Newton", "Newton-meter", "Joule", "Watt"],
+    "answer": 1,
+    "explanation": "Torque is measured in Newton-meters (N·m).",
+    "difficulty": "easy"
+  },
+  {
+    "q": "In uniform circular motion, which quantity is constant?",
+    "options": ["Velocity", "Acceleration", "Speed", "Displacement"],
+    "answer": 2,
+    "explanation": "In uniform circular motion, speed is constant, but velocity changes due to direction.",
+    "difficulty": "easy"
+  },
+  {
+    "q": "The center of gravity of a circular disk lies at:",
+    "options": ["Its edge", "Its center", "One-third radius", "Outside the disk"],
+    "answer": 1,
+    "explanation": "The C.G. of a uniform circular disk is at its geometric center.",
+    "difficulty": "easy"
+  },
+  {
+    "q": "Kinetic friction is typically:",
+    "options": ["Greater than static friction", "Equal to static friction", "Less than static friction", "Zero"],
+    "answer": 2,
+    "explanation": "Kinetic friction is generally less than static friction.",
+    "difficulty": "easy"
+  },
+  {
+    "q": "Newton’s third law states that forces occur in:",
+    "options": ["Single units", "Pairs", "Triplets", "Groups"],
+    "answer": 1,
+    "explanation": "Newton’s third law states that every action has an equal and opposite reaction.",
+    "difficulty": "easy"
+  },
+  {
+    "q": "The distance traversed in rectilinear motion with constant velocity is given by:",
+    "options": ["s = v/t", "s = vt", "s = v + t", "s = v²t"],
+    "answer": 1,
+    "explanation": "Distance is s = vt for constant velocity.",
+    "difficulty": "easy"
+  },
+  {
+    "q": "The mechanical energy of a system includes:",
+    "options": ["Kinetic and potential energy", "Force and torque", "Work and power", "Momentum and impulse"],
+    "answer": 0,
+    "explanation": "Mechanical energy is the sum of kinetic and potential energy.",
+    "difficulty": "easy"
+  },
+  {
+    "q": "A couple consists of two forces that are:",
+    "options": ["Equal, opposite, and parallel", "Equal and collinear", "Perpendicular", "Concurrent"],
+    "answer": 0,
+    "explanation": "A couple is two equal, opposite, parallel forces causing rotation.",
+    "difficulty": "easy"
+  },
+  {
+    "q": "The unit of impulse is the same as that of:",
+    "options": ["Force", "Momentum", "Work", "Power"],
+    "answer": 1,
+    "explanation": "Impulse (F·t) has the same unit as momentum (kg·m/s).",
+    "difficulty": "easy"
+  },
+  {
+    "q": "The center of gravity of a hemisphere lies at:",
+    "options": ["Its base", "3/8 of its height from the base", "Half its height", "Its apex"],
+    "answer": 1,
+    "explanation": "The C.G. of a solid hemisphere is at 3/8 of its height from the base.",
+    "difficulty": "easy"
+  },
+  {
+    "q": "The resultant of two coplanar forces of 10 N and 20 N at an angle of 60° is:",
+    "options": ["26 N", "17.3 N", "30 N", "10 N"],
+    "answer": 0,
+    "explanation": "Resultant = √(10² + 20² + 2·10·20·cos60°) ≈ 26 N.",
+    "difficulty": "medium"
+  },
+  {
+    "q": "The work done by a force of 30 N moving an object 5 m at an angle of 30° is:",
+    "options": ["150 J", "129.9 J", "75 J", "300 J"],
+    "answer": 1,
+    "explanation": "Work = F·d·cosθ = 30 × 5 × cos30° ≈ 129.9 J.",
+    "difficulty": "medium"
+  },
+  {
+    "q": "The centripetal force required for a 2 kg mass moving at 5 m/s in a circle of radius 2 m is:",
+    "options": ["25 N", "50 N", "12.5 N", "100 N"],
+    "answer": 1,
+    "explanation": "Centripetal force = mv²/r = 2 × 5² / 2 = 50 N.",
+    "difficulty": "medium"
+  },
+  {
+    "q": "A body sliding down a 30° inclined plane (frictionless) has an acceleration of:",
+    "options": ["4.9 m/s²", "9.8 m/s²", "8.5 m/s²", "5.66 m/s²"],
+    "answer": 0,
+    "explanation": "Acceleration = g sin θ = 9.8 × sin30° = 4.9 m/s².",
+    "difficulty": "medium"
+  },
+  {
+    "q": "The kinetic energy of a 5 kg object moving at 4 m/s is:",
+    "options": ["40 J", "80 J", "20 J", "100 J"],
+    "answer": 0,
+    "explanation": "KE = ½ mv² = ½ × 5 × 4² = 40 J.",
+    "difficulty": "medium"
+  },
+  {
+    "q": "The potential energy of a 10 kg mass at a height of 5 m (g = 9.8 m/s²) is:",
+    "options": ["490 J", "245 J", "980 J", "100 J"],
+    "answer": 0,
+    "explanation": "PE = mgh = 10 × 9.8 × 5 = 490 J.",
+    "difficulty": "medium"
+  },
+  {
+    "q": "The power output of an engine producing 200 Nm torque at 1500 rpm is:",
+    "options": ["15708 W", "31416 W", "7854 W", "20000 W"],
+    "answer": 0,
+    "explanation": "ω = 2π × 1500 / 60 = 157.08 rad/s. P = τ × ω = 200 × 157.08 ≈ 15708 W.",
+    "difficulty": "medium"
+  },
+  {
+    "q": "The coefficient of static friction between two surfaces is 0.4. The maximum frictional force for a normal force of 50 N is:",
+    "options": ["20 N", "40 N", "10 N", "50 N"],
+    "answer": 0,
+    "explanation": "F_max = μ_s × N = 0.4 × 50 = 20 N.",
+    "difficulty": "medium"
+  },
+  {
+    "q": "The time to reach the maximum height for a projectile launched at 20 m/s at 60° is:",
+    "options": ["1.02 s", "2.04 s", "3.06 s", "4.08 s"],
+    "answer": 1,
+    "explanation": "Time to max height = u sin θ / g = 20 × sin60° / 9.8 ≈ 2.04 s.",
+    "difficulty": "medium"
+  },
+  {
+    "q": "The velocity of a particle after 3 s, starting from rest with an acceleration of 2 m/s², is:",
+    "options": ["6 m/s", "3 m/s", "9 m/s", "12 m/s"],
+    "answer": 0,
+    "explanation": "v = u + at = 0 + 2 × 3 = 6 m/s.",
+    "difficulty": "medium"
+  },
+  {
+    "q": "The distance covered by a particle dropped from rest in 3 s (g = 9.8 m/s²) is:",
+    "options": ["14.7 m", "44.1 m", "29.4 m", "88.2 m"],
+    "answer": 1,
+    "explanation": "s = ½ gt² = ½ × 9.8 × 3² ≈ 44.1 m.",
+    "difficulty": "medium"
+  },
+  {
+    "q": "The moment of a 50 N force applied at 2 m from the pivot is:",
+    "options": ["25 N·m", "100 N·m", "50 N·m", "200 N·m"],
+    "answer": 1,
+    "explanation": "Moment = F × d = 50 × 2 = 100 N·m.",
+    "difficulty": "medium"
+  },
+  {
+    "q": "For three coplanar forces to be in equilibrium, their vector sum must be:",
+    "options": ["Zero", "Equal to one force", "Perpendicular", "Parallel"],
+    "answer": 0,
+    "explanation": "For equilibrium, the vector sum of forces must be zero.",
+    "difficulty": "medium"
+  },
+  {
+    "q": "The angular velocity of a wheel rotating at 600 rpm is:",
+    "options": ["62.83 rad/s", "31.42 rad/s", "15.71 rad/s", "125.66 rad/s"],
+    "answer": 0,
+    "explanation": "ω = 2π × 600 / 60 = 62.83 rad/s.",
+    "difficulty": "medium"
+  },
+  {
+    "q": "The impulse on a 2 kg object experiencing a 10 N force for 4 s is:",
+    "options": ["20 N·s", "40 N·s", "80 N·s", "8 N·s"],
+    "answer": 1,
+    "explanation": "Impulse = F × t = 10 × 4 = 40 N·s.",
+    "difficulty": "medium"
+  },
+  {
+    "q": "The maximum height of a projectile launched at 30 m/s at 45° is:",
+    "options": ["22.94 m", "45.88 m", "11.47 m", "91.76 m"],
+    "answer": 0,
+    "explanation": "H = (u² sin² θ) / (2g) = (30² × sin²45°) / (2 × 9.8) ≈ 22.94 m.",
+    "difficulty": "medium"
+  },
+  {
+    "q": "The kinetic energy of a rolling sphere is given by:",
+    "options": ["½ mv²", "½ mv² + ½ Iω²", "mv²", "Iω²"],
+    "answer": 1,
+    "explanation": "Rolling KE = ½ mv² (translational) + ½ Iω² (rotational).",
+    "difficulty": "medium"
+  },
+  {
+    "q": "The range of a projectile launched at 20 m/s at 30° is:",
+    "options": ["35.3 m", "70.6 m", "17.65 m", "141.2 m"],
+    "answer": 0,
+    "explanation": "Range = (u² sin2θ) / g = (20² × sin60°) / 9.8 ≈ 35.3 m.",
+    "difficulty": "medium"
+  },
+  {
+    "q": "The condition for stable equilibrium of a body is that its C.G. is:",
+    "options": ["At its highest point", "At its lowest point", "Horizontally centered", "Unaffected by forces"],
+    "answer": 1,
+    "explanation": "Stable equilibrium occurs when the C.G. is at its lowest point.",
+    "difficulty": "medium"
+  },
+  {
+    "q": "The velocity ratio of a pulley system with 3 movable pulleys is:",
+    "options": ["1", "3", "6", "2"],
+    "answer": 2,
+    "explanation": "Velocity ratio for n movable pulleys is 2n = 2 × 3 = 6.",
+    "difficulty": "medium"
+  },
+  {
+    "q": "The work done by a conservative force in a closed loop is:",
+    "options": ["Positive", "Negative", "Zero", "Infinite"],
+    "answer": 2,
+    "explanation": "Work by a conservative force (e.g., gravity) in a closed loop is zero.",
+    "difficulty": "hard"
+  },
+  {
+    "q": "The angular acceleration of a wheel increasing from 100 rpm to 200 rpm in 10 s is:",
+    "options": ["1.05 rad/s²", "0.52 rad/s²", "2.09 rad/s²", "0.26 rad/s²"],
+    "answer": 0,
+    "explanation": "ω₁ = 2π × 100 / 60, ω₂ = 2π × 200 / 60, α = (ω₂ - ω₁) / t ≈ 1.05 rad/s².",
+    "difficulty": "hard"
+  },
+  {
+    "q": "The frictional force on a 10 kg block on a surface with μ_k = 0.3 and normal force 98 N is:",
+    "options": ["29.4 N", "98 N", "9.8 N", "30 N"],
+    "answer": 0,
+    "explanation": "Kinetic friction = μ_k × N = 0.3 × 98 = 29.4 N.",
+    "difficulty": "hard"
+  },
+  {
+    "q": "The time of flight for a projectile launched at 25 m/s at 60° is:",
+    "options": ["2.55 s", "5.10 s", "7.65 s", "10.2 s"],
+    "answer": 1,
+    "explanation": "Time of flight = (2u sin θ) / g = (2 × 25 × sin60°) / 9.8 ≈ 5.10 s.",
+    "difficulty": "hard"
+  },
+  {
+    "q": "The moment of inertia of a solid sphere about its diameter is:",
+    "options": ["2/5 MR²", "1/2 MR²", "2/3 MR²", "MR²"],
+    "answer": 0,
+    "explanation": "Moment of inertia of a solid sphere is I = 2/5 MR².",
+    "difficulty": "hard"
+  },
+  {
+    "q": "The power required to lift a 50 kg mass 10 m in 5 s is:",
+    "options": ["980 W", "1960 W", "490 W", "2450 W"],
+    "answer": 1,
+    "explanation": "Work = mgh = 50 × 9.8 × 10 = 4900 J. Power = W/t = 4900 / 5 = 1960 W.",
+    "difficulty": "hard"
+  },
+  {
+    "q": "The resultant of three coplanar forces of 10 N, 10 N, and 10√2 N at angles 0°, 90°, and 135° is:",
+    "options": ["10 N", "14.14 N", "20 N", "5 N"],
+    "answer": 1,
+    "explanation": "Resolve forces: x = 10 + 0 - 10√2 cos45° ≈ 2.93 N, y = 0 + 10 - 10√2 sin45° ≈ 2.93 N. Resultant = √(x² + y²) ≈ 14.14 N.",
+    "difficulty": "hard"
+  },
+  {
+    "q": "The minimum force required to move a 20 kg block on a surface with μ_s = 0.5 is:",
+    "options": ["98 N", "196 N", "49 N", "245 N"],
+    "answer": 0,
+    "explanation": "F = μ_s × N = 0.5 × 20 × 9.8 = 98 N.",
+    "difficulty": "hard"
+  },
+  {
+    "q": "The angular momentum of a 2 kg particle moving at 5 m/s in a circle of radius 2 m is:",
+    "options": ["20 kg·m²/s", "40 kg·m²/s", "10 kg·m²/s", "80 kg·m²/s"],
+    "answer": 0,
+    "explanation": "Angular momentum = mvr = 2 × 5 × 2 = 20 kg·m²/s.",
+    "difficulty": "hard"
+  },
+  {
+    "q": "The velocity ratio of a differential pulley system with wheel diameters D and d is:",
+    "options": ["D/d", "2D/(D-d)", "D/(D-d)", "(D+d)/d"],
+    "answer": 1,
+    "explanation": "Velocity ratio of a differential pulley is 2D/(D-d).",
+    "difficulty": "hard"
+  }
+]
+    let score = 0;
+    let userAnswers = Array(questions.length).fill(null);
+    let timerSeconds = 0;
+    let timerInterval;
+    let shuffledQuestions = [];
+    let currentPage = 0;
+    const questionsPerPage = 20;
+
+    const quizEl = document.getElementById("quiz");
+    const scoreEl = document.getElementById("score");
+    const resultsEl = document.getElementById("results");
+    const resultsBody = document.getElementById("results-body");
+    const progressEl = document.getElementById("progress");
+    const timerEl = document.getElementById("timer");
+    const submitButton = document.getElementById("submit-button");
+    const restartButton = document.getElementById("restart-button");
+    const prevPageButton = document.getElementById("prev-page");
+    const nextPageButton = document.getElementById("next-page");
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function shuffleOptions(questions) {
+      return questions.map(q => {
+        const correct = q.options[q.answer];
+        const shuffled = [...q.options].sort(() => Math.random() - 0.5);
+        return {
+          ...q,
+          options: shuffled,
+          answer: shuffled.indexOf(correct)
+        };
+      });
+    }
+
+    function startTimer() {
+      const minutes = Math.floor(timerSeconds / 60);
+      const seconds = timerSeconds % 60;
+      timerEl.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      timerInterval = setInterval(() => {
+        timerSeconds++;
+        const minutes = Math.floor(timerSeconds / 60);
+        const seconds = timerSeconds % 60;
+        timerEl.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    function updateProgress() {
+      const answered = userAnswers.filter(answer => answer !== null).length;
+      const percentage = (answered / questions.length) * 100;
+      progressEl.style.width = `${percentage}%`;
+      checkAllAnswered();
+    }
+
+    function showPage(pageIndex) {
+      currentPage = pageIndex;
+      const startIndex = pageIndex * questionsPerPage;
+      const endIndex = Math.min(startIndex + questionsPerPage, shuffledQuestions.length);
+      const fragment = document.createDocumentFragment();
+      const pageQuestions = shuffledQuestions.slice(startIndex, endIndex);
+      pageQuestions.forEach((q, index) => {
+        const globalIndex = startIndex + index;
+        const isAnswered = userAnswers[globalIndex] !== null;
+        const selectedAnswer = userAnswers[globalIndex];
+        const correctAnswer = q.options[q.answer];
+        const options = q.options.map((opt, j) => {
+          let buttonClass = '';
+          if (isAnswered) {
+            buttonClass += opt === correctAnswer ? ' correct' :
+                          opt === selectedAnswer && selectedAnswer !== correctAnswer ? ' wrong' : '';
+          }
+            return `<button class="${buttonClass}" aria-label="Option ${escapeHtml(opt)}" onclick="checkAnswer(this, ${globalIndex}, ${j}, '${escapeHtml(opt)}')" ${isAnswered ? 'disabled' : ''}>${escapeHtml(opt)}</button>`;
+          }).join('');
+        const div = document.createElement('div');
+        div.className = 'question';
+        div.dataset.index = globalIndex;
+        div.innerHTML = `
+          <p>${globalIndex + 1}. ${escapeHtml(q.q)}</p>
+          <div class="options">${options}</div>
+          <div class="explanation ${isAnswered ? 'show' : ''}" id="explanation-${globalIndex}">${isAnswered ? escapeHtml(q.explanation || 'No explanation available.') : ''}</div>
+        `;
+        fragment.appendChild(div);
+      });
+      quizEl.innerHTML = '';
+      quizEl.appendChild(fragment);
+
+      prevPageButton.disabled = currentPage === 0;
+      nextPageButton.disabled = endIndex === questions.length;
+      updateProgress();
+    }
+
+    function checkAnswer(button, questionIndex, selected, selectedText) {
+      if (userAnswers[questionIndex] !== null) return;
+      const q = shuffledQuestions[questionIndex];
+      const correct = q.answer;
+      const buttons = button.parentElement.querySelectorAll("button");
+      const explanationEl = document.getElementById(`explanation-${questionIndex}`);
+
+      buttons.forEach((btn) => {
+        btn.disabled = true;
+        if (q.options.indexOf(btn.textContent) === correct) btn.classList.add("correct");
+        if (btn === button && selected !== correct) btn.classList.add("wrong");
+      });
+
+      userAnswers[questionIndex] = selectedText;
+      if (selected === correct) {
+        score++;
+      }
+
+      explanationEl.textContent = q.explanation || 'No explanation available.';
+      explanationEl.classList.add('show');
+
+      updateProgress();
+    }
+
+    function checkAllAnswered() {
+      const allAnswered = userAnswers.every(answer => answer !== null);
+      submitButton.disabled = !allAnswered;
+    }
+
+    function endQuiz() {
+      clearInterval(timerInterval);
+      quizEl.innerHTML = '';
+      prevPageButton.classList.add("hidden");
+      nextPageButton.classList.add("hidden");
+      submitButton.classList.add("hidden");
+      scoreEl.innerHTML = `Your score: ${score} / ${questions.length} (${((score / questions.length) * 100).toFixed(2)}%)`;
+      resultsEl.classList.remove("hidden");
+      restartButton.classList.remove("hidden");
+
+      resultsBody.innerHTML = shuffledQuestions.map((q, i) => {
+        const userAnswer = userAnswers[i] === null ? "Not attempted" : escapeHtml(userAnswers[i]);
+        const correctAnswer = escapeHtml(q.options[q.answer]);
+        const status = userAnswers[i] === q.options[q.answer] ? "Correct" :
+                      userAnswers[i] === null ? "Not attempted" : "Wrong";
+        return `
+          <tr>
+            <td>${i + 1}. ${escapeHtml(q.q)}</td>
+            <td>${userAnswer}</td>
+            <td>${correctAnswer}</td>
+            <td class="${status.toLowerCase()}">${status}</td>
+            <td>${escapeHtml(q.explanation || 'No explanation available.')}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function restartQuiz() {
+      score = 0;
+      userAnswers = Array(questions.length).fill(null);
+      timerSeconds = 0;
+      currentPage = 0;
+      shuffledQuestions = shuffleOptions(questions);
+      resultsEl.classList.add("hidden");
+      prevPageButton.classList.remove("hidden");
+      nextPageButton.classList.remove("hidden");
+      submitButton.classList.remove("hidden");
+      scoreEl.innerHTML = "";
+      clearInterval(timerInterval);
+      startTimer();
+      showPage(0);
+    }
+
+    // Initialize
+    shuffledQuestions = shuffleOptions(questions);
+    startTimer();
+    showPage(0);
+
+    submitButton.addEventListener("click", endQuiz);
+    restartButton.addEventListener("click", restartQuiz);
+    prevPageButton.addEventListener("click", () => {
+      if (currentPage > 0) {
+        showPage(currentPage - 1);
+      }
+    });
+    nextPageButton.addEventListener("click", () => {
+      if ((currentPage + 1) * questionsPerPage < questions.length) {
+        showPage(currentPage + 1);
+      }
+    });
+
+    // Basic Enter key support
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !submitButton.disabled) {
+        submitButton.click();
+      }
+    });
+  </script>
+</body>
+</html>
