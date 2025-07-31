@@ -1,0 +1,458 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Logsewa TU 5th Level Material Science Quiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #e0e7ff, #c3dafe); margin: 0; padding: 2rem; color: #333; min-height: 100vh; }
+        .quiz-container { max-width: 900px; margin: auto; background: #fff; padding: 2rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
+        h1 { text-align: center; margin-bottom: 1.5rem; color: #1e3a8a; font-size: 2rem; font-weight: 700; }
+        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding: 1rem; background: #f8fafc; border-radius: 8px; }
+        .timer { font-size: 1.2rem; font-weight: 600; color: #d81b60; }
+        .progress-bar { width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-bottom: 1.5rem; }
+        .progress { height: 100%; background: #3b82f6; transition: width 0.3s ease; }
+        .question { margin-bottom: 2rem; padding: 1.5rem; background: #f8fafc; border-radius: 12px; }
+        .question p { font-size: 1.2rem; font-weight: 600; color: #1e3a8a; margin-bottom: 1rem; }
+        .options button { display: block; width: 100%; padding: 1rem; margin: 0.5rem 0; background: #ffffff; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; text-align: left; color: #374151; }
+        .options button:hover:not(:disabled) { background: #f3f4f6; border-color: #3b82f6; transform: translateX(4px); }
+        .options button.correct { background: #bbf7d0; border-color: #22c55e; color: #166534; }
+        .options button.wrong { background: #fecaca; border-color: #ef4444; color: #991b1b; }
+        .options button:disabled { cursor: not-allowed; opacity: 0.7; }
+        .explanation { display: none; margin-top: 1rem; padding: 1rem; background: #eff6ff; border-radius: 8px; color: #1e3a8a; font-size: 0.95rem; }
+        .skip-button { background: #fff3cd; margin-top: 1rem; padding: 0.75rem; width: 100%; border: 1px solid #ffca28; border-radius: 8px; cursor: pointer; transition: background 0.3s ease; }
+        .skip-button:hover { background: #ffecb3; }
+        .next-button { background: #3b82f6; color: #fff; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; margin-top: 1rem; display: block; width: 100%; text-align: center; transition: background 0.3s ease; }
+        .next-button:hover:not(:disabled) { background: #2563eb; }
+        .next-button:disabled { background: #ccc; cursor: not-allowed; }
+        .score-container { text-align: center; margin-top: 2rem; padding: 1.5rem; background: #f8fafc; border-radius: 12px; }
+        .score { font-size: 1.5rem; font-weight: 700; color: #1e3a8a; }
+        .results-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.95rem; }
+        .results-table th, .results-table td { border: 1px solid #e5e7eb; padding: 0.75rem; text-align: left; }
+        .results-table th { background: #f8fafc; color: #1e3a8a; font-weight: 600; }
+        .results-table .correct { color: #166534; font-weight: bold; }
+        .results-table .wrong { color: #991b1b; font-weight: bold; }
+        .results-table .skipped, .results-table .not-attempted { color: #d97706; font-weight: bold; }
+        .hidden { display: none; }
+        .restart-button { background: #22c55e; color: #fff; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; margin: 1rem auto; display: block; width: 100%; text-align: center; transition: background 0.3s ease; }
+        .restart-button:hover { background: #16a34a; }
+        @media (max-width: 600px) { body { padding: 1rem; } .quiz-container { padding: 1rem; } h1 { font-size: 1.8rem; } .question p { font-size: 1rem; } .options button, .skip-button, .next-button, .restart-button { font-size: 0.9rem; padding: 0.8rem; } .results-table th, .results-table td { padding: 0.5rem; font-size: 0.85rem; } }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Logsewa TU 5th Level Material Science Quiz</h1>
+        <div class="quiz-header">
+            <div class="timer" id="timer">Time: 00:00</div>
+            <div class="score" id="current-score">Score: 0/50</div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        <div id="quiz"></div>
+        <div class="score-container">
+            <div class="score" id="score"></div>
+            <div id="results" class="hidden">
+                <h2>Quiz Results</h2>
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>Your Answer</th>
+                            <th>Correct Answer</th>
+                            <th>Status</th>
+                            <th>Explanation</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body"></tbody>
+                </table>
+                <button class="restart-button" onclick="restartQuiz()">Restart Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="correct-sound" src="https://www.soundjay.com/buttons/beep-01a.mp3"></audio>
+    <audio id="wrong-sound" src="https://www.soundjay.com/buttons/beep-02.mp3"></audio>
+
+    <script>
+        const questions = [
+            // 1.1 Material Science: Types of Materials
+            { q: "Which of the following is a nonferrous metal commonly used in electrical conductors?", options: ["Iron", "Nickel", "Aluminum", "Cobalt"], answer: 2, explanation: "Aluminum is lightweight and highly conductive, making it ideal for electrical applications." },
+            { q: "Which non-metallic material is widely used as an insulator in electrical systems?", options: ["Glass", "Bronze", "Brass", "Cast iron"], answer: 0, explanation: "Glass is an excellent insulator due to its non-conductive properties." },
+            { q: "Which ferrous alloy is known for its resistance to wear and abrasion?", options: ["Stainless steel", "Wrought iron", "High-speed steel", "Mild steel"], answer: 2, explanation: "High-speed steel is designed for tools requiring wear resistance." },
+            { q: "Which of the following is a natural non-metallic material used in construction?", options: ["Polyethylene", "Wood", "Tungsten", "Magnesium"], answer: 1, explanation: "Wood is a natural non-metallic material commonly used in building structures." },
+            { q: "Which metal is classified as both ferrous and magnetic?", options: ["Copper", "Zinc", "Nickel", "Silver"], answer: 2, explanation: "Nickel is a ferrous metal with magnetic properties when alloyed." },
+
+            // 1.1 Material Selection
+            { q: "Which factor is most critical when selecting materials for high-temperature applications?", options: ["Density", "Thermal stability", "Color", "Cost"], answer: 1, explanation: "Thermal stability ensures the material withstands high temperatures without degrading." },
+            { q: "For applications requiring lightweight components, which property is prioritized?", options: ["High density", "Low density", "High hardness", "High cost"], answer: 1, explanation: "Low density is key for reducing weight in components like aircraft parts." },
+            { q: "Which consideration is least important for selecting materials in decorative items?", options: ["Durability", "Aesthetic finish", "Weight", "Corrosion resistance"], answer: 2, explanation: "Weight is less critical for decorative items compared to appearance." },
+            { q: "Which property is essential for materials used in marine environments?", options: ["High electrical conductivity", "Corrosion resistance", "Low melting point", "High brittleness"], answer: 1, explanation: "Corrosion resistance protects against saltwater exposure." },
+            { q: "What is a key factor in material selection for cost-sensitive projects?", options: ["Availability", "Aesthetic appeal", "Complex manufacturing", "High maintenance"], answer: 0, explanation: "Availability ensures cost-effective sourcing and production." },
+
+            // 1.1 Mechanical Properties
+            { q: "Which property allows a material to resist scratching or indentation?", options: ["Toughness", "Hardness", "Elasticity", "Ductility"], answer: 1, explanation: "Hardness measures resistance to surface deformation." },
+            { q: "Which mechanical property is critical for materials used in impact-resistant structures?", options: ["Brittleness", "Toughness", "Malleability", "Elasticity"], answer: 1, explanation: "Toughness ensures absorption of impact energy without fracturing." },
+            { q: "Which property describes a material’s ability to be shaped under compressive force?", options: ["Ductility", "Malleability", "Brittleness", "Elasticity"], answer: 1, explanation: "Malleability allows shaping under compression." },
+            { q: "Which property is undesirable in materials used for flexible cables?", options: ["Ductility", "Brittleness", "Elasticity", "Toughness"], answer: 1, explanation: "Brittleness can cause cables to break under bending." },
+            { q: "Which mechanical property is measured by the Brinell hardness test?", options: ["Toughness", "Hardness", "Ductility", "Elasticity"], answer: 1, explanation: "The Brinell test assesses hardness via indentation." },
+
+            // 1.1 Stress and Strain, Hooke's Law
+            { q: "What is the SI unit of strain?", options: ["Pa", "m/m", "N/m²", "J/m³"], answer: 1, explanation: "Strain is a dimensionless ratio, often expressed as m/m (change in length per original length)." },
+            { q: "Which factor does not affect the modulus of elasticity?", options: ["Material type", "Temperature", "Shape", "Stress level"], answer: 2, explanation: "Shape does not influence the intrinsic modulus of elasticity." },
+            { q: "Beyond which point does a material exhibit permanent deformation?", options: ["Elastic limit", "Yield point", "Ultimate strength", "Fracture point"], answer: 1, explanation: "The yield point marks the start of plastic deformation." },
+            { q: "What happens to stress-strain behavior if a material exceeds its elastic limit?", options: ["Returns to original shape", "Undergoes plastic deformation", "Increases elasticity", "Remains unchanged"], answer: 1, explanation: "Exceeding the elastic limit causes irreversible deformation." },
+            { q: "Which law relates stress and strain in the elastic region?", options: ["Ohm's Law", "Hooke's Law", "Newton's Law", "Boyle's Law"], answer: 1, explanation: "Hooke's Law states stress is proportional to strain in the elastic region." },
+
+            // 1.1 Heat Treatment of Steel
+            { q: "Which heat treatment process involves heating steel to just below its critical temperature?", options: ["Quenching", "Tempering", "Annealing", "Normalizing"], answer: 1, explanation: "Tempering reheats quenched steel below the critical temperature to reduce brittleness." },
+            { q: "Which process uses oil or water as a cooling medium?", options: ["Annealing", "Hardening", "Normalizing", "Tempering"], answer: 1, explanation: "Hardening involves quenching in oil or water for rapid cooling." },
+            { q: "Which heat treatment improves the uniformity of steel’s microstructure?", options: ["Quenching", "Normalizing", "Hardening", "Annealing"], answer: 1, explanation: "Normalizing ensures uniform grain structure via air cooling." },
+            { q: "What is the primary goal of annealing in steel production?", options: ["Increase hardness", "Softening and stress relief", "Enhance brittleness", "Improve wear resistance"], answer: 1, explanation: "Annealing softens steel and relieves internal stresses." },
+            { q: "Which process is used to refine grain size after forging?", options: ["Tempering", "Normalizing", "Quenching", "Hardening"], answer: 1, explanation: "Normalizing refines grain size post-forging." },
+
+            // 1.1 Iron-Carbon Diagram
+            { q: "At what temperature does delta iron transform into gamma iron?", options: ["723°C", "912°C", "1147°C", "1394°C"], answer: 3, explanation: "Delta iron transitions to gamma iron at 1394°C in the iron-carbon diagram." },
+            { q: "Which phase is predominantly present in hypoeutectoid steel?", options: ["Austenite", "Ferrite", "Cementite", "Martensite"], answer: 1, explanation: "Hypoeutectoid steel (below 0.83% C) has more ferrite." },
+            { q: "What is the carbon content range for hypereutectoid steel?", options: ["0-0.83%", "0.83-2.11%", "2.11-4.3%", "4.3-6.67%"], answer: 1, explanation: "Hypereutectoid steel contains 0.83% to 2.11% carbon." },
+            { q: "Which phase dominates in cast iron with high carbon content?", options: ["Ferrite", "Cementite", "Austenite", "Pearlite"], answer: 1, explanation: "High-carbon cast iron is rich in cementite." },
+            { q: "At what carbon percentage does ledeburite begin to form?", options: ["0.83%", "2.11%", "4.3%", "6.67%"], answer: 2, explanation: "Ledeburite forms at the eutectic point of 4.3% carbon." },
+
+            // Additional Relevant MCQs
+            { q: "Which test measures a material’s resistance to impact?", options: ["Tensile test", "Charpy test", "Rockwell test", "Compression test"], answer: 1, explanation: "The Charpy test evaluates impact resistance." },
+            { q: "Which alloying element improves steel’s toughness?", options: ["Sulfur", "Nickel", "Phosphorus", "Silicon"], answer: 1, explanation: "Nickel enhances toughness in steel alloys." },
+            { q: "Which non-metallic material is used for thermal insulation?", options: ["Concrete", "Ceramic", "Asbestos", "Graphite"], answer: 1, explanation: "Ceramic materials are effective for thermal insulation." },
+            { q: "What is the effect of increasing manganese in steel?", options: ["Decreases strength", "Increases hardenability", "Reduces corrosion resistance", "Lowers ductility"], answer: 1, explanation: "Manganese improves hardenability during heat treatment." },
+            { q: "Which phase is absent in annealed low-carbon steel?", options: ["Ferrite", "Cementite", "Austenite", "Pearlite"], answer: 2, explanation: "Annealed low-carbon steel lacks austenite due to slow cooling." },
+
+            { q: "Which property is tested using a Vickers hardness test?", options: ["Toughness", "Hardness", "Ductility", "Elasticity"], answer: 1, explanation: "The Vickers test measures hardness via diamond indentation." },
+            { q: "Which heat treatment prevents cracking in welded steel?", options: ["Quenching", "Stress relieving", "Hardening", "Tempering"], answer: 1, explanation: "Stress relieving reduces residual stresses in welds." },
+            { q: "What is the primary phase in white cast iron?", options: ["Ferrite", "Cementite", "Graphite", "Pearlite"], answer: 1, explanation: "White cast iron is dominated by hard cementite." },
+            { q: "Which factor influences the elastic limit of a material?", options: ["Surface finish", "Temperature", "Color", "Shape"], answer: 1, explanation: "Temperature affects the elastic limit by altering molecular activity." },
+            { q: "Which nonferrous metal is used in coinage due to its corrosion resistance?", options: ["Aluminum", "Nickel", "Bronze", "Zinc"], answer: 2, explanation: "Bronze, an alloy of copper and tin, resists corrosion in coins." }
+        ];
+
+        let currentPage = 0;
+        let score = 0;
+        let skipped = [];
+        let userAnswers = Array(questions.length).fill(null);
+        let timerSeconds = 0;
+        let timerInterval;
+        const QUESTIONS_PER_PAGE = 10; // 50 questions, 5 pages
+        const ANSWER_DELAY = 1000;
+
+        const quizEl = document.getElementById("quiz");
+        const scoreEl = document.getElementById("score");
+        const resultsEl = document.getElementById("results");
+        const resultsBody = document.getElementById("results-body");
+        const progressEl = document.getElementById("progress");
+        const timerEl = document.getElementById("timer");
+        const currentScoreEl = document.getElementById("current-score");
+        const correctSound = document.getElementById("correct-sound");
+        const wrongSound = document.getElementById("wrong-sound");
+
+        function clearProgress() {
+            localStorage.removeItem("quizProgressMaterialScience");
+            currentPage = 0;
+            score = 0;
+            skipped = [];
+            userAnswers = Array(questions.length).fill(null);
+            timerSeconds = 0;
+        }
+
+        function saveProgress() {
+            localStorage.setItem("quizProgressMaterialScience", JSON.stringify({
+                currentPage,
+                score,
+                skipped,
+                answers: userAnswers,
+                time: timerSeconds
+            }));
+        }
+
+        function updateCurrentScore() {
+            currentScoreEl.textContent = `Score: ${score}/${questions.length}`;
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timerSeconds++;
+                const minutes = Math.floor(timerSeconds / 60);
+                const seconds = timerSeconds % 60;
+                timerEl.textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                saveProgress();
+            }, 1000);
+        }
+
+        function updateProgress() {
+            const answeredCount = userAnswers.filter(answer => answer !== null).length;
+            const percentage = (answeredCount / questions.length) * 100;
+            progressEl.style.width = `${percentage}%`;
+        }
+
+        function showQuestions(page) {
+            quizEl.innerHTML = '';
+            const startIndex = page * QUESTIONS_PER_PAGE;
+            const endIndex = Math.min(startIndex + QUESTIONS_PER_PAGE, questions.length);
+
+            for (let i = startIndex; i < endIndex; i++) {
+                const q = questions[i];
+                const shuffledOptions = shuffle([...q.options].map((opt, j) => ({ text: opt, index: j })));
+                const optionsHtml = shuffledOptions
+                    .map(opt => `<button onclick="checkAnswer(this, ${i}, ${opt.index}, '${opt.text.replace(/'/g, "\\'")}')">${opt.text}</button>`)
+                    .join('');
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+                questionDiv.dataset.index = i;
+                questionDiv.innerHTML = `
+                    <p>Q${i + 1}. ${q.q}</p>
+                    <div class="options">${optionsHtml}</div>
+                    <button class="skip-button" onclick="skipQuestion(${i})">Skip</button>
+                    <div class="explanation">${q.explanation}</div>
+                `;
+                quizEl.appendChild(questionDiv);
+            }
+
+            if (endIndex < questions.length || skipped.length > 0) {
+                const nextButton = document.createElement('button');
+                nextButton.classList.add('next-button');
+                nextButton.textContent = endIndex < questions.length ? 'Next' : 'Review Skipped Questions';
+                nextButton.onclick = nextPage;
+                nextButton.disabled = !areAllQuestionsAnsweredOnPage(startIndex, endIndex);
+                quizEl.appendChild(nextButton);
+            } else {
+                const submitButton = document.createElement('button');
+                submitButton.classList.add('next-button');
+                submitButton.textContent = 'Submit Quiz';
+                submitButton.onclick = endQuiz;
+                submitButton.disabled = !areAllQuestionsAnsweredOnPage(startIndex, endIndex);
+                quizEl.appendChild(submitButton);
+            }
+
+            updateProgress();
+            saveProgress();
+            restoreAnswers(startIndex, endIndex);
+        }
+
+        function restoreAnswers(startIndex, endIndex) {
+            for (let i = startIndex; i < endIndex; i++) {
+                if (userAnswers[i] !== null && userAnswers[i] !== 'Skipped') {
+                    const questionDiv = document.querySelector(`.question[data-index="${i}"]`);
+                    const buttons = questionDiv.querySelectorAll('.options button');
+                    const q = questions[i];
+                    buttons.forEach(btn => {
+                        btn.disabled = true;
+                        if (btn.textContent === q.options[q.answer]) {
+                            btn.classList.add('correct');
+                        }
+                        if (btn.textContent === userAnswers[i] && userAnswers[i] !== q.options[q.answer]) {
+                            btn.classList.add('wrong');
+                        }
+                    });
+                    questionDiv.querySelector('.explanation').style.display = 'block';
+                    questionDiv.querySelector('.skip-button').disabled = true;
+                } else if (userAnswers[i] === 'Skipped') {
+                    const questionDiv = document.querySelector(`.question[data-index="${i}"]`);
+                    questionDiv.querySelectorAll('.options button').forEach(btn => btn.disabled = true);
+                    questionDiv.querySelector('.skip-button').disabled = true;
+                    questionDiv.querySelector('.explanation').style.display = 'block';
+                }
+            }
+        }
+
+        function areAllQuestionsAnsweredOnPage(startIndex, endIndex) {
+            for (let i = startIndex; i < endIndex; i++) {
+                if (userAnswers[i] === null) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function checkAnswer(button, questionIndex, selected, selectedText) {
+            const q = questions[questionIndex];
+            const correct = q.answer;
+            const buttons = button.parentElement.querySelectorAll("button");
+            const questionDiv = button.closest('.question');
+            const explanationDiv = questionDiv.querySelector('.explanation');
+
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                if (q.options.indexOf(btn.textContent) === correct) {
+                    btn.classList.add('correct');
+                }
+                if (btn === button && selected !== correct) {
+                    btn.classList.add('wrong');
+                }
+            });
+
+            questionDiv.querySelector('.skip-button').disabled = true;
+            explanationDiv.style.display = 'block';
+
+            userAnswers[questionIndex] = selectedText;
+            if (selected === correct) {
+                score++;
+                correctSound.play().catch(() => console.log("Audio playback failed"));
+            } else {
+                wrongSound.play().catch(() => console.log("Audio playback failed"));
+            }
+
+            updateCurrentScore();
+            saveProgress();
+            const nextButton = quizEl.querySelector('.next-button');
+            if (nextButton) {
+                nextButton.disabled = !areAllQuestionsAnsweredOnPage(
+                    currentPage * QUESTIONS_PER_PAGE,
+                    Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, questions.length)
+                );
+            }
+
+            setTimeout(() => {
+                if (areAllQuestionsAnsweredOnPage(
+                    currentPage * QUESTIONS_PER_PAGE,
+                    Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, questions.length)
+                )) {
+                    nextPage();
+                }
+            }, ANSWER_DELAY);
+        }
+
+        function skipQuestion(questionIndex) {
+            if (!skipped.includes(questions[questionIndex])) {
+                skipped.push(questions[questionIndex]);
+                userAnswers[questionIndex] = 'Skipped';
+                const questionDiv = document.querySelector(`.question[data-index="${questionIndex}"]`);
+                if (questionDiv) {
+                    questionDiv.querySelectorAll('.options button').forEach(btn => btn.disabled = true);
+                    questionDiv.querySelector('.skip-button').disabled = true;
+                    questionDiv.querySelector('.explanation').style.display = 'block';
+                }
+                saveProgress();
+                const nextButton = quizEl.querySelector('.next-button');
+                if (nextButton) {
+                    nextButton.disabled = !areAllQuestionsAnsweredOnPage(
+                        currentPage * QUESTIONS_PER_PAGE,
+                        Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, questions.length)
+                    );
+                }
+            }
+        }
+
+        function nextPage() {
+            if (skipped.length > 0 && currentPage * QUESTIONS_PER_PAGE >= questions.length) {
+                showSkippedQuestions();
+            } else {
+                currentPage++;
+                if (currentPage * QUESTIONS_PER_PAGE < questions.length) {
+                    showQuestions(currentPage);
+                } else if (skipped.length === 0) {
+                    endQuiz();
+                } else {
+                    showSkippedQuestions();
+                }
+            }
+        }
+
+        function showSkippedQuestions() {
+            questions.splice(0, questions.length, ...skipped);
+            skipped = [];
+            currentPage = 0;
+            showQuestions(currentPage);
+        }
+
+        function endQuiz() {
+            clearInterval(timerInterval);
+            quizEl.innerHTML = '';
+            scoreEl.textContent = `Final Score: ${score} out of ${questions.length} (${((score / questions.length) * 100).toFixed(2)}%)`;
+            resultsEl.classList.remove('hidden');
+
+            resultsBody.innerHTML = questions.map((q, i) => {
+                const userAnswer = userAnswers[i] === null ? 'Not attempted' :
+                                  userAnswers[i] === 'Skipped' ? 'Skipped' :
+                                  userAnswers[i];
+                const correctAnswer = q.options[q.answer];
+                const status = userAnswers[i] === q.options[q.answer] ? 'Correct' :
+                              userAnswers[i] === 'Skipped' ? 'Skipped' :
+                              userAnswers[i] === null ? 'Not-attempted' : 'Wrong';
+                return `
+                    <tr>
+                        <td>${i + 1}. ${q.q}</td>
+                        <td>${userAnswer}</td>
+                        <td>${correctAnswer}</td>
+                        <td class="${status.toLowerCase().replace(' ', '-')}">${status}</td>
+                        <td class="explanation">${q.explanation}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            localStorage.removeItem('quizProgressMaterialScience');
+        }
+
+        function restartQuiz() {
+            clearProgress();
+            resultsEl.classList.add('hidden');
+            scoreEl.textContent = '';
+            startTimer();
+            showQuestions(currentPage);
+            updateCurrentScore();
+        }
+
+        function initialize() {
+            clearProgress();
+            startTimer();
+            showQuestions(currentPage);
+            updateCurrentScore();
+        }
+
+        initialize();
+    </script>
+</body>
+</html>
