@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engineering Mock Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin: 0 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff87, #60efff);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .test-area {
+            padding: 40px;
+        }
+
+        .question-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 20px 0;
+            line-height: 1.4;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .option:hover {
+            border-color: #3498db;
+            background: #f8f9ff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.2);
+        }
+
+        .option.selected {
+            border-color: #3498db;
+            background: #e3f2fd;
+        }
+
+        .option.correct {
+            border-color: #27ae60;
+            background: #d5f4e6;
+            animation: correctPulse 0.6s ease;
+        }
+
+        .option.incorrect {
+            border-color: #e74c3c;
+            background: #fdeaea;
+            animation: incorrectShake 0.6s ease;
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .option-letter {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #3498db;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.correct .option-letter {
+            background: #27ae60;
+        }
+
+        .option.incorrect .option-letter {
+            background: #e74c3c;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .explanation {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .explanation h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .results {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .score-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .score-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .score-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #3498db;
+        }
+
+        .score-card.correct {
+            border-top-color: #27ae60;
+        }
+
+        .score-card.incorrect {
+            border-top-color: #e74c3c;
+        }
+
+        .score-card.skipped {
+            border-top-color: #f39c12;
+        }
+
+        .score-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .start-screen {
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .start-screen h2 {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .test-info {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .test-info ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .test-info li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .test-info li:last-child {
+            border-bottom: none;
+        }
+
+        .info-icon {
+            width: 20px;
+            height: 20px;
+            background: #3498db;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .test-area {
+                padding: 20px;
+            }
+
+            .progress-info {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Engineering Mock Test</h1>
+            <div id="progressInfo" class="progress-info hidden">
+                <div>Page <span id="currentPage">1</span> of 6</div>
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
+                <div>Score: <span id="currentScore">0</span></div>
+            </div>
+        </div>
+
+        <div id="startScreen" class="start-screen">
+            <h2>Welcome to the Engineering Mock Test</h2>
+            <div class="test-info">
+                <ul>
+                    <li>
+                        <div class="info-icon">📝</div>
+                        <div><strong>Total Questions:</strong> 60 MCQs covering various engineering topics</div>
+                    </li>
+                    <li>
+                        <div class="info-icon">📄</div>
+                        <div><strong>Format:</strong> 10 questions per page (6 pages total)</div>
+                    </li>
+                    <li>
+                        <div class="info-icon">✅</div>
+                        <div><strong>Scoring:</strong> +1 mark for correct answer</div>
+                    </li>
+                    <li>
+                        <div class="info-icon">❌</div>
+                        <div><strong>Negative Marking:</strong> -0.2 marks for wrong answer (5 wrong = -1 mark)</div>
+                    </li>
+                    <li>
+                        <div class="info-icon">⏭️</div>
+                        <div><strong>Skip Option:</strong> Skip questions you're unsure about</div>
+                    </li>
+                    <li>
+                        <div class="info-icon">🔄</div>
+                        <div><strong>Random Order:</strong> Questions shuffled on each refresh</div>
+                    </li>
+                    <li>
+                        <div class="info-icon">💡</div>
+                        <div><strong>Instant Feedback:</strong> Correct (green), Wrong (red)</div>
+                    </li>
+                </ul>
+            </div>
+            <button class="btn btn-primary" onclick="startTest()" style="font-size: 1.2em; padding: 15px 40px;">
+                🚀 Start Test
+            </button>
+        </div>
+
+        <div id="testArea" class="test-area hidden">
+            <div id="questionContainer" class="question-container">
+                <!-- Questions will be loaded here -->
+            </div>
+            <div class="controls">
+                <button id="skipBtn" class="btn btn-warning" onclick="skipQuestion()">
+                    ⏭️ Skip Question
+                </button>
+                <div>
+                    <button id="prevBtn" class="btn btn-secondary" onclick="previousPage()" disabled>
+                        ⬅️ Previous
+                    </button>
+                    <button id="nextBtn" class="btn btn-primary" onclick="nextPage()" disabled>
+                        ${currentPage === 5 ? 'Finish Test' : 'Next ➡️'}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="resultsArea" class="results hidden">
+            <h2>🎉 Test Complete!</h2>
+            <div id="scoreDisplay" class="score-display"></div>
+            <div id="scoreBreakdown" class="score-breakdown"></div>
+            <button class="btn btn-primary" onclick="restartTest()" style="margin-top: 30px;">
+                🔄 Take Test Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { q: "What is the effect of friction on a moving object?", options: ["Increases speed", "Opposes motion", "Increases acceleration", "Reduces mass"], answer: 1, explanation: "Friction acts opposite to the direction of motion, slowing down or stopping the object." },
+            { q: "Which force is responsible for keeping a car on a curved road?", options: ["Gravitational force", "Centrifugal force", "Centripetal force", "Frictional force"], answer: 2, explanation: "Centripetal force, provided by friction, keeps the car moving in a curved path." },
+            { q: "What is the unit of force in the SI system?", options: ["kg·m/s²", "N·m", "Joule", "Pascal"], answer: 0, explanation: "Force is measured in Newtons (N), where 1 N = 1 kg·m/s²." },
+            { q: "How is the moment of a force calculated?", options: ["Force × Distance", "Force / Distance", "Mass × Acceleration", "Velocity × Time"], answer: 0, explanation: "Moment = Force × Perpendicular Distance from the pivot, causing rotation." },
+            { q: "What condition must be met for a body to be in translational equilibrium?", options: ["ΣF = 0, ΣM ≠ 0", "ΣF ≠ 0, ΣM = 0", "ΣF = 0, ΣM = 0", "ΣM = 0 only"], answer: 0, explanation: "Translational equilibrium requires the sum of all forces (ΣF) to be zero." },
+            { q: "What is the purpose of a clutch in an automobile?", options: ["To start the engine", "To connect and disconnect the engine from the transmission", "To cool the radiator", "To charge the battery"], answer: 1, explanation: "The clutch engages or disengages the engine from the transmission for gear changes." },
+            { q: "Which system in a car prevents skidding during braking?", options: ["Suspension system", "Anti-lock Braking System (ABS)", "Exhaust system", "Fuel injection system"], answer: 1, explanation: "ABS prevents wheel lockup, maintaining steering control during braking." },
+            { q: "What is the function of a crankshaft in an engine?", options: ["To mix air and fuel", "To convert linear motion to rotary motion", "To regulate temperature", "To store electrical energy"], answer: 1, explanation: "The crankshaft transforms the piston's up-down motion into rotational motion." },
+            { q: "How does a turbocharger enhance engine performance?", options: ["By reducing engine weight", "By forcing extra air into the combustion chamber", "By cooling the exhaust", "By increasing fuel tank capacity"], answer: 1, explanation: "A turbocharger increases air intake, improving power output." },
+            { q: "What is the impact of a worn-out timing belt on an engine?", options: ["Improved fuel efficiency", "Engine misfire or failure", "Increased horsepower", "Reduced emissions"], answer: 1, explanation: "A worn timing belt can cause the engine valves and pistons to collide, leading to failure." },
+            { q: "What is the primary focus of engineering economics?", options: ["Designing machinery", "Evaluating economic viability of projects", "Improving material strength", "Analyzing fluid dynamics"], answer: 1, explanation: "Engineering economics assesses the financial aspects and feasibility of engineering projects." },
+            { q: "Which factor affects the net present value (NPV) of a project?", options: ["Discount rate", "Employee attendance", "Machine color", "Office location"], answer: 0, explanation: "NPV depends on the discount rate used to bring future cash flows to present value." },
+            { q: "What is the formula for calculating annual worth in economic analysis?", options: ["PW × Interest rate", "PW / (1 + i)^n", "PW × (A/P, i, n)", "PW + Salvage value"], answer: 2, explanation: "Annual worth is derived from present worth using the (A/P, i, n) factor, converting it to an annual equivalent." },
+            { q: "How does inflation impact engineering project costs?", options: ["Decreases future costs", "Increases future costs", "Has no effect", "Reduces initial investment"], answer: 1, explanation: "Inflation raises the cost of materials and labor over time, affecting project budgets." },
+            { q: "What is the internal rate of return (IRR) in a project?", options: ["The profit percentage", "The discount rate making NPV zero", "The total cash inflow", "The initial investment cost"], answer: 1, explanation: "IRR is the rate where the net present value of cash flows equals zero." },
+            { q: "What is the purpose of a Venturi meter in fluid mechanics?", options: ["To measure fluid velocity", "To increase fluid pressure", "To filter impurities", "To store fluid"], answer: 0, explanation: "A Venturi meter measures fluid velocity based on pressure differences." },
+            { q: "Which property of a fluid determines its resistance to flow?", options: ["Density", "Viscosity", "Pressure", "Temperature"], answer: 1, explanation: "Viscosity measures a fluid’s resistance to flow or shear stress." },
+            { q: "What is the continuity equation based on in fluid mechanics?", options: ["Conservation of momentum", "Conservation of mass", "Conservation of energy", "Conservation of pressure"], answer: 1, explanation: "The continuity equation ensures mass is conserved in a flowing fluid (A1v1 = A2v2)." },
+            { q: "How does Bernoulli’s equation relate pressure and velocity in a fluid?", options: ["Directly proportional", "Inversely proportional", "No relation", "Constant sum"], answer: 1, explanation: "Bernoulli’s equation shows that an increase in velocity decreases pressure (P + ½ρv² + ρgh = constant)." },
+            { q: "What is the critical Reynolds number for the transition from laminar to turbulent flow in a pipe?", options: ["100", "1000", "2300", "4000"], answer: 2, explanation: "The critical Reynolds number is approximately 2300, marking the transition in pipe flow." },
+            { q: "What is the primary function of a piston in a heat engine?", options: ["To generate electricity", "To convert pressure into mechanical work", "To store fuel", "To cool the engine"], answer: 1, explanation: "The piston converts gas pressure into mechanical work in a heat engine." },
+            { q: "Which stroke in a four-stroke engine involves fuel ignition?", options: ["Intake stroke", "Compression stroke", "Power stroke", "Exhaust stroke"], answer: 2, explanation: "The power stroke ignites fuel to drive the piston." },
+            { q: "What is the efficiency of an ideal heat engine operating on the Carnot cycle?", options: ["1 - (Tc/Th)", "1 + (Tc/Th)", "Tc/Th", "Th/Tc"], answer: 0, explanation: "Carnot efficiency is 1 - (Tc/Th), where Tc and Th are absolute temperatures." },
+            { q: "How does supercharging affect a heat engine’s performance?", options: ["Reduces power output", "Increases power by forcing more air", "Decreases fuel efficiency", "Lowers compression ratio"], answer: 1, explanation: "Supercharging increases air intake, boosting power output." },
+            { q: "What is the effect of increasing the cut-off ratio in a diesel cycle?", options: ["Decreases thermal efficiency", "Increases thermal efficiency", "No effect on efficiency", "Reduces work output"], answer: 0, explanation: "A higher cut-off ratio reduces diesel cycle efficiency due to increased heat rejection." },
+            { q: "What is the purpose of a maintenance log sheet?", options: ["To record employee attendance", "To track equipment usage and maintenance", "To list spare parts", "To calculate depreciation"], answer: 1, explanation: "A log sheet tracks usage and maintenance history for equipment management." },
+            { q: "Which document provides step-by-step repair instructions?", options: ["Job card", "Workshop manual", "Logbook", "Invoice"], answer: 1, explanation: "A workshop manual offers detailed step-by-step repair instructions." },
+            { q: "What is the benefit of preventive maintenance?", options: ["Reduces repair costs", "Extends equipment life", "Increases downtime", "Limits cost analysis"], answer: 1, explanation: "Preventive maintenance extends equipment life by addressing issues proactively." },
+            { q: "Which maintenance strategy relies on equipment failure data?", options: ["Reactive maintenance", "Predictive maintenance", "Preventive maintenance", "Routine maintenance"], answer: 1, explanation: "Predictive maintenance uses failure data from sensors to schedule repairs." },
+            { q: "What is a major disadvantage of breakdown maintenance?", options: ["High initial cost", "Unplanned downtime", "Requires advanced tools", "Frequent scheduling"], answer: 1, explanation: "Breakdown maintenance leads to unplanned downtime, disrupting operations and increasing costs." },
+            { q: "Which of the following is a ferrous metal?", options: ["Aluminum", "Copper", "Carbon steel", "Titanium"], answer: 2, explanation: "Carbon steel contains iron as its primary component, classifying it as a ferrous metal." },
+            { q: "Which property describes a material's ability to absorb energy before fracturing?", options: ["Hardness", "Toughness", "Ductility", "Brittleness"], answer: 1, explanation: "Toughness measures a material's capacity to absorb energy and deform plastically." },
+            { q: "Which phase is soft and ductile in the iron-carbon diagram?", options: ["Austenite", "Ferrite", "Cementite", "Pearlite"], answer: 1, explanation: "Ferrite is a soft, ductile phase with low carbon content." },
+            { q: "Which heat treatment process relieves internal stresses in steel?", options: ["Hardening", "Annealing", "Quenching", "Tempering"], answer: 1, explanation: "Annealing relieves internal stresses through slow cooling." },
+            { q: "The eutectic point on the iron-carbon diagram is at:", options: ["0.83% C, 723°C", "4.3% C, 1147°C", "2.11% C, 1130°C", "1.0% C, 700°C"], answer: 1, explanation: "The eutectic point occurs at 4.3% carbon and 1147°C, forming ledeburite." },
+            { q: "What is the importance of record keeping in a workshop?", options: ["To analyze equipment performance and costs", "To decorate the office", "To track employee salaries", "To monitor office supplies"], answer: 0, explanation: "Record keeping tracks equipment performance, maintenance costs, and operational efficiency, aiding decision-making." },
+            { q: "Which document is used to track daily usage and issues of a vehicle?", options: ["Logbook", "Bill book", "Service manual", "Warranty card"], answer: 0, explanation: "A logbook records daily vehicle usage, mileage, and issues for operational tracking." },
+            { q: "Which section of a job card records the labor hours?", options: ["Parts list", "Work description", "Labor details", "Customer information"], answer: 2, explanation: "The labor details section records the hours spent on maintenance tasks." },
+            { q: "Which estimation method uses historical data for cost prediction?", options: ["Analogous estimation", "Parametric estimation", "Bottom-up estimation", "Top-down estimation"], answer: 0, explanation: "Analogous estimation relies on past project data to predict maintenance costs." },
+            { q: "What is the straight-line depreciation formula?", options: ["(Cost - Salvage) / Useful life", "(Cost + Salvage) / Useful life", "Cost / Useful life", "Salvage / Useful life"], answer: 0, explanation: "Straight-line depreciation is calculated as (Initial Cost - Salvage Value) / Useful Life." },
+            { q: "Why is safety important in a workshop?", options: ["To increase production speed", "To prevent accidents and injuries", "To reduce material costs", "To enhance tool durability"], answer: 1, explanation: "Safety practices prevent accidents, protecting workers and reducing downtime." },
+            { q: "What is a first aid kit used for?", options: ["To repair machines", "To treat minor injuries", "To extinguish fires", "To measure voltage"], answer: 1, explanation: "First aid kits provide supplies to treat minor injuries on-site." },
+            { q: "Which type of fire extinguisher is used for electrical fires?", options: ["Water", "CO2", "Foam", "Dry powder"], answer: 1, explanation: "CO2 extinguishers are safe for electrical fires as they don’t conduct electricity." },
+            { q: "What is the function of a safety harness?", options: ["To lift heavy tools", "To prevent falls from heights", "To protect against fire", "To reduce noise exposure"], answer: 1, explanation: "Safety harnesses secure workers at heights to prevent falls." },
+            { q: "What does environmental safety aim to protect?", options: ["Equipment only", "Workers and surroundings", "Machines only", "Tools only"], answer: 1, explanation: "Environmental safety minimizes harm to workers and the environment." },
+            { q: "The unit of temperature is based on:", options: ["Boiling point of mercury", "Triple point of water", "Freezing point of alcohol", "Melting point of ice"], answer: 1, explanation: "The Kelvin scale is defined using the triple point of water (273.16 K)." },
+            { q: "Essential condition for heat transfer is:", options: ["Difference in conductivity", "Difference in temperature", "Same temperature", "High pressure"], answer: 1, explanation: "Heat flows from higher to lower temperature per thermodynamic principles." },
+            { q: "The value of Cp/Cv for air is:", options: ["1.2", "1.4", "1.0", "1.6"], answer: 1, explanation: "For air (a diatomic gas), Cp/Cv (γ) is approximately 1.4 at standard conditions." },
+            { q: "Heat engine attains 100% thermal efficiency: it violates:", options: ["First law of thermodynamics", "Second law of thermodynamics", "Zeroth law", "Third law"], answer: 1, explanation: "100% efficiency violates the second law, as some heat must be rejected." },
+            { q: "The efficiency of the Joule cycle is:", options: ["Greater than Carnot cycle", "Less than Carnot cycle", "Equal to Carnot cycle", "Independent of temperature"], answer: 1, explanation: "The Joule (Brayton) cycle is less efficient than the Carnot cycle." },
+            { q: "What is the primary function of a shaper machine?", options: ["Drilling holes", "Shaping flat surfaces", "Grinding surfaces", "Milling contours"], answer: 1, explanation: "A shaper uses a reciprocating tool to shape flat surfaces or slots." },
+            { q: "Which machine uses a rotating multi-point cutter to remove material?", options: ["Lathe", "Milling machine", "Drilling machine", "Grinding machine"], answer: 1, explanation: "A milling machine employs a multi-point cutter for material removal." },
+            { q: "What is the purpose of a grinding machine?", options: ["Creating holes", "Finishing surfaces", "Turning workpieces", "Shaping slots"], answer: 1, explanation: "Grinding machines use an abrasive wheel to finish surfaces with high precision." },
+            { q: "Which type of fit allows free movement between mating parts?", options: ["Interference fit", "Clearance fit", "Transition fit", "Tight fit"], answer: 1, explanation: "Clearance fit allows movement as the hole diameter exceeds the shaft diameter." },
+            { q: "What is the least count of a standard vernier caliper?", options: ["0.01 mm", "0.02 mm", "0.05 mm", "0.10 mm"], answer: 1, explanation: "The least count of a standard vernier caliper is typically 0.02 mm." },
+           { q: "त्रिभुवन विश्वविद्यालयको केन्द्रीय कार्यालय कहाँ अवस्थित छ?", options: ["पोखरा", "काठमाडौं", "विराटनगर", "चितवन"], answer: 1, explanation: "केन्द्रीय कार्यालय काठमाडौंमा अवस्थित छ।" }, // Easy
+{ q: "त्रिभुवन विश्वविद्यालयको उपकुलपति कसले नियुक्त गर्छ?", options: ["सभा", "राष्ट्रपति", "कार्यकारी परिषद्", "सेवा आयोग"], answer: 1, explanation: "राष्ट्रपतिले उपकुलपति नियुक्त गर्छन्।" }, // Easy
+{ q: "कति दिनको घर विदा वार्षिक रूपमा दिइन्छ?", options: ["१५ दिन", "२० दिन", "३० दिन", "४५ दिन"], answer: 2, explanation: "३० दिनको घर विदा वार्षिक रूपमा प्रदान गरिन्छ।" }, // Mid-Hard
+{ q: "कुन निकायले त्रिभुवन विश्वविद्यालयको वार्षिक बजेट स्वीकृत गर्छ?", options: ["सेवा आयोग", "सभा", "कार्यकारी परिषद्", "उपकुलपति"], answer: 1, explanation: "सभाले वार्षिक बजेट स्वीकृत गर्छ।" }, // Mid-Hard
+{ q: "कति वर्ष सेवा गरेपछि त्रिभुवन विश्वविद्यालयका कर्मचारीले निवृत्तिभरण पाउँछन्?", options: ["१० वर्ष", "१५ वर्ष", "२० वर्ष", "२५ वर्ष"], answer: 2, explanation: "२० वर्ष सेवा गरेपछि पूर्ण निवृत्तिभरण पाइन्छ।" }, // Hard
+        ];
+
+        let shuffledQuestions = [];
+        let currentPage = 0;
+        let userAnswers = {};
+        let score = 0;
+        let correctAnswers = 0;
+        let wrongAnswers = 0;
+        let skippedQuestions = 0;
+        const questionsPerPage = 10;
+        const totalPages = 6;
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startTest() {
+            shuffledQuestions = shuffleArray([...questions]);
+            currentPage = 0;
+            userAnswers = {};
+            score = 0;
+            correctAnswers = 0;
+            wrongAnswers = 0;
+            skippedQuestions = 0;
+
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('testArea').classList.remove('hidden');
+            document.getElementById('progressInfo').classList.remove('hidden');
+            loadPage();
+        }
+
+        function loadPage() {
+            const startIndex = currentPage * questionsPerPage;
+            const endIndex = Math.min(startIndex + questionsPerPage, shuffledQuestions.length);
+            let html = '';
+            for (let i = startIndex; i < endIndex; i++) {
+                const q = shuffledQuestions[i];
+                html += `
+                    <div class="question-container" id="question-${i}">
+                        <div class="question-header">
+                            <div class="question-number">Question ${i + 1}</div>
+                        </div>
+                        <div class="question-text">${q.q}</div>
+                        <div class="options-container">
+                            ${q.options.map((opt, idx) => `
+                                <div class="option" onclick="selectOption(${i}, ${idx})" id="option-${i}-${idx}">
+                                    <div class="option-letter">${String.fromCharCode(65 + idx)}</div>
+                                    <div>${opt}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="explanation" id="explanation-${i}">
+                            <h4>💡 Explanation:</h4>
+                            <p>${q.explanation}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('questionContainer').innerHTML = html;
+            updateProgress();
+            updateScore();
+            updateNavigationButtons();
+        }
+
+        function selectOption(questionIndex, optionIndex) {
+            const question = shuffledQuestions[questionIndex];
+            const isCorrect = optionIndex === question.answer;
+
+            userAnswers[questionIndex] = optionIndex;
+
+            const options = document.querySelectorAll(`#question-${questionIndex} .option`);
+            options.forEach((opt, idx) => {
+                opt.classList.remove('selected', 'correct', 'incorrect', 'disabled');
+                if (idx === optionIndex) opt.classList.add('selected');
+                if (idx === question.answer) opt.classList.add('correct');
+                else if (idx === optionIndex && !isCorrect) opt.classList.add('incorrect');
+                opt.classList.add('disabled');
+            });
+
+            document.getElementById(`explanation-${questionIndex}`).classList.add('show');
+
+            if (isCorrect && !(questionIndex in userAnswers) || userAnswers[questionIndex] !== question.answer) {
+                correctAnswers++;
+                score += 1;
+            } else if (!isCorrect && userAnswers[questionIndex] !== question.answer) {
+                wrongAnswers++;
+                score -= 0.2; // 20% negative marking
+            }
+
+            updateScore();
+            updateNavigationButtons();
+        }
+
+        function skipQuestion() {
+            const startIndex = currentPage * questionsPerPage;
+            const currentQuestion = startIndex + Object.keys(userAnswers).filter(k => k >= startIndex && k < startIndex + questionsPerPage).length;
+            if (currentQuestion < (currentPage + 1) * questionsPerPage) {
+                userAnswers[currentQuestion] = 'skipped';
+                skippedQuestions++;
+                document.getElementById(`question-${currentQuestion}`).classList.add('skipped');
+                updateScore();
+                updateNavigationButtons();
+                if (currentQuestion < (currentPage + 1) * questionsPerPage - 1) {
+                    loadPage(); // Refresh to move to next question
+                } else {
+                    nextPage();
+                }
+            }
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                loadPage();
+            } else {
+                showResults();
+            }
+        }
+
+        function previousPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                loadPage();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentPage + 1) / totalPages) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('currentPage').textContent = currentPage + 1;
+        }
+
+        function updateScore() {
+            const negative = Math.floor(wrongAnswers / 5); // 5 wrong = -1 mark
+            const totalScore = score - negative;
+            document.getElementById('currentScore').textContent = Math.round(totalScore * 10) / 10;
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const skipBtn = document.getElementById('skipBtn');
+
+            prevBtn.disabled = currentPage === 0;
+            nextBtn.disabled = currentPage === totalPages - 1;
+            if (currentPage === totalPages - 1) {
+                nextBtn.textContent = 'Finish Test';
+            } else {
+                nextBtn.textContent = 'Next ➡️';
+            }
+
+            const startIndex = currentPage * questionsPerPage;
+            const endIndex = Math.min(startIndex + questionsPerPage, shuffledQuestions.length);
+            let allAnswered = true;
+            for (let i = startIndex; i < endIndex; i++) {
+                if (!(i in userAnswers)) {
+                    allAnswered = false;
+                    break;
+                }
+            }
+            skipBtn.style.display = allAnswered ? 'none' : 'block';
+            nextBtn.disabled = !allAnswered && currentPage < totalPages - 1;
+        }
+
+        function showResults() {
+            correctAnswers = 0;
+            wrongAnswers = 0;
+            skippedQuestions = 0;
+            for (let i = 0; i < shuffledQuestions.length; i++) {
+                if (userAnswers[i] === 'skipped' || !(i in userAnswers)) {
+                    skippedQuestions++;
+                } else if (userAnswers[i] === shuffledQuestions[i].answer) {
+                    correctAnswers++;
+                } else {
+                    wrongAnswers++;
+                }
+            }
+            score = correctAnswers - Math.floor(wrongAnswers / 5); // Final score with negative marking
+
+            document.getElementById('testArea').classList.add('hidden');
+            document.getElementById('progressInfo').classList.add('hidden');
+            document.getElementById('scoreDisplay').innerHTML = `
+                <div style="color: #27ae60; font-size: 0.8em;">Final Score</div>
+                ${Math.round(score * 10) / 10} / ${shuffledQuestions.length}
+                <div style="color: #7f8c8d; font-size: 0.5em; margin-top: 10px;">
+                    (${((correctAnswers / shuffledQuestions.length) * 100).toFixed(1)}% Correct)
+                </div>
+            `;
+            document.getElementById('scoreBreakdown').innerHTML = `
+                <div class="score-card correct">
+                    <div class="score-number" style="color: #27ae60;">${correctAnswers}</div>
+                    <div>Correct Answers</div>
+                </div>
+                <div class="score-card incorrect">
+                    <div class="score-number" style="color: #e74c3c;">${wrongAnswers}</div>
+                    <div>Wrong Answers</div>
+                </div>
+                <div class="score-card skipped">
+                    <div class="score-number" style="color: #f39c12;">${skippedQuestions}</div>
+                    <div>Skipped Questions</div>
+                </div>
+                <div class="score-card">
+                    <div class="score-number" style="color: #3498db;">${Math.round(score * 10) / 10}</div>
+                    <div>Net Score<br><small>(After -0.2 penalty)</small></div>
+                </div>
+            `;
+            document.getElementById('resultsArea').classList.remove('hidden');
+        }
+
+        function restartTest() {
+            document.getElementById('resultsArea').classList.add('hidden');
+            document.getElementById('startScreen').classList.remove('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('startScreen').classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
